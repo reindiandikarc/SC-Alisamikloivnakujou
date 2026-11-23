@@ -1,0 +1,21 @@
+{
+  "startedAt": "2026-11-23T07:06:44.509Z",
+  "totalReact": 0,
+  "reactSuccess": 0,
+  "reactError": 0,
+  "lastSuccess": null,
+  "lastError": null,
+  "perType": {},
+  "reactsByHour": {},
+  "reactsByDate": {
+    "daily": {},
+    "weekly": {},
+    "monthly": {},
+    "yearly": {}
+  },
+  "spamGuard": {
+    "hits": [],
+    "lastAlert": 0
+  },
+  "monthKey": "2026-11"
+}

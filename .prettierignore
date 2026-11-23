@@ -1,0 +1,5 @@
+node_modules
+.git
+connection/session
+toolkit/set/db
+*.json
