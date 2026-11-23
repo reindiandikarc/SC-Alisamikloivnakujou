@@ -8,32 +8,82 @@ const fs      = require('fs')
 const crypto  = require('crypto')
 const baileys = require('@whiskeysockets/baileys')
 
+// Posting group status — diadaptasi dari vanXone V4 `lumen/plugins/group/group-upswgc.js`.
+// Dua hal yang bikin versi sebelumnya "berhasil" tapi statusnya tak tampil:
+//   1. media harus di-relay LANGSUNG ({ imageMessage: ... }), bukan dibungkus
+//      groupStatusMessageV2
+//   2. stanza harus bawa <meta is_group_status="true"/> lewat additionalNodes
+//      — inilah penanda yang dibaca WhatsApp untuk merender story grup.
 async function groupStatusLocal(alya, jid, content) {
-  const { backgroundColor } = content
-  const payload = { ...content }
-  delete payload.backgroundColor
+  const { backgroundColor, font, ...base } = content
 
-  const inside = await baileys.generateWAMessageContent(payload, {
-    upload: alya.waUploadToServer,
-    backgroundColor
-  })
+  const isText = base.text !== undefined
+  const key = base.image ? 'imageMessage'
+    : base.video ? 'videoMessage'
+    : base.audio ? 'audioMessage'
+    : isText ? 'extendedTextMessage' : null
+  if (!key) throw new Error('Tidak ada tipe media/text untuk status grup')
 
-  const messageSecret = crypto.randomBytes(32)
-  const msg = baileys.generateWAMessageFromContent(jid, {
-    messageContextInfo: { messageSecret },
-    groupStatusMessageV2: {
-      message: {
-        ...inside,
-        messageContextInfo: { messageSecret }
-      }
+  const statusSourceType =
+    key === 'extendedTextMessage' ? 4 :
+    key === 'audioMessage'        ? 3 :
+    key === 'videoMessage'        ? 1 : 0
+
+  const contextInfo = {
+    expiration: 86400,
+    disappearingMode: { initiator: 0 },
+    featureEligibilities: {
+      cannotBeRanked: false,
+      canBeReshared: true,
+      canReceiveMultiReact: true
+    },
+    statusSourceType,
+    statusAttributions: [{ type: 10 }],
+    isGroupStatus: true,
+    statusAudienceMetadata: {
+      audienceType: 2,
+      listName: 'Alya Status',
+      listEmoji: '✨'
     }
-  }, {})
+  }
 
-  await alya.relayMessage(jid, msg.message, { messageId: msg.key.id })
-  return msg
+  const messageId = crypto.randomBytes(16).toString('hex').toUpperCase()
+  const messageContextInfo = { messageSecret: crypto.randomBytes(32) }
+  const opts = {
+    messageId,
+    additionalNodes: [{ tag: 'meta', attrs: { is_group_status: 'true' } }]
+  }
+
+  if (isText) {
+    const hex = String(backgroundColor || '#128C7E').replace('#', '')
+    const bgArgb = (0xFF000000 | parseInt(hex, 16)) >>> 0
+    await alya.relayMessage(jid, {
+      extendedTextMessage: {
+        text: base.text,
+        textArgb: 0xFFFFFFFF,
+        backgroundArgb: bgArgb,
+        font: font ?? 7,
+        contextInfo
+      },
+      messageContextInfo
+    }, opts)
+    return { messageId, key }
+  }
+
+  const payload = { ...base }
+  const gen = await baileys.generateWAMessageContent(payload, {
+    upload: alya.waUploadToServer
+  })
+  const media = gen[key]
+  if (!media) throw new Error('Gagal menyiapkan ' + key)
+  media.contextInfo = { ...(media.contextInfo || {}), ...contextInfo }
+
+  await alya.relayMessage(jid, { [key]: media, messageContextInfo }, opts)
+  return { messageId, key }
 }
 
 module.exports = {
+  groupStatusLocal,
   command: ['sendstatus'],
   tags: ['general'],
   run: async (alya, m, ctx) => {

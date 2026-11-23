@@ -283,6 +283,40 @@ shouldSyncHistoryMessage: () => false,
 // (blok pairing dipindah ke akhir alyaInd — semua listener harus terpasang dulu sebelum menunggu input)
     store.bind(alya.ev)
 
+// ── FIX VIEW-ONCE / REPLY MEDIA: cache pesan bermedia ke disk ──────────────
+// Store Baileys hanya di-memory, jadi kalau bot restart (systemd / watchdog)
+// semua pesan asli hilang. Padahal untuk me-reply media *sekali lihat*,
+// WhatsApp sengaja membuang mediaKey/url dari objek quote — satu-satunya
+// salinan yang bisa didownload adalah pesan aslinya. Cache ini menyimpannya
+// supaya .swgc / .rvo tetap jalan walau bot baru saja restart.
+const MEDIA_CACHE_FILE = path.join(__dirname, 'database', 'media-cache.json')
+try {
+    global._mediaCache = JSON.parse(fs.readFileSync(MEDIA_CACHE_FILE, 'utf8'))
+} catch { global._mediaCache = {} }
+let _mediaCacheTimer = null
+function _scheduleMediaCacheSave() {
+    clearTimeout(_mediaCacheTimer)
+    _mediaCacheTimer = setTimeout(() => {
+        try { fs.writeFileSync(MEDIA_CACHE_FILE, JSON.stringify(global._mediaCache)) } catch {}
+    }, 1500)
+}
+alya.ev.on('messages.upsert', ({ messages }) => {
+    for (const msg of messages || []) {
+        try {
+            const inner = msg.message?.viewOnceMessageV2?.message || msg.message?.viewOnceMessage?.message || msg.message
+            const ct = inner && Object.keys(inner).find(k => /Message$/.test(k))
+            const media = inner?.[ct]
+            if (msg.key?.id && media && (media.mediaKey || media.url || media.directPath)) {
+                global._mediaCache[msg.key.id] = { jid: msg.key.remoteJid, message: msg.message }
+                _scheduleMediaCacheSave()
+                if (process.env.ALYA_BUTTON_DEBUG === '1' && media.viewOnce) {
+                    console.log('[CACHE_DEBUG] view-once tersimpan id=' + msg.key.id + ' jid=' + msg.key.remoteJid)
+                }
+            }
+        } catch {}
+    }
+})
+
 alya.ev.on('connection.update', async (update) => {
 	const {
 		connection,
@@ -775,6 +809,13 @@ alya.downloadMediaMessage = async (message) => {
     let mime = msg.mimetype || ''
     let messageType = message.mtype ? message.mtype.replace(/Message/gi, '') : mime.split('/')[0]
     if (!msg.mediaKey) {
+        if (process.env.ALYA_BUTTON_DEBUG === '1') {
+            console.log("[DL_DEBUG] argKeys=" + Object.keys(message || {}).slice(0, 14).join(',') +
+                        " hasMsg=" + !!message?.msg +
+                        " msgKeys=" + Object.keys(msg || {}).slice(0, 14).join(',') +
+                        " mtype=" + message?.mtype + " mime=" + mime +
+                        " argMtype=" + message?.mtype)
+        }
         console.log("Media Key tidak ditemukan, melewati proses download.")
         return Buffer.from([]) 
     }
