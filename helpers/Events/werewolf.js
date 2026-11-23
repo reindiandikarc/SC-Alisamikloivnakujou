@@ -597,7 +597,7 @@ Gunakan *.wwpc elixir nomor* atau *.wwpc poison nomor*\n*List Pemain:*:\n${list2
 
                 await Exp.sendMessage(ww[chat].player[i].id, {
                   text: potionText,
-                  mentions: Exp.parseMention(potionText),
+                  mentions: potionText.extractMentions(),
                 });
               }
             }

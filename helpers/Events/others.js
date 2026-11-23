@@ -208,9 +208,7 @@ export default async function on({ cht, Exp, store, ev, is }) {
       } else if (cfg.button && cfg?.menu_type == 'buttonListProduct') {
         keys['product_image'] ??= await (async () => {
           const rawBuf = fs.readFileSync(fol[3] + 'bell.jpg');
-          const { prepareWAMessageMedia } = await import(
-            '@whiskeysockets/baileys/lib/Utils/messages.js'
-          );
+          const { prepareWAMessageMedia } = await 'baileys'.import();
           const { imageMessage } = await prepareWAMessageMedia(
             { image: rawBuf },
             { upload: Exp.waUploadToServer }
@@ -303,9 +301,7 @@ export default async function on({ cht, Exp, store, ev, is }) {
         try {
           keys['product_image'] ??= await (async () => {
             const rawBuf = fs.readFileSync(fol[3] + 'bell.jpg');
-            const { prepareWAMessageMedia } = await import(
-              '@whiskeysockets/baileys/lib/Utils/messages.js'
-            );
+            const { prepareWAMessageMedia } = await 'baileys'.import();
             const { imageMessage } = await prepareWAMessageMedia(
               { image: rawBuf },
               { upload: Exp.waUploadToServer }
@@ -638,9 +634,7 @@ export default async function on({ cht, Exp, store, ev, is }) {
         );
       } else {
         const rawBuf = fs.readFileSync(fol[3] + 'bell.jpg');
-        const { prepareWAMessageMedia } = await import(
-          '@whiskeysockets/baileys/lib/Utils/messages.js'
-        );
+        const { prepareWAMessageMedia } = await 'baileys'.import();
         const { imageMessage } = await prepareWAMessageMedia(
           { image: rawBuf },
           { upload: Exp.waUploadToServer, mediaTypeOverride: 'thumbnail-link' }

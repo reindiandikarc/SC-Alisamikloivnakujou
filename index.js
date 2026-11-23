@@ -136,22 +136,7 @@ async function launch() {
 
     Exp = makeWASocket({
       logger,
-      version: [
-        2,
-        3000,
-        await fetch(
-          'https://raw.githubusercontent.com/Rifza123/Experimental-Bell/refs/heads/master/version'
-        )
-          .then((a) => a.text())
-          .then(async (t) =>
-            /^\d+$/.test(t.trim())
-              ? Number(t.trim())
-              : Number((await fs.readFile('./version', 'utf8')).trim())
-          )
-          .catch(async () =>
-            Number((await fs.readFile('./version', 'utf8')).trim())
-          ),
-      ],
+      version: [2, 3000, 1035194821],
       printQRInTerminal: !global.pairingCode,
       browser: Browsers.ubuntu('Chrome'),
       auth: state,

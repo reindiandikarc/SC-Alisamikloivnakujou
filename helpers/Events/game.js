@@ -242,10 +242,13 @@ Jawaban: ${answer}`);
       if ('game' in metadata) return cht.reply(hasGame);
       let maxAge = 60000;
       let countries = await fetch(
-        'https://raw.githubusercontent.com/Rifza123/lib/refs/heads/main/db/countries.json'
-      ).then((a) => a.json());
-      let name = Object.values(countries).getRandom();
-      let url = `https://raw.githubusercontent.com/Rifza123/lib/refs/heads/main/db/image/flags/${name.slugify()}.png`;
+        'https://countriesnow.space/api/v0.1/countries/flag/images'
+      )
+        .then((a) => a.json())
+        .then((a) => a.data.filter((c) => c.iso2));
+      let country = countries.getRandom();
+      let name = country.name;
+      let url = `https://flagcdn.com/w320/${country.iso2.toLowerCase()}.png`;
       metadata.game = {
         type: cht.cmd,
         startTime: Date.now(),
@@ -701,12 +704,12 @@ Jawaban: ${answer}`);
     },
     async () => {
       let { key } = await cht.reply(
-        `Petunjuk: ${chatDb.game.answer
+        `Petunjuk: ${metadata.game.answer
           .split('')
           .join(' ')
           .replace(/[aiueo]/gi, '_')}`
       );
-      chatDb.game.id_message.push(Key.id);
+      metadata.game.id_message.push(key.id);
     }
   );
 

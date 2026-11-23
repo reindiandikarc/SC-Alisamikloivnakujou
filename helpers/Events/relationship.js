@@ -1110,7 +1110,7 @@ _Code ${code} akan dihapus dalam kurun waktu ${time}_
     },
     async () => {
       try {
-        const { createCanvas, loadImage } = await 'canvas'.import();
+        const { createCanvas, loadImage } = await '@napi-rs/canvas'.import();
 
         const [bg, qr] = await Promise.all([
           loadImage(fol[3] + 'qris.jpg'),

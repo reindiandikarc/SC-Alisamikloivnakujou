@@ -5,7 +5,7 @@
   "main": "index.js",
   "type": "module",
   "scripts": {
-    "test": "start",
+    "test": "node --check index.js",
     "start": "node index",
     "format": "node toolkit/prettier.js"
   },

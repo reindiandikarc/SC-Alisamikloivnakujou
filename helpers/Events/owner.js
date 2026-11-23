@@ -895,9 +895,9 @@ export default async function on({ cht, Exp, store, ev, is }) {
             if (isOn) {
               if (
                 t1 == 'button' &&
-                !(await '@whiskeysockets/baileys/lib/Socket/messages-send.js'
+                !(await 'baileys'
                   .import()
-                  .then((a) => a.makeMessagesSocket + '')
+                  .then((a) => String(a.Button))
                   .then((a) => a.includes('interactiveMessage')))
               )
                 return cht.reply(
