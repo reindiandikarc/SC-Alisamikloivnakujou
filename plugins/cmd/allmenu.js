@@ -9,6 +9,7 @@ const fs     = require('fs');
 const os     = require('os');
 const moment = require('moment-timezone');
 const { buildOurinSenderCtx } = require('../metacard');
+const vxMenu = require('../../lib/vx/menu-data');
 
 module.exports = {
   command: ['allmenu'],
@@ -74,6 +75,23 @@ module.exports = {
 
     // ── Header WhatsApp ✔ (rekonstruksi dari metacard.js) ──────────────────
     const ourinCtx = buildOurinSenderCtx(_botname);
+
+    // ── Section plugin baru vanXone (gaya Alya, tetap di dalam `teks`) ─────
+    let newPluginSection = '';
+    try {
+      const vxTotal = vxMenu.total();
+      if (vxTotal > 0) {
+        const highlights = vxMenu.flatten(30);
+        if (highlights.length) {
+          newPluginSection = `\n┣━━〔 🆕 *PLUGIN BARU VANXONE* 〕━━⬣\n┃\n`;
+          for (const v of highlights) {
+            newPluginSection += `┃ ➤ *${prefix}${v.cmd}* — ${v.desc}\n`;
+          }
+          newPluginSection += `┃\n┃ → Lihat semua: *${prefix}vxmenu*\n`;
+          newPluginSection += `┃ 📊 Total: ${vxTotal.toLocaleString('id-ID')} command baru\n┃\n`;
+        }
+      }
+    } catch { /* helper gagal → section dilewati, menu lama tetap utuh */ }
 
     // ════════════════════════════════════════════════════════════════════════
     // MENU
@@ -289,6 +307,7 @@ module.exports = {
 ┃ ⚠️ ${prefix}forcealya | ${prefix}alyacrash
 ┃ ⚠️ _(Owner only)_
 ┃
+${newPluginSection}
 ╰━━━━━━━━━━━━━━━━━━━━━━━━⬣
 
 💡 _${prefix}help <command> untuk detail penggunaan_

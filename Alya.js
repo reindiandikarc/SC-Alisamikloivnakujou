@@ -25145,19 +25145,27 @@ _(Милашка...)_
     };
 	await sendDynamicMenu(m.chat, teks, listnye, m, alya);
 
-    try {
-        const axios = (await import('axios')).default;
-        const { toPTT } = require('./lib/converter');
-        const { data } = await axios.get(global.music, { responseType: 'arraybuffer' });
-        const vn = await toPTT(Buffer.from(data), 'mp4');
-        
-        await alya.sendMessage(m.chat, {
-            audio: vn,
-            mimetype: 'audio/mpeg',
-            ptt: true
-        }, { quoted: m });
-    } catch (e) {
-        console.log("Gagal mengirim VN menu");
+    // [fix] VN menu opsional: jangan panggil axios/toPTT kalau asetnya tidak ada.
+    // Sebelumnya tiap .menu log "Gagal mengirim VN menu" karena media/menu.mp3
+    // tidak ikut terdeploy. Menu utama sudah dikirim di atas, jadi aman di-skip.
+    const _menuMusic = typeof global.music === 'string' ? global.music.trim() : ''
+    const _hasRemoteMusic = /^https?:\/\//i.test(_menuMusic)
+    const _hasLocalMusic = !!_menuMusic && fs.existsSync(_menuMusic)
+    if (_hasRemoteMusic || _hasLocalMusic) {
+        try {
+            const axios = (await import('axios')).default;
+            const { toPTT } = require('./lib/converter');
+            const { data } = await axios.get(_menuMusic, { responseType: 'arraybuffer' });
+            const vn = await toPTT(Buffer.from(data), 'mp4');
+            
+            await alya.sendMessage(m.chat, {
+                audio: vn,
+                mimetype: 'audio/mpeg',
+                ptt: true
+            }, { quoted: m });
+        } catch (e) {
+            console.log("Gagal mengirim VN menu (opsional): " + (e?.message || e));
+        }
     }
 }
 break;
@@ -25687,10 +25695,19 @@ _Berikut adalah daftar seluruh perintah yang tersedia:_
 💡 _Gunakan ${prefix}help <command> untuk detail_
 *© 2026 ${ownername}*`
 
+    // [fix] Lampiran allmenu bersifat opsional. global.videothumb tidak pernah
+    // di-set di repo ini — mengirim { url: undefined } membuat Baileys melempar
+    // "Cannot read properties of undefined (reading 'toString')".
+    const _menuVideoOk = typeof global.videothumb === 'string' && global.videothumb.trim() && fs.existsSync(global.videothumb)
+    const _menuImageFile = 'data/image/menu.jpg'
+    const _menuAttachment = _menuVideoOk
+        ? { video: { url: global.videothumb }, gifPlayback: true }
+        : fs.existsSync(_menuImageFile)
+            ? { image: { url: _menuImageFile } }
+            : {}
     await alya.sendMessage(m.chat, {
-        video: { url: global.videothumb },
-        gifPlayback: true,
-        caption: teks,
+        ..._menuAttachment,
+        ...(Object.keys(_menuAttachment).length ? { caption: teks } : { text: teks }),
         mentions: [m.sender],
         contextInfo: {
             forwardingScore: 1,
@@ -25698,12 +25715,14 @@ _Berikut adalah daftar seluruh perintah yang tersedia:_
         }
     }, { quoted: fkontak });
 
-    let muskk = {
-        audio: { url: global.music },
-        mimetype: 'audio/mp4',
-        ptt: true,
-    };
-    await alya.sendMessage(m.chat, muskk, { quoted: m });
+    // [fix] global.music = './media/menu.mp3' tapi file itu tidak ada di runtime.
+    if (typeof global.music === 'string' && global.music.trim() && fs.existsSync(global.music)) {
+        await alya.sendMessage(m.chat, {
+            audio: { url: global.music },
+            mimetype: 'audio/mp4',
+            ptt: true,
+        }, { quoted: m });
+    }
 }
 break;
 case 'help': {
@@ -47097,92 +47116,17 @@ Script bot Alya yang:
 break;
 case 'swgc':
 case 'upswgc': {
-  if (!Ryuu) return replytolak(mess.only.owner)
-  const { fromBuffer } = require("file-type")
-  const fs = require("fs")
-  const path = require("path")
-
-  let content = {}
-  let buffer, ext, tempFile
-  if (m.quoted) {
-    try {
-      buffer = await m.quoted.download()
-      if (!buffer) return alya.sendText(m.chat, "❌ Gagal mengambil media.")
-
-      ext = (await fromBuffer(buffer))?.ext || 'bin'
-      tempFile = path.join(__dirname, `tmp_${Date.now()}.${ext}`)
-      fs.writeFileSync(tempFile, buffer)
-
-      const quotedType = m.quoted.mtype || Object.keys(m.quoted.message || {})[0] || ''
-
-      if (/image/.test(quotedType)) {
-        content.image = { url: tempFile }
-        if (text) content.caption = text
-      } else if (/video/.test(quotedType)) {
-        content.video = { url: tempFile }
-        if (text) content.caption = text
-      } else if (/audio/.test(quotedType)) {
-        if (text) {
-          fs.unlinkSync(tempFile)
-          return alya.sendText(m.chat, "❌ Audio tidak boleh pakai caption.")
-        }
-        content.audio = { url: tempFile }
-        content.ptt = false
-      } else {
-        fs.unlinkSync(tempFile)
-        return alya.sendText(m.chat, "Reply harus image/video/audio.")
-      }
-    } catch (e) {
-      return alya.sendText(m.chat, "❌ Media gagal diproses.")
-    }
-  } else if (text) {
-    content.text = text
-  } else {
-    return alya.sendText(m.chat, "Kirim media atau teks.")
+  // [fix] Satu jalur logika untuk mode CASE maupun PLUGIN.
+  // Plugin upswgc menyimpan media di memory (pendingSwgc) dan memakai
+  // tombol `.swgc --confirm <groupId>`; tidak lagi menulis tmp_*.bin
+  // yang gagal diposting sebagai group status.
+  try {
+    const swgc = require('./plugins/cmd/upswgc')
+    return await swgc.run(alya, m, ctx)
+  } catch (e) {
+    console.error('[SWGC case delegate Error]', e?.message || e)
+    return replyalya('❌ Gagal memproses .swgc: ' + (e?.message || String(e)))
   }
-  let getGroups = await alya.groupFetchAllParticipating()
-  let groups = Object.values(getGroups)
-
-  if (groups.length === 0) {
-    if (tempFile && fs.existsSync(tempFile)) fs.unlinkSync(tempFile)
-    return alya.sendText(m.chat, "Bot tidak ada di grup manapun.")
-  }
-  let validGroups = []
-  validGroups.push({
-    title: "📢 Kirim ke Semua Grup",
-    description: `Total ${groups.length} grup`,
-    id: `${prefix}sendstatusall ${encodeURIComponent(JSON.stringify(content))}`
-  })
-  for (let group of groups) {
-    validGroups.push({
-      title: group.subject,
-      description: group.id,
-      id: `${prefix}sendstatus ${group.id} ${encodeURIComponent(JSON.stringify(content))}`
-    })
-  }
-  let msg = generateWAMessageFromContent(m.chat, {
-    viewOnceMessage: {
-      message: {
-        interactiveMessage: {
-          body: { text: "```Pilih Grup Tujuan 📢```" },
-          footer: { text: "Pastikan pilihan sudah benar" },
-          nativeFlowMessage: {
-            buttons: [{
-              name: "single_select",
-              buttonParamsJson: JSON.stringify({
-                title: "PILIH GRUP",
-                sections: [{ title: "Daftar Grup Tersedia", rows: validGroups }]
-              })
-            }]
-          }
-        }
-      }
-    }
-  }, { quoted: m })
-
-  await alya.relayMessage(msg.key.remoteJid, msg.message, {
-    messageId: msg.key.id
-  })
 }
 break
 

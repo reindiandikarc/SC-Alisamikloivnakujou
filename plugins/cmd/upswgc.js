@@ -30,6 +30,9 @@ module.exports = {
   run: async (alya, m, ctx) => {
     const { text, prefix, Ryuu, isPrem, pler, replyalya } = ctx
     const key = senderKey(m)
+    // [fix] pler kadang belum tersedia di runtime case-mode; jangan sampai
+    // .includes() melempar di tengah jalan dan meninggalkan pending entry.
+    const plerList = Array.isArray(pler) ? pler : []
 
     // ═══════════════════════════════════════
     // AKSES: Owner + Premium ONLY
@@ -61,13 +64,14 @@ module.exports = {
       const target = ctx.args[1]
       let groups = {}
       try { groups = await alya.groupFetchAllParticipating() } catch (e) {}
-      const groupIds = target === ALL_GROUPS ? Object.keys(groups) : [target]
+      // [fix] groupFetchAllParticipating bisa mengembalikan undefined.
+      const groupIds = target === ALL_GROUPS ? Object.keys(groups || {}) : [target]
 
       if (!groupIds.length) return replyalya('❌ Bot tidak berada di grup manapun.')
 
       // Premium tidak boleh mengirim ke grup yang tidak terdaftar
       if (!Ryuu) {
-        const denied = groupIds.filter(id => !pler.includes(id))
+        const denied = groupIds.filter(id => !plerList.includes(id))
         if (denied.length) {
           cleanPending(key)
           return replyalya(
@@ -119,6 +123,19 @@ module.exports = {
     //  B) media + caption ".swgc x" -> alya.downloadMediaMessage(m.msg)
     // Jalur (B) adalah yang paling dijamin untuk media sekali lihat, karena
     // WhatsApp membuang mediaKey dari salinan quotedMessage.
+    // [fix] Satu helper untuk jalur (B): coba m.msg dulu, lalu objek pesan
+    // lengkap sebagai fallback kalau m.msg bukan node media yang bisa diunduh.
+    const downloadFromCurrent = async () => {
+      if (!m.mtype || !/^(image|video|audio)Message$/.test(m.mtype)) return null
+      try {
+        let buf = await alya.downloadMediaMessage(m.msg || m)
+        if ((!buf || !buf.length) && m.msg) {
+          try { buf = await alya.downloadMediaMessage(m) } catch (e) {}
+        }
+        return buf && buf.length ? buf : null
+      } catch (e) { return null }
+    }
+
     if (m.quoted) {
       try {
         buffer = await m.quoted.download()
@@ -126,8 +143,9 @@ module.exports = {
       } catch (e) {}
 
       if (!buffer || !buffer.length) {
-        if (m.mtype && /^(image|video|audio)Message$/.test(m.mtype)) {
-          try { buffer = await alya.downloadMediaMessage(m.msg || m) } catch (e) {}
+        const direct = await downloadFromCurrent()
+        if (direct) {
+          buffer = direct
           mediaType = m.mtype
         }
         if (!buffer || !buffer.length) {
@@ -138,7 +156,7 @@ module.exports = {
         }
       }
     } else if (m.mtype && /^(image|video|audio)Message$/.test(m.mtype)) {
-      try { buffer = await alya.downloadMediaMessage(m.msg || m) } catch (e) {}
+      buffer = await downloadFromCurrent()
       mediaType = m.mtype
       if (!buffer || !buffer.length) {
         return replyalya('❌ Gagal mengambil media dari pesan ini.')
@@ -183,7 +201,7 @@ module.exports = {
     const entries = Object.entries(groups || {})
     if (!entries.length) return replyalya('❌ Bot tidak ada di grup manapun.')
 
-    const allowed = Ryuu ? entries : entries.filter(([id]) => pler.includes(id))
+    const allowed = Ryuu ? entries : entries.filter(([id]) => plerList.includes(id))
     if (!allowed.length) {
       return replyalya(
         '⚠️ Tidak ada grup terdaftar yang tersedia!\n\n' +
@@ -219,34 +237,41 @@ module.exports = {
       : content.video ? 'Video'
       : content.audio ? 'Audio' : 'Media'
 
-    const msg = generateWAMessageFromContent(m.chat, {
-      viewOnceMessage: {
-        message: {
-          messageContextInfo: { deviceListMetadata: {}, deviceListMetadataVersion: 2 },
-          interactiveMessage: proto.Message.InteractiveMessage.create({
-            body: proto.Message.InteractiveMessage.Body.create({
-              text: `\`\`\`Pilih Grup Tujuan 📢\`\`\`\n` +
-                `> Media: *${mediaLabel}*\n` +
-                `> Total Grup: *${allowed.length}*\n\n` +
-                (Ryuu ? '👑 Mode Owner: Semua grup tersedia' : '💎 Mode Premium: Hanya grup terdaftar')
-            }),
-            footer: proto.Message.InteractiveMessage.Footer.create({
-              text: 'Pastikan pilihan sudah benar sebelum kirim!'
-            }),
-            nativeFlowMessage: proto.Message.InteractiveMessage.NativeFlowMessage.create({
-              buttons: [{
-                name: 'single_select',
-                buttonParamsJson: JSON.stringify({
-                  title: 'PILIH GRUP',
-                  sections: [{ title: Ryuu ? 'Semua Grup' : 'Grup Terdaftar', rows }]
-                })
-              }]
+    // [fix] Kalau build/kirim picker gagal, pending tidak boleh menggantung
+    // sampai timeout 10 menit (memory leak). Bersihkan lalu lempar lagi error.
+    try {
+      const msg = generateWAMessageFromContent(m.chat, {
+        viewOnceMessage: {
+          message: {
+            messageContextInfo: { deviceListMetadata: {}, deviceListMetadataVersion: 2 },
+            interactiveMessage: proto.Message.InteractiveMessage.create({
+              body: proto.Message.InteractiveMessage.Body.create({
+                text: `\`\`\`Pilih Grup Tujuan 📢\`\`\`\n` +
+                  `> Media: *${mediaLabel}*\n` +
+                  `> Total Grup: *${allowed.length}*\n\n` +
+                  (Ryuu ? '👑 Mode Owner: Semua grup tersedia' : '💎 Mode Premium: Hanya grup terdaftar')
+              }),
+              footer: proto.Message.InteractiveMessage.Footer.create({
+                text: 'Pastikan pilihan sudah benar sebelum kirim!'
+              }),
+              nativeFlowMessage: proto.Message.InteractiveMessage.NativeFlowMessage.create({
+                buttons: [{
+                  name: 'single_select',
+                  buttonParamsJson: JSON.stringify({
+                    title: 'PILIH GRUP',
+                    sections: [{ title: Ryuu ? 'Semua Grup' : 'Grup Terdaftar', rows }]
+                  })
+                }]
+              })
             })
-          })
+          }
         }
-      }
-    }, { quoted: m })
+      }, { quoted: m })
 
-    await alya.relayMessage(msg.key.remoteJid, msg.message, { messageId: msg.key.id })
+      await alya.relayMessage(msg.key.remoteJid, msg.message, { messageId: msg.key.id })
+    } catch (e) {
+      cleanPending(key)
+      throw e
+    }
   }
 }

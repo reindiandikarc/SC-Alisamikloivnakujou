@@ -20,6 +20,7 @@
 const path  = require('path')
 const fs    = require('fs')
 const axios = require('axios')
+const vxMenu = require('../../lib/vx/menu-data')
 
 // ── Path prioritas file video lokal ───────────────────────────────────────────
 const VIDEO_PATHS = [
@@ -163,11 +164,67 @@ module.exports = {
     const readmore = String.fromCharCode(8206).repeat(4001)
 
     // ── Category list (behind readmore) ───────────────────────────────────
+    // cmd_registry.json berisi PATH STRING ("plugins/cmd/xxx.js"), bukan objek.
+    // Tag tidak boleh diambil dari info.tags — harus ditebak dari path, kalau
+    // tidak semua command bakal ngumpul di "general".
+    const KNOWN_TAGS = [
+      ['game',     /tebak|game|ultraman|blackjack|slot|catur|suit|tictactoe|truth|dare|gacha|quiz|caklontong|asahotak|susunkata|tekateki|family100|werewolf/i],
+      ['rpg',      /mining|nebang|mancing|berkebon|kerja|bansos|gajian|nabung|bank|shop|craft|duel|battle|invest|guild|level|money|exp/i],
+      ['ai',       /^ai|gemini|bard|gpt|blackbox|claude|dalle|prodia|bingimg|chatgpt|aichat/i],
+      ['download', /dl$|downloader|^yt|^tiktok|instagram|facebook|twitter|spotify|terabox|gdrive|pinterest|snackvideo/i],
+      ['sticker',  /stik|sticker|togif|tovn|toimg|toptt|toaudio/i],
+      ['group',    /^(add|del|kick|promote|demote|mute|unmute|tag|hidetag|antilink|antibot|setwelcome|welcome|opentime|closetime)/i],
+      ['owner',    /^(addprem|delprem|addowner|delowner|addsewa|delsewa|addredeem|delredeem|setbot|setppbot|restart|ban|unban|self|public)/i],
+      ['islami',   /sholat|alquran|ayat|doa|hadis|asmaulhusna|quotesislami|islam/i],
+      ['info',     /info|runtime|ping|weather|cekkhodam|imdb|cekkuota|cekpulsa/i],
+    ]
+    const FOLDER_TAGS = {
+      game:'game', rpg:'rpg', ai:'ai', 'ai-image':'ai', download:'download',
+      downloads:'download', downloader:'download', sticker:'sticker',
+      group:'group', owner:'owner', panel:'owner', premium:'owner',
+      tools:'tools', tool:'tools', maker:'tools', canvas:'tools',
+      anime:'anime', fun:'fun', info:'info', primbon:'primbon',
+      islami:'islami', islamic:'islami', religi:'islami', nsfw:'nsfw',
+      ephoto:'tools', search:'tools', stalker:'group', store:'group',
+      music:'fun', random:'fun', quotes:'info', tts:'tools',
+      economy:'rpg', cecan:'fun', asupan:'fun', cewerandom:'fun',
+    }
+
+    function deriveTag(cmd, info) {
+      // Registry lama/objek tetap didukung kalau suatu hari berubah bentuk.
+      if (info && typeof info === 'object' && !Array.isArray(info)) {
+        const t = (Array.isArray(info.tags) ? info.tags[0] : info.tags) || info.category
+        if (t) return String(t)
+      }
+      const p = String(info || '').replace(/\\/g, '/')
+      let folder = ''
+      const vx = p.match(/(?:^|\/)vx_([^/]+)\.js$/i)
+      if (vx) {
+        // vx_<engine>_plugins_<folder>_<file>.js → ambil folder setelah "plugins"
+        const parts = vx[1].split('_')
+        const i = parts.indexOf('plugins')
+        folder = (i >= 0 ? parts[i + 1] : parts[1]) || ''
+        if (!folder) return 'general'
+      } else {
+        const m = p.match(/(?:^|\/)([^/]+)\/[^/]+\.js$/i)
+        folder = m ? m[1] : ''
+        if (!folder || folder === 'cmd' || folder === 'fitur') {
+          for (const [tag, re] of KNOWN_TAGS) {
+            if (re.test(cmd)) return tag
+          }
+          return 'general'
+        }
+      }
+      const lower = folder.toLowerCase()
+      return FOLDER_TAGS[lower.replace(/s$/, '')] || FOLDER_TAGS[lower] || lower
+    }
+
+    const PER_TAG = 30
     let categoryList = ''
     try {
       const tagMap = {}
       for (const [cmd, info] of Object.entries(regData)) {
-        const tag = info?.tags?.[0] || info?.category || 'general'
+        const tag = deriveTag(cmd, info)
         if (!tagMap[tag]) tagMap[tag] = []
         tagMap[tag].push(cmd)
       }
@@ -180,13 +237,26 @@ module.exports = {
       for (const [tag, cmds] of Object.entries(tagMap)) {
         const em = tagEmojis[tag] || '📌'
         categoryList += `╭─☰ ${em} ${toSmallCaps(tag).toUpperCase()}\n`
-        cmds.slice(0, 20).forEach(cmd => { categoryList += `> ${prefix}${cmd}\n` })
-        if (cmds.length > 20) categoryList += `> ... dan ${cmds.length - 20} lainnya\n`
+        cmds.slice(0, PER_TAG).forEach(cmd => { categoryList += `> ${prefix}${cmd}\n` })
+        if (cmds.length > PER_TAG) categoryList += `> ... dan ${cmds.length - PER_TAG} lainnya\n`
         categoryList += `╰─⬣\n\n`
       }
     } catch {
       categoryList = `╭─☰ 🏠 NAVIGASI\n> ${prefix}allmenu → Lihat semua fitur\n╰─⬣\n`
     }
+
+    // ── Section plugin baru vanXone (ringkas, tetap gaya Alya) ─────────────
+    try {
+      const vxTotal = vxMenu.total()
+      if (vxTotal > 0) {
+        categoryList += `\n╭─☰ 🆕 ɴᴇᴡ ᴠᴀɴxᴏɴᴇ\n`
+        vxMenu.flatten(5).forEach(v => {
+          categoryList += `> ${prefix}${v.cmd} — ${v.desc}\n`
+        })
+        categoryList += `> ${prefix}vxmenu → daftar plugin baru (${vxTotal.toLocaleString('id-ID')} command)\n`
+        categoryList += `╰─⬣\n\n`
+      }
+    } catch { /* helper bermasalah → section dilewati, menu tetap tampil */ }
 
     // ── Body teks menu (bagian sambutan baru — tsundere Alya) ──────────────
     const teks =

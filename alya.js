@@ -7364,9 +7364,7 @@ if (isCmd && ['switch', 'switchcase', 'switchplugin', 'switchmode'].includes(com
   await reply(
     `✅ *Mode command berhasil diubah!*\n\n` +
     `Mode aktif sekarang: ${_label}\n\n` +
-    (_targetMode === 'case'
-      ? `_Semua command akan dijalankan lewat Alya.js (switch/case gaya V13). Kalau ada command yang error, bot akan tetap hidup dan hanya command itu yang gagal._`
-      : `_Semua command kembali dijalankan lewat plugins/cmd_registry.json seperti biasa._`)
+    `_Mode tersimpan sebagai ${_targetMode.toUpperCase()}. Daftar command sekarang SAMA di kedua mode: plugin tetap dipakai bila tersedia, case Alya jadi fallback untuk command yang hanya punya case._`
   );
   return;
 }
@@ -7398,12 +7396,24 @@ if (isCmd && command === 'debugdiag') {
   return;
 }
 // ─────────────────────────────────────────────────────────────────────────────
-if (isCmd && _getCmdMode() === 'case' && global._alyaCaseHandler) {
-  // ── MODE CASE (V13-style) ──────────────────────────────────────────────
-  await global._alyaCaseHandler(alya, m, ctx);
+// ─────────────────────────────────────────────────────────────────────────────
+// MODE CASE ↔ PLUGIN SALING MENDUPLIKAT
+//   • Command yang punya entry di cmd_registry.json → selalu dijalankan lewat
+//     plugin, baik saat mode CASE maupun PLUGIN. Isinya sama persis.
+//   • Command yang hanya punya case di Alya.js → dijalankan lewat case handler,
+//     juga saat mode PLUGIN. Jadi tidak ada command yang hilang di salah satu mode.
+// Mode tetap tersimpan (kompatibel .switch/.switchcase/.switchplugin) tetapi tidak
+// lagi membedakan daftar perintah yang tersedia.
+// ─────────────────────────────────────────────────────────────────────────────
+if (isCmd && !_pluginPath && global._alyaCaseHandler) {
+  try {
+    await global._alyaCaseHandler(alya, m, ctx);
+  } catch (e) {
+    console.error('[Alya Case Handler Error]', command, '-', e?.message || e);
+  }
   return;
 }
-// ── MODE PLUGIN (default) ────────────────────────────────────────────────
+// ── MODE PLUGIN / plugin-first (berlaku di kedua mode) ────────────────────
 if (_pluginPath) {
   // Load plugin (cached)
   if (!global._cmdPluginCache[_pluginPath]) {

@@ -1,39 +1,4 @@
 {
- "10gb": {
-  "rel": "engine/lumen/plugins/owner/cpanel.js",
-  "engine": "lumen",
-  "tags": [
-   "panel"
-  ]
- },
- "1917style": {
-  "rel": "engine/zenith/plugins/ephoto/ephoto.js",
-  "engine": "zenith",
-  "tags": [
-   "ephoto"
-  ]
- },
- "1gb": {
-  "rel": "engine/lumen/plugins/owner/cpanel.js",
-  "engine": "lumen",
-  "tags": [
-   "panel"
-  ]
- },
- "2gb": {
-  "rel": "engine/lumen/plugins/owner/cpanel.js",
-  "engine": "lumen",
-  "tags": [
-   "panel"
-  ]
- },
- "3gb": {
-  "rel": "engine/lumen/plugins/owner/cpanel.js",
-  "engine": "lumen",
-  "tags": [
-   "panel"
-  ]
- },
  "3panel": {
   "rel": "engine/zenith/plugins/canvas/meme3.js",
   "engine": "zenith",
@@ -41,53 +6,11 @@
    "canvas"
   ]
  },
- "4gb": {
-  "rel": "engine/lumen/plugins/owner/cpanel.js",
-  "engine": "lumen",
-  "tags": [
-   "panel"
-  ]
- },
- "5gb": {
-  "rel": "engine/lumen/plugins/owner/cpanel.js",
-  "engine": "lumen",
-  "tags": [
-   "panel"
-  ]
- },
- "6gb": {
-  "rel": "engine/lumen/plugins/owner/cpanel.js",
-  "engine": "lumen",
-  "tags": [
-   "panel"
-  ]
- },
- "7gb": {
-  "rel": "engine/lumen/plugins/owner/cpanel.js",
-  "engine": "lumen",
-  "tags": [
-   "panel"
-  ]
- },
- "8gb": {
-  "rel": "engine/lumen/plugins/owner/cpanel.js",
-  "engine": "lumen",
-  "tags": [
-   "panel"
-  ]
- },
  "8upload": {
   "rel": "engine/lumen/plugins/tools/tools-8upload.js",
   "engine": "lumen",
   "tags": [
    "tool"
-  ]
- },
- "9gb": {
-  "rel": "engine/lumen/plugins/owner/cpanel.js",
-  "engine": "lumen",
-  "tags": [
-   "panel"
   ]
  },
  "aai": {
@@ -158,13 +81,6 @@
   "engine": "nimbus",
   "tags": [
    "search"
-  ]
- },
- "advancedglow": {
-  "rel": "engine/zenith/plugins/ephoto/ephoto.js",
-  "engine": "zenith",
-  "tags": [
-   "ephoto"
   ]
  },
  "afinitas": {
@@ -258,14 +174,6 @@
    "tools"
   ]
  },
- "aiedit": {
-  "rel": "engine/pulse/plugins/ai-image/aiedit.js",
-  "engine": "pulse",
-  "tags": [
-   "maker",
-   "ai"
-  ]
- },
  "aienhancer": {
   "rel": "engine/nimbus/plugins/tools/hd2.js",
   "engine": "nimbus",
@@ -357,13 +265,6 @@
    "ai"
   ]
  },
- "aio": {
-  "rel": "engine/lumen/plugins/downloader/down-aio.js",
-  "engine": "lumen",
-  "tags": [
-   "downloader"
-  ]
- },
  "aipaimon": {
   "rel": "engine/lumen/plugins/ai/aipaimon.js",
   "engine": "lumen",
@@ -434,25 +335,11 @@
    "downloader"
   ]
  },
- "alightmotionprem": {
-  "rel": "engine/lumen/plugins/premium/am-prem2.js",
-  "engine": "lumen",
-  "tags": [
-   "premium"
-  ]
- },
  "alive": {
   "rel": "engine/lumen/plugins/info/info-runtime.js",
   "engine": "lumen",
   "tags": [
    "info"
-  ]
- },
- "alkitab": {
-  "rel": "engine/zenith/plugins/religi/alkitab.js",
-  "engine": "zenith",
-  "tags": [
-   "religi"
   ]
  },
  "alqanime": {
@@ -519,13 +406,6 @@
    "ephoto"
   ]
  },
- "amprem2": {
-  "rel": "engine/lumen/plugins/premium/am-prem2.js",
-  "engine": "lumen",
-  "tags": [
-   "premium"
-  ]
- },
  "ampremverify2": {
   "rel": "engine/lumen/plugins/premium/am-prem2.js",
   "engine": "lumen",
@@ -538,20 +418,6 @@
   "engine": "lumen",
   "tags": [
    "premium"
-  ]
- },
- "an1": {
-  "rel": "engine/nimbus/plugins/search/android1.js",
-  "engine": "nimbus",
-  "tags": [
-   "search"
-  ]
- },
- "an1dl": {
-  "rel": "engine/nimbus/plugins/search/android1-get.js",
-  "engine": "nimbus",
-  "tags": [
-   "search"
   ]
  },
  "an1get": {
@@ -680,13 +546,6 @@
    "anime"
   ]
  },
- "animedl": {
-  "rel": "engine/zenith/plugins/anime/animedl.js",
-  "engine": "zenith",
-  "tags": [
-   "anime"
-  ]
- },
  "animedownload": {
   "rel": "engine/zenith/plugins/anime/animedl.js",
   "engine": "zenith",
@@ -755,13 +614,6 @@
   "engine": "zenith",
   "tags": [
    "anime"
-  ]
- },
- "animeneko": {
-  "rel": "engine/lumen/plugins/image/neko.js",
-  "engine": "lumen",
-  "tags": [
-   "image"
   ]
  },
  "animenote": {
@@ -864,20 +716,6 @@
  },
  "animetrailer": {
   "rel": "engine/zenith/plugins/anime/animetrailer.js",
-  "engine": "zenith",
-  "tags": [
-   "anime"
-  ]
- },
- "animewall": {
-  "rel": "engine/zenith/plugins/anime/animewall.js",
-  "engine": "zenith",
-  "tags": [
-   "anime"
-  ]
- },
- "animewallpaper": {
-  "rel": "engine/zenith/plugins/anime/animewall.js",
   "engine": "zenith",
   "tags": [
    "anime"
@@ -995,13 +833,6 @@
    "search"
   ]
  },
- "applemaps": {
-  "rel": "engine/zenith/plugins/search/applemaps.js",
-  "engine": "zenith",
-  "tags": [
-   "search"
-  ]
- },
  "applemusic": {
   "rel": "engine/nimbus/plugins/canvas/applemusic.js",
   "engine": "nimbus",
@@ -1051,20 +882,6 @@
    "ai"
   ]
  },
- "artimimpi": {
-  "rel": "engine/nimbus/plugins/primbon/tafsirmimpi.js",
-  "engine": "nimbus",
-  "tags": [
-   "primbon"
-  ]
- },
- "artinama": {
-  "rel": "engine/nimbus/plugins/primbon/artinama.js",
-  "engine": "nimbus",
-  "tags": [
-   "primbon"
-  ]
- },
  "artinama2": {
   "rel": "engine/zenith/plugins/fun/artinama2.js",
   "engine": "zenith",
@@ -1091,20 +908,6 @@
   "engine": "lumen",
   "tags": [
    "islamic"
-  ]
- },
- "asmaulhusna": {
-  "rel": "engine/nimbus/plugins/religi/islami.js",
-  "engine": "nimbus",
-  "tags": [
-   "religi"
-  ]
- },
- "ass": {
-  "rel": "engine/orbit/plugins/nsfw/nsfw.js",
-  "engine": "orbit",
-  "tags": [
-   "nsfw"
   ]
  },
  "asupantiktok": {
@@ -1152,13 +955,6 @@
  "audioquran": {
   "rel": "engine/nimbus/plugins/islamic/murrotal.js",
   "engine": "nimbus",
-  "tags": [
-   "islamic"
-  ]
- },
- "audiosurah": {
-  "rel": "engine/lumen/plugins/islamic/audiosurah.js",
-  "engine": "lumen",
   "tags": [
    "islamic"
   ]
@@ -1233,13 +1029,6 @@
    "stalker"
   ]
  },
- "ayatkursi": {
-  "rel": "engine/lumen/plugins/islamic/ayatkursi.js",
-  "engine": "lumen",
-  "tags": [
-   "islamic"
-  ]
- },
  "ba": {
   "rel": "engine/nimbus/plugins/canvas/balogo.js",
   "engine": "nimbus",
@@ -1252,13 +1041,6 @@
   "engine": "lumen",
   "tags": [
    "image"
-  ]
- },
- "bacaansholat": {
-  "rel": "engine/lumen/plugins/islamic/bacaansholat.js",
-  "engine": "lumen",
-  "tags": [
-   "islamic"
   ]
  },
  "bacaansolat": {
@@ -1373,13 +1155,6 @@
    "tools"
   ]
  },
- "bankcek": {
-  "rel": "engine/zenith/plugins/rpg/bankcek.js",
-  "engine": "zenith",
-  "tags": [
-   "rpg"
-  ]
- },
  "barandom": {
   "rel": "engine/nimbus/plugins/random/barandom.js",
   "engine": "nimbus",
@@ -1427,13 +1202,6 @@
   "engine": "zenith",
   "tags": [
    "maker"
-  ]
- },
- "bdsm": {
-  "rel": "engine/orbit/plugins/nsfw/nsfw.js",
-  "engine": "orbit",
-  "tags": [
-   "nsfw"
   ]
  },
  "benaratausalah": {
@@ -1541,13 +1309,6 @@
    "search"
   ]
  },
- "bingimg": {
-  "rel": "engine/nimbus/plugins/search/bingimage.js",
-  "engine": "nimbus",
-  "tags": [
-   "search"
-  ]
- },
  "bingkai": {
   "rel": "engine/zenith/plugins/maker/hangingpolaroid.js",
   "engine": "zenith",
@@ -1562,32 +1323,11 @@
    "tools"
   ]
  },
- "blackpinklogo": {
-  "rel": "engine/zenith/plugins/ephoto/ephoto.js",
-  "engine": "zenith",
-  "tags": [
-   "ephoto"
-  ]
- },
- "blackpinkstyle": {
-  "rel": "engine/zenith/plugins/ephoto/ephoto.js",
-  "engine": "zenith",
-  "tags": [
-   "ephoto"
-  ]
- },
  "blibli": {
   "rel": "engine/lumen/plugins/downloader/downloader-blibili.js",
   "engine": "lumen",
   "tags": [
    "downloader"
-  ]
- },
- "blowjob": {
-  "rel": "engine/orbit/plugins/nsfw/nsfw.js",
-  "engine": "orbit",
-  "tags": [
-   "nsfw"
   ]
  },
  "blue-archive": {
@@ -1752,13 +1492,6 @@
    "search"
   ]
  },
- "brat": {
-  "rel": "engine/nimbus/plugins/sticker/brat.js",
-  "engine": "nimbus",
-  "tags": [
-   "sticker"
-  ]
- },
  "bratai": {
   "rel": "engine/aurora/plugins/sticker/bratblueai.js",
   "engine": "aurora",
@@ -1806,13 +1539,6 @@
   "engine": "lumen",
   "tags": [
    "maker"
-  ]
- },
- "bratbahlil": {
-  "rel": "engine/nimbus/plugins/sticker/bratextra.js",
-  "engine": "nimbus",
-  "tags": [
-   "sticker"
   ]
  },
  "bratblue": {
@@ -1936,13 +1662,6 @@
  },
  "brathd": {
   "rel": "engine/nimbus/plugins/sticker/bratextra.js",
-  "engine": "nimbus",
-  "tags": [
-   "sticker"
-  ]
- },
- "bratimg": {
-  "rel": "engine/nimbus/plugins/sticker/brat.js",
   "engine": "nimbus",
   "tags": [
    "sticker"
@@ -2123,25 +1842,11 @@
    "quotes"
   ]
  },
- "buildml": {
-  "rel": "engine/zenith/plugins/info/buildml.js",
-  "engine": "zenith",
-  "tags": [
-   "info"
-  ]
- },
  "bumiku": {
   "rel": "engine/zenith/plugins/info/landsat.js",
   "engine": "zenith",
   "tags": [
    "info"
-  ]
- },
- "bypass": {
-  "rel": "engine/pulse/plugins/bypass/bypass.js",
-  "engine": "pulse",
-  "tags": [
-   "bypass"
   ]
  },
  "bypass2": {
@@ -2170,27 +1875,6 @@
   "engine": "pulse",
   "tags": [
    "tools"
-  ]
- },
- "cai": {
-  "rel": "engine/nimbus/plugins/ai/characterai.js",
-  "engine": "nimbus",
-  "tags": [
-   "ai"
-  ]
- },
- "caklontong": {
-  "rel": "engine/lumen/plugins/game/game-caklontong.js",
-  "engine": "lumen",
-  "tags": [
-   "game"
-  ]
- },
- "call": {
-  "rel": "engine/nimbus/plugins/search/playcall.js",
-  "engine": "nimbus",
-  "tags": [
-   "search"
   ]
  },
  "callingcode": {
@@ -2226,20 +1910,6 @@
   "engine": "zenith",
   "tags": [
    "maker"
-  ]
- },
- "capcut": {
-  "rel": "engine/nimbus/plugins/download/capcutdl.js",
-  "engine": "nimbus",
-  "tags": [
-   "download"
-  ]
- },
- "capcutdl": {
-  "rel": "engine/nimbus/plugins/download/capcutdl.js",
-  "engine": "nimbus",
-  "tags": [
-   "download"
   ]
  },
  "caramasak": {
@@ -2354,13 +2024,6 @@
    "search"
   ]
  },
- "carimusik": {
-  "rel": "engine/zenith/plugins/search/carimusik.js",
-  "engine": "zenith",
-  "tags": [
-   "search"
-  ]
- },
  "caripixiv": {
   "rel": "engine/nimbus/plugins/search/pixiv.js",
   "engine": "nimbus",
@@ -2373,13 +2036,6 @@
   "engine": "aurora",
   "tags": [
    "search"
-  ]
- },
- "cartoonstyle": {
-  "rel": "engine/zenith/plugins/ephoto/ephoto.js",
-  "engine": "zenith",
-  "tags": [
-   "ephoto"
   ]
  },
  "catatanig": {
@@ -2403,32 +2059,11 @@
    "tools"
   ]
  },
- "category": {
-  "rel": "engine/aurora/plugins/main/menuhsn.js",
-  "engine": "aurora",
-  "tags": [
-   "main"
-  ]
- },
- "cc": {
-  "rel": "engine/nimbus/plugins/download/capcutdl.js",
-  "engine": "nimbus",
-  "tags": [
-   "download"
-  ]
- },
  "ccdl": {
   "rel": "engine/nimbus/plugins/download/capcutdl.js",
   "engine": "nimbus",
   "tags": [
    "download"
-  ]
- },
- "ccgen": {
-  "rel": "engine/zenith/plugins/tools/gencard.js",
-  "engine": "zenith",
-  "tags": [
-   "tools"
   ]
  },
  "cecanchina": {
@@ -2522,20 +2157,6 @@
    "tools"
   ]
  },
- "cekidch": {
-  "rel": "engine/nimbus/plugins/tools/cekidch.js",
-  "engine": "nimbus",
-  "tags": [
-   "tools"
-  ]
- },
- "cekidgc": {
-  "rel": "engine/nimbus/plugins/group/cekidgc.js",
-  "engine": "nimbus",
-  "tags": [
-   "group"
-  ]
- },
  "cekjodoh": {
   "rel": "engine/nimbus/plugins/primbon/ramalanjodoh.js",
   "engine": "nimbus",
@@ -2569,13 +2190,6 @@
   "engine": "nimbus",
   "tags": [
    "stalker"
-  ]
- },
- "ceknik": {
-  "rel": "engine/nimbus/plugins/tools/nikparser.js",
-  "engine": "nimbus",
-  "tags": [
-   "tools"
   ]
  },
  "ceknomor": {
@@ -2788,13 +2402,6 @@
    "cewerandom"
   ]
  },
- "cf": {
-  "rel": "engine/nimbus/plugins/download/cocofundl.js",
-  "engine": "nimbus",
-  "tags": [
-   "download"
-  ]
- },
  "cfdl": {
   "rel": "engine/nimbus/plugins/download/cocofundl.js",
   "engine": "nimbus",
@@ -2877,13 +2484,6 @@
   "engine": "zenith",
   "tags": [
    "ai"
-  ]
- },
- "check": {
-  "rel": "engine/zenith/plugins/tools/cekhost.js",
-  "engine": "zenith",
-  "tags": [
-   "tools"
   ]
  },
  "checkai": {
@@ -3019,13 +2619,6 @@
    "download"
   ]
  },
- "cocoknama": {
-  "rel": "engine/nimbus/plugins/primbon/kecocokannamapasangan.js",
-  "engine": "nimbus",
-  "tags": [
-   "primbon"
-  ]
- },
  "cocstalk": {
   "rel": "engine/aurora/plugins/stalker/stalkcoc.js",
   "engine": "aurora",
@@ -3131,13 +2724,6 @@
    "panel"
   ]
  },
- "createadmin": {
-  "rel": "engine/lumen/plugins/owner/cpanel.js",
-  "engine": "lumen",
-  "tags": [
-   "panel"
-  ]
- },
  "createch": {
   "rel": "engine/zenith/plugins/owner/createchannel.js",
   "engine": "zenith",
@@ -3150,13 +2736,6 @@
   "engine": "zenith",
   "tags": [
    "owner"
-  ]
- },
- "createimg": {
-  "rel": "engine/lumen/plugins/ai/ai-createimg.js",
-  "engine": "lumen",
-  "tags": [
-   "ai"
   ]
  },
  "credits": {
@@ -3173,32 +2752,11 @@
    "tools"
   ]
  },
- "cuaca": {
-  "rel": "engine/lumen/plugins/info/cuaca.js",
-  "engine": "lumen",
-  "tags": [
-   "info"
-  ]
- },
  "cuacaall": {
   "rel": "engine/lumen/plugins/info/cuaca.js",
   "engine": "lumen",
   "tags": [
    "info"
-  ]
- },
- "cum": {
-  "rel": "engine/orbit/plugins/nsfw/nsfw.js",
-  "engine": "orbit",
-  "tags": [
-   "nsfw"
-  ]
- },
- "curl": {
-  "rel": "engine/nimbus/plugins/owner/get.js",
-  "engine": "nimbus",
-  "tags": [
-   "owner"
   ]
  },
  "cyberspider": {
@@ -3313,13 +2871,6 @@
    "owner"
   ]
  },
- "deletingtext": {
-  "rel": "engine/zenith/plugins/ephoto/ephoto.js",
-  "engine": "zenith",
-  "tags": [
-   "ephoto"
-  ]
- },
  "delpanel": {
   "rel": "engine/lumen/plugins/owner/cpanel.js",
   "engine": "lumen",
@@ -3339,13 +2890,6 @@
   "engine": "aurora",
   "tags": [
    "owner"
-  ]
- },
- "denoise": {
-  "rel": "engine/aurora/plugins/tools/audionoicereducer.js",
-  "engine": "aurora",
-  "tags": [
-   "tools"
   ]
  },
  "deploy": {
@@ -3656,42 +3200,6 @@
    "ai"
   ]
  },
- "editimage": {
-  "rel": "engine/lumen/plugins/ai/ai-nanobana.js",
-  "engine": "lumen",
-  "tags": [
-   "ai"
-  ]
- },
- "editimage2": {
-  "rel": "engine/aurora/plugins/ai/editimage2.js",
-  "engine": "aurora",
-  "tags": [
-   "ai"
-  ]
- },
- "editimg": {
-  "rel": "engine/lumen/plugins/ai/ai-editimg.js",
-  "engine": "lumen",
-  "tags": [
-   "ai",
-   "tools"
-  ]
- },
- "editimg2": {
-  "rel": "engine/aurora/plugins/ai/editimage2.js",
-  "engine": "aurora",
-  "tags": [
-   "ai"
-  ]
- },
- "editinfo": {
-  "rel": "engine/zenith/plugins/store/editlist.js",
-  "engine": "zenith",
-  "tags": [
-   "store"
-  ]
- },
  "editlist": {
   "rel": "engine/zenith/plugins/store/editlist.js",
   "engine": "zenith",
@@ -3701,20 +3209,6 @@
  },
  "efekstarboy": {
   "rel": "engine/nimbus/plugins/canvas/starboy.js",
-  "engine": "nimbus",
-  "tags": [
-   "canvas"
-  ]
- },
- "effectclouds": {
-  "rel": "engine/zenith/plugins/ephoto/ephoto.js",
-  "engine": "zenith",
-  "tags": [
-   "ephoto"
-  ]
- },
- "ektp": {
-  "rel": "engine/nimbus/plugins/canvas/ektp.js",
   "engine": "nimbus",
   "tags": [
    "canvas"
@@ -3769,13 +3263,6 @@
    "tools"
   ]
  },
- "emojimix": {
-  "rel": "engine/nimbus/plugins/sticker/emojimix.js",
-  "engine": "nimbus",
-  "tags": [
-   "sticker"
-  ]
- },
  "emojisticker": {
   "rel": "engine/nimbus/plugins/tools/emojitoanimasi.js",
   "engine": "nimbus",
@@ -3802,13 +3289,6 @@
   "engine": "nimbus",
   "tags": [
    "ai"
-  ]
- },
- "enhance": {
-  "rel": "engine/nimbus/plugins/tools/hd.js",
-  "engine": "nimbus",
-  "tags": [
-   "tools"
   ]
  },
  "enhance2": {
@@ -3895,13 +3375,6 @@
    "canvas"
   ]
  },
- "faceswap": {
-  "rel": "engine/aurora/plugins/ai/faceswap.js",
-  "engine": "aurora",
-  "tags": [
-   "ai"
-  ]
- },
  "fag": {
   "rel": "engine/zenith/plugins/tools/fagsocial.js",
   "engine": "zenith",
@@ -3944,13 +3417,6 @@
    "canvas"
   ]
  },
- "fakebankjago": {
-  "rel": "engine/nimbus/plugins/canvas/fakebankjago.js",
-  "engine": "nimbus",
-  "tags": [
-   "canvas"
-  ]
- },
  "fakebca": {
   "rel": "engine/zenith/plugins/maker/fakebca.js",
   "engine": "zenith",
@@ -3986,13 +3452,6 @@
    "maker"
   ]
  },
- "fakecall": {
-  "rel": "engine/zenith/plugins/canvas/fakecall.js",
-  "engine": "zenith",
-  "tags": [
-   "canvas"
-  ]
- },
  "fakecall-android": {
   "rel": "engine/zenith/plugins/canvas/fakecall.js",
   "engine": "zenith",
@@ -4012,13 +3471,6 @@
   "engine": "lumen",
   "tags": [
    "maker"
-  ]
- },
- "fakecallwa": {
-  "rel": "engine/zenith/plugins/canvas/fakecall.js",
-  "engine": "zenith",
-  "tags": [
-   "canvas"
   ]
  },
  "fakecam": {
@@ -4091,20 +3543,6 @@
    "maker"
   ]
  },
- "fakedana": {
-  "rel": "engine/lumen/plugins/maker/maker-fakedana.js",
-  "engine": "lumen",
-  "tags": [
-   "maker"
-  ]
- },
- "fakedev": {
-  "rel": "engine/nimbus/plugins/canvas/fakedev.js",
-  "engine": "nimbus",
-  "tags": [
-   "canvas"
-  ]
- },
  "fakedev2": {
   "rel": "engine/nimbus/plugins/canvas/fakedev2.js",
   "engine": "nimbus",
@@ -4143,13 +3581,6 @@
  "fakedj": {
   "rel": "engine/zenith/plugins/canvas/fakedj.js",
   "engine": "zenith",
-  "tags": [
-   "canvas"
-  ]
- },
- "fakeff": {
-  "rel": "engine/nimbus/plugins/canvas/fakeff.js",
-  "engine": "nimbus",
   "tags": [
    "canvas"
   ]
@@ -4294,25 +3725,11 @@
    "canvas"
   ]
  },
- "fakeml": {
-  "rel": "engine/nimbus/plugins/canvas/fakeml.js",
-  "engine": "nimbus",
-  "tags": [
-   "canvas"
-  ]
- },
  "fakeml2": {
   "rel": "engine/zenith/plugins/maker/fakeml2.js",
   "engine": "zenith",
   "tags": [
    "maker"
-  ]
- },
- "fakengl": {
-  "rel": "engine/zenith/plugins/canvas/fakengl.js",
-  "engine": "zenith",
-  "tags": [
-   "canvas"
   ]
  },
  "fakenikah": {
@@ -4324,13 +3741,6 @@
  },
  "fakenote": {
   "rel": "engine/zenith/plugins/maker/fakenote.js",
-  "engine": "zenith",
-  "tags": [
-   "maker"
-  ]
- },
- "fakenotif": {
-  "rel": "engine/zenith/plugins/maker/fakenotifwa.js",
   "engine": "zenith",
   "tags": [
    "maker"
@@ -4392,13 +3802,6 @@
    "maker"
   ]
  },
- "fakeqwa": {
-  "rel": "engine/nimbus/plugins/tools/qwa.js",
-  "engine": "nimbus",
-  "tags": [
-   "tools"
-  ]
- },
  "fakesertifikat": {
   "rel": "engine/zenith/plugins/canvas/fakesertifikat.js",
   "engine": "zenith",
@@ -4409,13 +3812,6 @@
  "fakesp": {
   "rel": "engine/zenith/plugins/canvas/fakesp.js",
   "engine": "zenith",
-  "tags": [
-   "canvas"
-  ]
- },
- "fakestory": {
-  "rel": "engine/nimbus/plugins/canvas/fakestory.js",
-  "engine": "nimbus",
   "tags": [
    "canvas"
   ]
@@ -4546,13 +3942,6 @@
    "canvas"
   ]
  },
- "fakewafat": {
-  "rel": "engine/lumen/plugins/maker/maker-fakewafat.js",
-  "engine": "lumen",
-  "tags": [
-   "maker"
-  ]
- },
  "fakewaprofile": {
   "rel": "engine/zenith/plugins/fun/wa-canvas.js",
   "engine": "zenith",
@@ -4581,21 +3970,7 @@
    "maker"
   ]
  },
- "fdroid": {
-  "rel": "engine/zenith/plugins/internet/fdroid.js",
-  "engine": "zenith",
-  "tags": [
-   "internet"
-  ]
- },
  "fdroidapp": {
-  "rel": "engine/zenith/plugins/internet/fdroid.js",
-  "engine": "zenith",
-  "tags": [
-   "internet"
-  ]
- },
- "fdroiddl": {
   "rel": "engine/zenith/plugins/internet/fdroid.js",
   "engine": "zenith",
   "tags": [
@@ -4651,13 +4026,6 @@
    "tools"
   ]
  },
- "ffstalk": {
-  "rel": "engine/nimbus/plugins/stalker/ffstalk.js",
-  "engine": "nimbus",
-  "tags": [
-   "stalker"
-  ]
- },
  "fgc": {
   "rel": "engine/zenith/plugins/maker/fakegroup.js",
   "engine": "zenith",
@@ -4705,13 +4073,6 @@
   "engine": "zenith",
   "tags": [
    "tools"
-  ]
- },
- "film": {
-  "rel": "engine/nimbus/plugins/search/film.js",
-  "engine": "nimbus",
-  "tags": [
-   "search"
   ]
  },
  "filmdetail": {
@@ -4791,20 +4152,6 @@
    "maker"
   ]
  },
- "flag3dtext": {
-  "rel": "engine/zenith/plugins/ephoto/ephoto.js",
-  "engine": "zenith",
-  "tags": [
-   "ephoto"
-  ]
- },
- "flagtext": {
-  "rel": "engine/zenith/plugins/ephoto/ephoto.js",
-  "engine": "zenith",
-  "tags": [
-   "ephoto"
-  ]
- },
  "flux": {
   "rel": "engine/lumen/plugins/ai/ai-flux.js",
   "engine": "lumen",
@@ -4875,13 +4222,6 @@
    "maker"
   ]
  },
- "freecreate": {
-  "rel": "engine/zenith/plugins/ephoto/ephoto.js",
-  "engine": "zenith",
-  "tags": [
-   "ephoto"
-  ]
- },
  "freefireguest": {
   "rel": "engine/aurora/plugins/tools/ffguest.js",
   "engine": "aurora",
@@ -4908,13 +4248,6 @@
   "engine": "aurora",
   "tags": [
    "ai"
-  ]
- },
- "fstik": {
-  "rel": "engine/zenith/plugins/premium/fstik.js",
-  "engine": "zenith",
-  "tags": [
-   "premium"
   ]
  },
  "fstory": {
@@ -4973,25 +4306,11 @@
    "fun"
   ]
  },
- "funfacthidup": {
-  "rel": "engine/zenith/plugins/fun/lifefact.js",
-  "engine": "zenith",
-  "tags": [
-   "fun"
-  ]
- },
  "furina": {
   "rel": "engine/zenith/plugins/ai/furina.js",
   "engine": "zenith",
   "tags": [
    "ai"
-  ]
- },
- "gachahusbu": {
-  "rel": "engine/zenith/plugins/fun/gachahusbu.js",
-  "engine": "zenith",
-  "tags": [
-   "fun"
   ]
  },
  "gachaistri": {
@@ -5010,13 +4329,6 @@
  },
  "gachasuami": {
   "rel": "engine/zenith/plugins/fun/gachahusbu.js",
-  "engine": "zenith",
-  "tags": [
-   "fun"
-  ]
- },
- "gachawaifu": {
-  "rel": "engine/zenith/plugins/fun/gachawaifu.js",
   "engine": "zenith",
   "tags": [
    "fun"
@@ -5069,27 +4381,6 @@
   "engine": "lumen",
   "tags": [
    "quotes"
-  ]
- },
- "galaxystyle": {
-  "rel": "engine/zenith/plugins/ephoto/ephoto.js",
-  "engine": "zenith",
-  "tags": [
-   "ephoto"
-  ]
- },
- "galaxywallpaper": {
-  "rel": "engine/zenith/plugins/ephoto/ephoto.js",
-  "engine": "zenith",
-  "tags": [
-   "ephoto"
-  ]
- },
- "gangbang": {
-  "rel": "engine/orbit/plugins/nsfw/nsfw.js",
-  "engine": "orbit",
-  "tags": [
-   "nsfw"
   ]
  },
  "ganti-hsnai-allmenu.jpg": {
@@ -5533,13 +4824,6 @@
    "ai"
   ]
  },
- "gemini": {
-  "rel": "engine/lumen/plugins/ai/ai-gemini.js",
-  "engine": "lumen",
-  "tags": [
-   "ai"
-  ]
- },
  "genai-anime": {
   "rel": "engine/nimbus/plugins/ai/anime-gen.js",
   "engine": "nimbus",
@@ -5554,32 +4838,11 @@
    "tools"
   ]
  },
- "genimg": {
-  "rel": "engine/nimbus/plugins/ai/text2img2.js",
-  "engine": "nimbus",
-  "tags": [
-   "ai"
-  ]
- },
- "genshin": {
-  "rel": "engine/nimbus/plugins/stalker/genshinstalk.js",
-  "engine": "nimbus",
-  "tags": [
-   "stalker"
-  ]
- },
  "genshinprofile": {
   "rel": "engine/zenith/plugins/game/genshinprofile.js",
   "engine": "zenith",
   "tags": [
    "game"
-  ]
- },
- "genshinstalk": {
-  "rel": "engine/nimbus/plugins/stalker/genshinstalk.js",
-  "engine": "nimbus",
-  "tags": [
-   "stalker"
   ]
  },
  "genuser": {
@@ -5601,13 +4864,6 @@
   "engine": "aurora",
   "tags": [
    "ai"
-  ]
- },
- "get": {
-  "rel": "engine/nimbus/plugins/owner/get.js",
-  "engine": "nimbus",
-  "tags": [
-   "owner"
   ]
  },
  "getapkmod": {
@@ -5730,25 +4986,11 @@
    "stalker"
   ]
  },
- "gimage": {
-  "rel": "engine/zenith/plugins/downloads/gimage.js",
-  "engine": "zenith",
-  "tags": [
-   "downloads"
-  ]
- },
  "gislam": {
   "rel": "engine/nimbus/plugins/religi/islami.js",
   "engine": "nimbus",
   "tags": [
    "religi"
-  ]
- },
- "git": {
-  "rel": "engine/aurora/plugins/owner/github.js",
-  "engine": "aurora",
-  "tags": [
-   "owner"
   ]
  },
  "gita": {
@@ -5765,13 +5007,6 @@
    "ai"
   ]
  },
- "gitclone": {
-  "rel": "engine/nimbus/plugins/download/githubdl.js",
-  "engine": "nimbus",
-  "tags": [
-   "download"
-  ]
- },
  "gitdl": {
   "rel": "engine/nimbus/plugins/download/githubdl.js",
   "engine": "nimbus",
@@ -5779,25 +5014,11 @@
    "download"
   ]
  },
- "github": {
-  "rel": "engine/aurora/plugins/owner/github.js",
-  "engine": "aurora",
-  "tags": [
-   "owner"
-  ]
- },
  "githubdl": {
   "rel": "engine/nimbus/plugins/download/githubdl.js",
   "engine": "nimbus",
   "tags": [
    "download"
-  ]
- },
- "glitchtext": {
-  "rel": "engine/zenith/plugins/ephoto/ephoto.js",
-  "engine": "zenith",
-  "tags": [
-   "ephoto"
   ]
  },
  "glm": {
@@ -5826,13 +5047,6 @@
   "engine": "zenith",
   "tags": [
    "ai"
-  ]
- },
- "glowingtext": {
-  "rel": "engine/zenith/plugins/ephoto/ephoto.js",
-  "engine": "zenith",
-  "tags": [
-   "ephoto"
   ]
  },
  "gojo": {
@@ -5884,13 +5098,6 @@
    "premium"
   ]
  },
- "gpt4": {
-  "rel": "engine/nimbus/plugins/ai/gpt4o.js",
-  "engine": "nimbus",
-  "tags": [
-   "ai"
-  ]
- },
  "gpt4o": {
   "rel": "engine/nimbus/plugins/ai/gpt4o.js",
   "engine": "nimbus",
@@ -5917,13 +5124,6 @@
   "engine": "aurora",
   "tags": [
    "ai"
-  ]
- },
- "gradienttext": {
-  "rel": "engine/zenith/plugins/ephoto/ephoto.js",
-  "engine": "zenith",
-  "tags": [
-   "ephoto"
   ]
  },
  "grammarly": {
@@ -5966,13 +5166,6 @@
   "engine": "nimbus",
   "tags": [
    "group"
-  ]
- },
- "growagarden": {
-  "rel": "engine/nimbus/plugins/info/gag.js",
-  "engine": "nimbus",
-  "tags": [
-   "info"
   ]
  },
  "growagarden2": {
@@ -6038,13 +5231,6 @@
    "main"
   ]
  },
- "gura": {
-  "rel": "engine/nimbus/plugins/canvas/gura.js",
-  "engine": "nimbus",
-  "tags": [
-   "canvas"
-  ]
- },
  "guracanvas": {
   "rel": "engine/nimbus/plugins/canvas/gura.js",
   "engine": "nimbus",
@@ -6087,20 +5273,6 @@
    "info"
   ]
  },
- "hd": {
-  "rel": "engine/nimbus/plugins/tools/hd.js",
-  "engine": "nimbus",
-  "tags": [
-   "tools"
-  ]
- },
- "hd2": {
-  "rel": "engine/nimbus/plugins/tools/hd2.js",
-  "engine": "nimbus",
-  "tags": [
-   "tools"
-  ]
- },
  "hd3": {
   "rel": "engine/nimbus/plugins/tools/hd3.js",
   "engine": "nimbus",
@@ -6136,25 +5308,11 @@
    "quotes"
   ]
  },
- "hentai": {
-  "rel": "engine/orbit/plugins/nsfw/nsfw.js",
-  "engine": "orbit",
-  "tags": [
-   "nsfw"
-  ]
- },
  "hentairandom": {
   "rel": "engine/aurora/plugins/nsfw/randomhentai.js",
   "engine": "aurora",
   "tags": [
    "nsfw"
-  ]
- },
- "hero": {
-  "rel": "engine/zenith/plugins/random/superhero.js",
-  "engine": "zenith",
-  "tags": [
-   "random"
   ]
  },
  "heroml": {
@@ -6205,34 +5363,6 @@
   "engine": "nimbus",
   "tags": [
    "tools"
-  ]
- },
- "hololive": {
-  "rel": "engine/zenith/plugins/tts/holotts.js",
-  "engine": "zenith",
-  "tags": [
-   "tts"
-  ]
- },
- "hololivetts": {
-  "rel": "engine/zenith/plugins/tts/holotts.js",
-  "engine": "zenith",
-  "tags": [
-   "tts"
-  ]
- },
- "holotts": {
-  "rel": "engine/zenith/plugins/tts/holotts.js",
-  "engine": "zenith",
-  "tags": [
-   "tts"
-  ]
- },
- "hoshino": {
-  "rel": "engine/zenith/plugins/ai/hoshino.js",
-  "engine": "zenith",
-  "tags": [
-   "ai"
   ]
  },
  "hoshinoaivn": {
@@ -6340,13 +5470,6 @@
    "fun"
   ]
  },
- "hutao": {
-  "rel": "engine/zenith/plugins/ai/hutao.js",
-  "engine": "zenith",
-  "tags": [
-   "ai"
-  ]
- },
  "hutaoai": {
   "rel": "engine/zenith/plugins/ai/hutao.js",
   "engine": "zenith",
@@ -6368,20 +5491,6 @@
    "canvas"
   ]
  },
- "idch": {
-  "rel": "engine/nimbus/plugins/tools/cekidch.js",
-  "engine": "nimbus",
-  "tags": [
-   "tools"
-  ]
- },
- "idgc": {
-  "rel": "engine/nimbus/plugins/group/cekidgc.js",
-  "engine": "nimbus",
-  "tags": [
-   "group"
-  ]
- },
  "idgrup": {
   "rel": "engine/nimbus/plugins/group/cekidgc.js",
   "engine": "nimbus",
@@ -6397,13 +5506,6 @@
   ]
  },
  "igaudio": {
-  "rel": "engine/lumen/plugins/downloader/down-igmp3.js",
-  "engine": "lumen",
-  "tags": [
-   "downloader"
-  ]
- },
- "igmp3": {
   "rel": "engine/lumen/plugins/downloader/down-igmp3.js",
   "engine": "lumen",
   "tags": [
@@ -6564,13 +5666,6 @@
    "tools"
   ]
  },
- "imdb": {
-  "rel": "engine/zenith/plugins/search/imdb.js",
-  "engine": "zenith",
-  "tags": [
-   "search"
-  ]
- },
  "imdbinfo": {
   "rel": "engine/zenith/plugins/search/imdb.js",
   "engine": "zenith",
@@ -6620,13 +5715,6 @@
    "cewerandom"
   ]
  },
- "infobot": {
-  "rel": "engine/lumen/plugins/info/info-runtime.js",
-  "engine": "lumen",
-  "tags": [
-   "info"
-  ]
- },
  "infoch": {
   "rel": "engine/nimbus/plugins/tools/cekidch.js",
   "engine": "nimbus",
@@ -6667,34 +5755,6 @@
   "engine": "nimbus",
   "tags": [
    "info"
-  ]
- },
- "installtemabilling": {
-  "rel": "engine/zenith/plugins/panel/installtemabilling.js",
-  "engine": "zenith",
-  "tags": [
-   "panel"
-  ]
- },
- "installtemaenigma": {
-  "rel": "engine/zenith/plugins/panel/installtemaenigma.js",
-  "engine": "zenith",
-  "tags": [
-   "panel"
-  ]
- },
- "installtemanebula": {
-  "rel": "engine/zenith/plugins/panel/installtemanebula.js",
-  "engine": "zenith",
-  "tags": [
-   "panel"
-  ]
- },
- "installtemastellar": {
-  "rel": "engine/zenith/plugins/panel/installtemastellar.js",
-  "engine": "zenith",
-  "tags": [
-   "panel"
   ]
  },
  "installthemabilling": {
@@ -6796,13 +5856,6 @@
    "tools"
   ]
  },
- "iqc": {
-  "rel": "engine/nimbus/plugins/canvas/iqc.js",
-  "engine": "nimbus",
-  "tags": [
-   "canvas"
-  ]
- },
  "iqc-red": {
   "rel": "engine/orbit/plugins/canvas/iqcmerah.js",
   "engine": "orbit",
@@ -6887,13 +5940,6 @@
    "quotes"
   ]
  },
- "istriku": {
-  "rel": "engine/zenith/plugins/fun/gachawaifu.js",
-  "engine": "zenith",
-  "tags": [
-   "fun"
-  ]
- },
  "izen": {
   "rel": "engine/nimbus/plugins/tools/izen.js",
   "engine": "nimbus",
@@ -6906,13 +5952,6 @@
   "engine": "lumen",
   "tags": [
    "ai"
-  ]
- },
- "jadwalanime": {
-  "rel": "engine/zenith/plugins/anime/anischedule.js",
-  "engine": "zenith",
-  "tags": [
-   "anime"
   ]
  },
  "jadwalbola": {
@@ -6957,13 +5996,6 @@
    "cewerandom"
   ]
  },
- "japanese": {
-  "rel": "engine/nimbus/plugins/ai/tojapanese.js",
-  "engine": "nimbus",
-  "tags": [
-   "ai"
-  ]
- },
  "japanesestyle": {
   "rel": "engine/nimbus/plugins/ai/tojapanese.js",
   "engine": "nimbus",
@@ -6999,26 +6031,11 @@
    "cewerandom"
   ]
  },
- "jennie": {
-  "rel": "engine/lumen/plugins/cewerandom/jeni.js",
-  "engine": "lumen",
-  "tags": [
-   "cewerandom"
-  ]
- },
  "jepang": {
   "rel": "engine/lumen/plugins/cewerandom/japan.js",
   "engine": "lumen",
   "tags": [
    "cewerandom"
-  ]
- },
- "jkt48": {
-  "rel": "engine/lumen/plugins/info/JKT48.js",
-  "engine": "lumen",
-  "tags": [
-   "info",
-   "jkt48"
   ]
  },
  "jkt48stalk": {
@@ -7042,13 +6059,6 @@
    "canvas"
   ]
  },
- "jodoh": {
-  "rel": "engine/nimbus/plugins/primbon/ramalanjodoh.js",
-  "engine": "nimbus",
-  "tags": [
-   "primbon"
-  ]
- },
  "juarabadminton": {
   "rel": "engine/zenith/plugins/canvas/juarabadminton.js",
   "engine": "zenith",
@@ -7061,13 +6071,6 @@
   "engine": "nimbus",
   "tags": [
    "canvas"
-  ]
- },
- "justina": {
-  "rel": "engine/lumen/plugins/cewerandom/justinaxie.js",
-  "engine": "lumen",
-  "tags": [
-   "cewerandom"
   ]
  },
  "justinaxie": {
@@ -7103,13 +6106,6 @@
   "engine": "zenith",
   "tags": [
    "sticker"
-  ]
- },
- "karakter": {
-  "rel": "engine/zenith/plugins/anime/character.js",
-  "engine": "zenith",
-  "tags": [
-   "anime"
   ]
  },
  "karcisfake": {
@@ -7159,13 +6155,6 @@
   "engine": "zenith",
   "tags": [
    "maker"
-  ]
- },
- "kayes": {
-  "rel": "engine/pulse/plugins/asupan/kayes.js",
-  "engine": "pulse",
-  "tags": [
-   "asupan"
   ]
  },
  "kecocokannamapasangan": {
@@ -7236,13 +6225,6 @@
   "engine": "zenith",
   "tags": [
    "ai"
-  ]
- },
- "kisahnabi": {
-  "rel": "engine/lumen/plugins/islamic/kisahnabi.js",
-  "engine": "lumen",
-  "tags": [
-   "islamic"
   ]
  },
  "kita": {
@@ -7406,20 +6388,6 @@
    "economy"
   ]
  },
- "kurumi": {
-  "rel": "engine/lumen/plugins/ai/ai-kurumi.js",
-  "engine": "lumen",
-  "tags": [
-   "ai"
-  ]
- },
- "kusonime": {
-  "rel": "engine/zenith/plugins/anime/kusonime.js",
-  "engine": "zenith",
-  "tags": [
-   "anime"
-  ]
- },
  "lahelu": {
   "rel": "engine/nimbus/plugins/random/lahelu.js",
   "engine": "nimbus",
@@ -7467,20 +6435,6 @@
   "engine": "nimbus",
   "tags": [
    "info"
-  ]
- },
- "lifefact": {
-  "rel": "engine/zenith/plugins/fun/lifefact.js",
-  "engine": "zenith",
-  "tags": [
-   "fun"
-  ]
- },
- "lighteffects": {
-  "rel": "engine/zenith/plugins/ephoto/ephoto.js",
-  "engine": "zenith",
-  "tags": [
-   "ephoto"
   ]
  },
  "lihat-gacha": {
@@ -7532,25 +6486,11 @@
    "tools"
   ]
  },
- "lirik": {
-  "rel": "engine/nimbus/plugins/search/lyrics.js",
-  "engine": "nimbus",
-  "tags": [
-   "search"
-  ]
- },
  "liriklagu": {
   "rel": "engine/nimbus/plugins/search/lyrics.js",
   "engine": "nimbus",
   "tags": [
    "search"
-  ]
- },
- "listadmin": {
-  "rel": "engine/lumen/plugins/owner/cpanel.js",
-  "engine": "lumen",
-  "tags": [
-   "panel"
   ]
  },
  "listbypass": {
@@ -7602,13 +6542,6 @@
    "info"
   ]
  },
- "livefunfact": {
-  "rel": "engine/zenith/plugins/fun/lifefact.js",
-  "engine": "zenith",
-  "tags": [
-   "fun"
-  ]
- },
  "livescore": {
   "rel": "engine/nimbus/plugins/info/livescore.js",
   "engine": "nimbus",
@@ -7644,20 +6577,6 @@
    "ai"
   ]
  },
- "logomaker": {
-  "rel": "engine/zenith/plugins/ephoto/ephoto.js",
-  "engine": "zenith",
-  "tags": [
-   "ephoto"
-  ]
- },
- "loli": {
-  "rel": "engine/vortex/plugins/anime/anime-loli.js",
-  "engine": "vortex",
-  "tags": [
-   "anime"
-  ]
- },
  "loli2": {
   "rel": "engine/vortex/plugins/image/loli.js",
   "engine": "vortex",
@@ -7672,21 +6591,7 @@
    "tools"
   ]
  },
- "luxurygold": {
-  "rel": "engine/zenith/plugins/ephoto/ephoto.js",
-  "engine": "zenith",
-  "tags": [
-   "ephoto"
-  ]
- },
  "lyric": {
-  "rel": "engine/nimbus/plugins/search/lyrics.js",
-  "engine": "nimbus",
-  "tags": [
-   "search"
-  ]
- },
- "lyrics": {
   "rel": "engine/nimbus/plugins/search/lyrics.js",
   "engine": "nimbus",
   "tags": [
@@ -7700,13 +6605,6 @@
    "notif",
    "info",
    "magma"
-  ]
- },
- "mahiru": {
-  "rel": "engine/zenith/plugins/ai/mahiru.js",
-  "engine": "zenith",
-  "tags": [
-   "ai"
   ]
  },
  "mai": {
@@ -7735,13 +6633,6 @@
   "engine": "zenith",
   "tags": [
    "ai"
-  ]
- },
- "makingneon": {
-  "rel": "engine/zenith/plugins/ephoto/ephoto.js",
-  "engine": "zenith",
-  "tags": [
-   "ephoto"
   ]
  },
  "malaysia": {
@@ -7793,13 +6684,6 @@
    "nsfw"
   ]
  },
- "maps": {
-  "rel": "engine/zenith/plugins/search/applemaps.js",
-  "engine": "zenith",
-  "tags": [
-   "search"
-  ]
- },
  "market": {
   "rel": "engine/zenith/plugins/info/market.js",
   "engine": "zenith",
@@ -7815,13 +6699,6 @@
   ]
  },
  "matematika": {
-  "rel": "engine/nimbus/plugins/ai/matematika.js",
-  "engine": "nimbus",
-  "tags": [
-   "ai"
-  ]
- },
- "math": {
   "rel": "engine/nimbus/plugins/ai/matematika.js",
   "engine": "nimbus",
   "tags": [
@@ -7940,13 +6817,6 @@
    "ai"
   ]
  },
- "mediafire": {
-  "rel": "engine/nimbus/plugins/download/mediafiredl.js",
-  "engine": "nimbus",
-  "tags": [
-   "download"
-  ]
- },
  "mediafiredl": {
   "rel": "engine/nimbus/plugins/download/mediafiredl.js",
   "engine": "nimbus",
@@ -8001,13 +6871,6 @@
   "engine": "nimbus",
   "tags": [
    "search"
-  ]
- },
- "meme": {
-  "rel": "engine/nimbus/plugins/random/meme.js",
-  "engine": "nimbus",
-  "tags": [
-   "random"
   ]
  },
  "meme1": {
@@ -8073,13 +6936,6 @@
    "ai"
   ]
  },
- "mf": {
-  "rel": "engine/nimbus/plugins/download/mediafiredl.js",
-  "engine": "nimbus",
-  "tags": [
-   "download"
-  ]
- },
  "mfdl": {
   "rel": "engine/nimbus/plugins/download/mediafiredl.js",
   "engine": "nimbus",
@@ -8099,13 +6955,6 @@
   "engine": "zenith",
   "tags": [
    "tts"
-  ]
- },
- "mikasa": {
-  "rel": "engine/zenith/plugins/ai/mikasa.js",
-  "engine": "zenith",
-  "tags": [
-   "ai"
   ]
  },
  "mikuai": {
@@ -8234,13 +7083,6 @@
    "game"
   ]
  },
- "mlstalk": {
-  "rel": "engine/nimbus/plugins/stalker/stalkml.js",
-  "engine": "nimbus",
-  "tags": [
-   "stalker"
-  ]
- },
  "mlsynergy": {
   "rel": "engine/zenith/plugins/game/mlbb.js",
   "engine": "zenith",
@@ -8330,13 +7172,6 @@
   "engine": "nimbus",
   "tags": [
    "search"
-  ]
- },
- "multicoloredneon": {
-  "rel": "engine/zenith/plugins/ephoto/ephoto.js",
-  "engine": "zenith",
-  "tags": [
-   "ephoto"
   ]
  },
  "murotalsurah": {
@@ -8431,13 +7266,6 @@
    "search"
   ]
  },
- "myip": {
-  "rel": "engine/zenith/plugins/tools/myip.js",
-  "engine": "zenith",
-  "tags": [
-   "tools"
-  ]
- },
  "myleak": {
   "rel": "engine/aurora/plugins/owner/ipleak.js",
   "engine": "aurora",
@@ -8500,13 +7328,6 @@
   "tags": [
    "ai",
    "maker"
-  ]
- },
- "nanobanana": {
-  "rel": "engine/lumen/plugins/ai/ai-nanobana.js",
-  "engine": "lumen",
-  "tags": [
-   "ai"
   ]
  },
  "nanobanana2": {
@@ -8577,20 +7398,6 @@
   "engine": "zenith",
   "tags": [
    "panel"
-  ]
- },
- "neko": {
-  "rel": "engine/lumen/plugins/image/neko.js",
-  "engine": "lumen",
-  "tags": [
-   "image"
-  ]
- },
- "neonglitch": {
-  "rel": "engine/zenith/plugins/ephoto/ephoto.js",
-  "engine": "zenith",
-  "tags": [
-   "ephoto"
   ]
  },
  "nerdfont": {
@@ -8671,13 +7478,6 @@
   ]
  },
  "niatshalat": {
-  "rel": "engine/nimbus/plugins/religi/islami.js",
-  "engine": "nimbus",
-  "tags": [
-   "religi"
-  ]
- },
- "niatsholat": {
   "rel": "engine/nimbus/plugins/religi/islami.js",
   "engine": "nimbus",
   "tags": [
@@ -8789,20 +7589,6 @@
    "canvas"
   ]
  },
- "nomerhoki": {
-  "rel": "engine/nimbus/plugins/primbon/nomerhoki.js",
-  "engine": "nimbus",
-  "tags": [
-   "primbon"
-  ]
- },
- "nomorhoki": {
-  "rel": "engine/nimbus/plugins/primbon/nomerhoki.js",
-  "engine": "nimbus",
-  "tags": [
-   "primbon"
-  ]
- },
  "nonton": {
   "rel": "engine/nimbus/plugins/search/film.js",
   "engine": "nimbus",
@@ -8852,32 +7638,11 @@
    "maker"
   ]
  },
- "notnot": {
-  "rel": "engine/pulse/plugins/asupan/notnot.js",
-  "engine": "pulse",
-  "tags": [
-   "asupan"
-  ]
- },
  "npm": {
   "rel": "engine/nimbus/plugins/search/npm.js",
   "engine": "nimbus",
   "tags": [
    "search"
-  ]
- },
- "npmdl": {
-  "rel": "engine/zenith/plugins/tools/npmdl.js",
-  "engine": "zenith",
-  "tags": [
-   "tools"
-  ]
- },
- "npmdownload": {
-  "rel": "engine/zenith/plugins/tools/npmdl.js",
-  "engine": "zenith",
-  "tags": [
-   "tools"
   ]
  },
  "npmfind": {
@@ -8915,13 +7680,6 @@
    "tools"
   ]
  },
- "npmstalk": {
-  "rel": "engine/nimbus/plugins/stalker/npmstalk.js",
-  "engine": "nimbus",
-  "tags": [
-   "stalker"
-  ]
- },
  "nsfw": {
   "rel": "engine/orbit/plugins/nsfw/nsfw.js",
   "engine": "orbit",
@@ -8941,13 +7699,6 @@
   "engine": "lumen",
   "tags": [
    "ai"
-  ]
- },
- "nsfwmenu": {
-  "rel": "engine/orbit/plugins/nsfw/nsfw.js",
-  "engine": "orbit",
-  "tags": [
-   "nsfw"
   ]
  },
  "nsfwoff": {
@@ -9081,13 +7832,6 @@
   "engine": "lumen",
   "tags": [
    "info"
-  ]
- },
- "otakudesu": {
-  "rel": "engine/lumen/plugins/anime/anime-otakudesu.js",
-  "engine": "lumen",
-  "tags": [
-   "anime"
   ]
  },
  "otpbomb": {
@@ -9265,13 +8009,6 @@
    "search"
   ]
  },
- "papercutstyle": {
-  "rel": "engine/zenith/plugins/ephoto/ephoto.js",
-  "engine": "zenith",
-  "tags": [
-   "ephoto"
-  ]
- },
  "papfemboy": {
   "rel": "engine/nimbus/plugins/search/pap.js",
   "engine": "nimbus",
@@ -9319,13 +8056,6 @@
   "engine": "nimbus",
   "tags": [
    "tools"
-  ]
- },
- "pay": {
-  "rel": "engine/lumen/plugins/store/store-payment.js",
-  "engine": "lumen",
-  "tags": [
-   "store"
   ]
  },
  "pb": {
@@ -9391,13 +8121,6 @@
    "maker"
   ]
  },
- "penyakit": {
-  "rel": "engine/nimbus/plugins/primbon/potensipenyakit.js",
-  "engine": "nimbus",
-  "tags": [
-   "primbon"
-  ]
- },
  "pesanmail": {
   "rel": "engine/lumen/plugins/tools/tools-tempmail.js",
   "engine": "lumen",
@@ -9461,25 +8184,11 @@
    "search"
   ]
  },
- "pindl": {
-  "rel": "engine/nimbus/plugins/download/pindl.js",
-  "engine": "nimbus",
-  "tags": [
-   "download"
-  ]
- },
  "pindownload": {
   "rel": "engine/nimbus/plugins/download/pindl.js",
   "engine": "nimbus",
   "tags": [
    "download"
-  ]
- },
- "ping": {
-  "rel": "engine/lumen/plugins/info/info-speed.js",
-  "engine": "lumen",
-  "tags": [
-   "info"
   ]
  },
  "pinpack": {
@@ -9573,13 +8282,6 @@
    "search"
   ]
  },
- "pinterestdl": {
-  "rel": "engine/nimbus/plugins/download/pindl.js",
-  "engine": "nimbus",
-  "tags": [
-   "download"
-  ]
- },
  "pinterestid": {
   "rel": "engine/nimbus/plugins/stalker/pintereststalk.js",
   "engine": "nimbus",
@@ -9671,13 +8373,6 @@
    "download"
   ]
  },
- "pixelglitch": {
-  "rel": "engine/zenith/plugins/ephoto/ephoto.js",
-  "engine": "zenith",
-  "tags": [
-   "ephoto"
-  ]
- },
  "pixiv": {
   "rel": "engine/nimbus/plugins/search/pixiv.js",
   "engine": "nimbus",
@@ -9694,13 +8389,6 @@
  },
  "playcall": {
   "rel": "engine/nimbus/plugins/search/playcall.js",
-  "engine": "nimbus",
-  "tags": [
-   "search"
-  ]
- },
- "playch": {
-  "rel": "engine/nimbus/plugins/search/playch.js",
   "engine": "nimbus",
   "tags": [
    "search"
@@ -9741,13 +8429,6 @@
    "search"
   ]
  },
- "playvideo": {
-  "rel": "engine/nimbus/plugins/search/playvid.js",
-  "engine": "nimbus",
-  "tags": [
-   "search"
-  ]
- },
  "pola": {
   "rel": "engine/zenith/plugins/maker/hangingpolaroid.js",
   "engine": "zenith",
@@ -9762,32 +8443,11 @@
    "maker"
   ]
  },
- "potensipenyakit": {
-  "rel": "engine/nimbus/plugins/primbon/potensipenyakit.js",
-  "engine": "nimbus",
-  "tags": [
-   "primbon"
-  ]
- },
  "ppack": {
   "rel": "engine/nimbus/plugins/sticker/pinpack.js",
   "engine": "nimbus",
   "tags": [
    "sticker"
-  ]
- },
- "ppcouple": {
-  "rel": "engine/nimbus/plugins/random/couple.js",
-  "engine": "nimbus",
-  "tags": [
-   "random"
-  ]
- },
- "ppcp": {
-  "rel": "engine/nimbus/plugins/random/couple.js",
-  "engine": "nimbus",
-  "tags": [
-   "random"
   ]
  },
  "ppwa": {
@@ -9930,13 +8590,6 @@
    "pushkontak"
   ]
  },
- "pushkontak": {
-  "rel": "engine/zenith/plugins/pushkontak/pushkontak.js",
-  "engine": "zenith",
-  "tags": [
-   "pushkontak"
-  ]
- },
  "pushkontak_start": {
   "rel": "engine/zenith/plugins/pushkontak/pushkontak.js",
   "engine": "zenith",
@@ -9963,13 +8616,6 @@
   "engine": "zenith",
   "tags": [
    "random"
-  ]
- },
- "qc": {
-  "rel": "engine/nimbus/plugins/sticker/qc.js",
-  "engine": "nimbus",
-  "tags": [
-   "sticker"
   ]
  },
  "qc2": {
@@ -10033,13 +8679,6 @@
   "engine": "zenith",
   "tags": [
    "maker"
-  ]
- },
- "qr": {
-  "rel": "engine/nimbus/plugins/tools/qrcustom.js",
-  "engine": "nimbus",
-  "tags": [
-   "tools"
   ]
  },
  "qrcode": {
@@ -10119,13 +8758,6 @@
    "game"
   ]
  },
- "quote": {
-  "rel": "engine/lumen/plugins/maker/maker-quote.js",
-  "engine": "lumen",
-  "tags": [
-   "maker"
-  ]
- },
  "quoteanime": {
   "rel": "engine/nimbus/plugins/canvas/buatquotes.js",
   "engine": "nimbus",
@@ -10182,53 +8814,11 @@
    "random"
   ]
  },
- "quotesbacot": {
-  "rel": "engine/lumen/plugins/quotes/quotesbacot.js",
-  "engine": "lumen",
-  "tags": [
-   "quotes"
-  ]
- },
- "quotesbijak": {
-  "rel": "engine/lumen/plugins/quotes/quotesbijak.js",
-  "engine": "lumen",
-  "tags": [
-   "quotes"
-  ]
- },
- "quotesbucin": {
-  "rel": "engine/lumen/plugins/quotes/quotesbucin.js",
-  "engine": "lumen",
-  "tags": [
-   "quotes"
-  ]
- },
  "quoteschat2": {
   "rel": "engine/aurora/plugins/maker/fakequotes2.js",
   "engine": "aurora",
   "tags": [
    "maker"
-  ]
- },
- "quotesgalau": {
-  "rel": "engine/lumen/plugins/quotes/quotesgalau.js",
-  "engine": "lumen",
-  "tags": [
-   "quotes"
-  ]
- },
- "quotesgombal": {
-  "rel": "engine/lumen/plugins/quotes/quotesgombal.js",
-  "engine": "lumen",
-  "tags": [
-   "quotes"
-  ]
- },
- "quoteshacker": {
-  "rel": "engine/lumen/plugins/quotes/quotesheker.js",
-  "engine": "lumen",
-  "tags": [
-   "quotes"
   ]
  },
  "quotesimage": {
@@ -10240,20 +8830,6 @@
  },
  "quotesislam": {
   "rel": "engine/lumen/plugins/quotes/quotesislam.js",
-  "engine": "lumen",
-  "tags": [
-   "quotes"
-  ]
- },
- "quotesislami": {
-  "rel": "engine/lumen/plugins/quotes/quotesislam.js",
-  "engine": "lumen",
-  "tags": [
-   "quotes"
-  ]
- },
- "quotesmotivasi": {
-  "rel": "engine/lumen/plugins/quotes/quotesmotivasi.js",
   "engine": "lumen",
   "tags": [
    "quotes"
@@ -10280,13 +8856,6 @@
    "canvas"
   ]
  },
- "quotewa": {
-  "rel": "engine/nimbus/plugins/tools/qwa.js",
-  "engine": "nimbus",
-  "tags": [
-   "tools"
-  ]
- },
  "quranai": {
   "rel": "engine/nimbus/plugins/ai/muslimai.js",
   "engine": "nimbus",
@@ -10306,13 +8875,6 @@
   "engine": "nimbus",
   "tags": [
    "islamic"
-  ]
- },
- "qwa": {
-  "rel": "engine/nimbus/plugins/tools/qwa.js",
-  "engine": "nimbus",
-  "tags": [
-   "tools"
   ]
  },
  "race": {
@@ -10348,13 +8910,6 @@
   "engine": "zenith",
   "tags": [
    "religi"
-  ]
- },
- "ramalanjodoh": {
-  "rel": "engine/nimbus/plugins/primbon/ramalanjodoh.js",
-  "engine": "nimbus",
-  "tags": [
-   "primbon"
   ]
  },
  "randomhentai": {
@@ -10429,13 +8984,6 @@
  },
  "reactch2": {
   "rel": "engine/lumen/plugins/misc/rch2.js",
-  "engine": "lumen",
-  "tags": [
-   "tools"
-  ]
- },
- "reactchannel": {
-  "rel": "engine/lumen/plugins/tools/rch.js",
   "engine": "lumen",
   "tags": [
    "tools"
@@ -10516,13 +9064,6 @@
   "engine": "zenith",
   "tags": [
    "anime"
-  ]
- },
- "remini": {
-  "rel": "engine/nimbus/plugins/tools/hd.js",
-  "engine": "nimbus",
-  "tags": [
-   "tools"
   ]
  },
  "remini8": {
@@ -10609,13 +9150,6 @@
    "premium"
   ]
  },
- "ringtone": {
-  "rel": "engine/zenith/plugins/music/ringtone.js",
-  "engine": "zenith",
-  "tags": [
-   "music"
-  ]
- },
  "riyal": {
   "rel": "engine/zenith/plugins/economy/riyal.js",
   "engine": "zenith",
@@ -10644,13 +9178,6 @@
    "stalker"
   ]
  },
- "robloxstalk": {
-  "rel": "engine/nimbus/plugins/stalker/robloxstalk.js",
-  "engine": "nimbus",
-  "tags": [
-   "stalker"
-  ]
- },
  "roboguru": {
   "rel": "engine/zenith/plugins/ai/roboguru.js",
   "engine": "zenith",
@@ -10665,25 +9192,11 @@
    "fun"
   ]
  },
- "royaltext": {
-  "rel": "engine/zenith/plugins/ephoto/ephoto.js",
-  "engine": "zenith",
-  "tags": [
-   "ephoto"
-  ]
- },
  "runhtml": {
   "rel": "engine/aurora/plugins/tools/htmltoeksekusi.js",
   "engine": "aurora",
   "tags": [
    "tools"
-  ]
- },
- "runtime": {
-  "rel": "engine/lumen/plugins/info/info-runtime.js",
-  "engine": "lumen",
-  "tags": [
-   "info"
   ]
  },
  "ryo": {
@@ -10719,13 +9232,6 @@
   "engine": "lumen",
   "tags": [
    "game"
-  ]
- },
- "sandsummer": {
-  "rel": "engine/zenith/plugins/ephoto/ephoto.js",
-  "engine": "zenith",
-  "tags": [
-   "ephoto"
   ]
  },
  "santuy": {
@@ -10777,13 +9283,6 @@
    "owner"
   ]
  },
- "saveweb2zip": {
-  "rel": "engine/zenith/plugins/tools/web2zip.js",
-  "engine": "zenith",
-  "tags": [
-   "tools"
-  ]
- },
  "scanrepo": {
   "rel": "engine/zenith/plugins/tools/scanrepo.js",
   "engine": "zenith",
@@ -10794,13 +9293,6 @@
  "scanrepodev": {
   "rel": "engine/zenith/plugins/tools/scanrepo.js",
   "engine": "zenith",
-  "tags": [
-   "tools"
-  ]
- },
- "screenshot": {
-  "rel": "engine/nimbus/plugins/tools/ssweb.js",
-  "engine": "nimbus",
   "tags": [
    "tools"
   ]
@@ -11211,13 +9703,6 @@
    "owner"
   ]
  },
- "sfile": {
-  "rel": "engine/nimbus/plugins/download/sfiledl.js",
-  "engine": "nimbus",
-  "tags": [
-   "download"
-  ]
- },
  "sfiledl": {
   "rel": "engine/nimbus/plugins/download/sfiledl.js",
   "engine": "nimbus",
@@ -11230,13 +9715,6 @@
   "engine": "nimbus",
   "tags": [
    "download"
-  ]
- },
- "sfl": {
-  "rel": "engine/pulse/plugins/bypass/sfl.js",
-  "engine": "pulse",
-  "tags": [
-   "tools"
   ]
  },
  "sflbypass": {
@@ -11323,13 +9801,6 @@
    "tools"
   ]
  },
- "shota": {
-  "rel": "engine/vortex/plugins/image/shota.js",
-  "engine": "vortex",
-  "tags": [
-   "image"
-  ]
- },
  "showcode": {
   "rel": "engine/aurora/plugins/owner/snippet.js",
   "engine": "aurora",
@@ -11356,13 +9827,6 @@
   "engine": "lumen",
   "tags": [
    "sticker"
-  ]
- },
- "simi": {
-  "rel": "engine/nimbus/plugins/ai/simi.js",
-  "engine": "nimbus",
-  "tags": [
-   "ai"
   ]
  },
  "simi2": {
@@ -11461,13 +9925,6 @@
   "engine": "lumen",
   "tags": [
    "tools"
-  ]
- },
- "snackvideo": {
-  "rel": "engine/nimbus/plugins/download/snackvideodl.js",
-  "engine": "nimbus",
-  "tags": [
-   "download"
   ]
  },
  "snackvideodl": {
@@ -11576,46 +10033,11 @@
    "tools"
   ]
  },
- "spdl": {
-  "rel": "engine/nimbus/plugins/download/spotifydl.js",
-  "engine": "nimbus",
-  "tags": [
-   "download"
-  ]
- },
  "speechtotext": {
   "rel": "engine/nimbus/plugins/tools/transkrip.js",
   "engine": "nimbus",
   "tags": [
    "tools"
-  ]
- },
- "speedtest": {
-  "rel": "engine/aurora/plugins/owner/speedtest.js",
-  "engine": "aurora",
-  "tags": [
-   "owner"
-  ]
- },
- "spek": {
-  "rel": "engine/nimbus/plugins/search/carisinyal.js",
-  "engine": "nimbus",
-  "tags": [
-   "search"
-  ]
- },
- "spekhp": {
-  "rel": "engine/nimbus/plugins/search/carisinyal.js",
-  "engine": "nimbus",
-  "tags": [
-   "search"
-  ]
- },
- "spesifikasi": {
-  "rel": "engine/nimbus/plugins/search/carisinyal.js",
-  "engine": "nimbus",
-  "tags": [
-   "search"
   ]
  },
  "spfake": {
@@ -11639,13 +10061,6 @@
    "download"
   ]
  },
- "spotify": {
-  "rel": "engine/nimbus/plugins/search/spotify.js",
-  "engine": "nimbus",
-  "tags": [
-   "search"
-  ]
- },
  "spotify-dl": {
   "rel": "engine/nimbus/plugins/download/spotifydl.js",
   "engine": "nimbus",
@@ -11660,25 +10075,11 @@
    "maker"
   ]
  },
- "spotifydl": {
-  "rel": "engine/nimbus/plugins/download/spotifydl.js",
-  "engine": "nimbus",
-  "tags": [
-   "download"
-  ]
- },
  "spotifyplay": {
   "rel": "engine/pulse/plugins/search/spotifyplay.js",
   "engine": "pulse",
   "tags": [
    "download"
-  ]
- },
- "spotifysearch": {
-  "rel": "engine/nimbus/plugins/search/spotify.js",
-  "engine": "nimbus",
-  "tags": [
-   "search"
   ]
  },
  "spotifyvid": {
@@ -11702,13 +10103,6 @@
    "search"
   ]
  },
- "spsearch": {
-  "rel": "engine/nimbus/plugins/search/spotify.js",
-  "engine": "nimbus",
-  "tags": [
-   "search"
-  ]
- },
  "spt": {
   "rel": "engine/aurora/plugins/owner/speedtest.js",
   "engine": "aurora",
@@ -11721,13 +10115,6 @@
   "engine": "nimbus",
   "tags": [
    "canvas"
-  ]
- },
- "ss": {
-  "rel": "engine/nimbus/plugins/tools/ssweb.js",
-  "engine": "nimbus",
-  "tags": [
-   "tools"
   ]
  },
  "ss3": {
@@ -11765,13 +10152,6 @@
    "tools"
   ]
  },
- "ssweb": {
-  "rel": "engine/nimbus/plugins/tools/ssweb.js",
-  "engine": "nimbus",
-  "tags": [
-   "tools"
-  ]
- },
  "ssweb-3hasil": {
   "rel": "engine/aurora/plugins/tools/ssweb-3hasil.js",
   "engine": "aurora",
@@ -11802,13 +10182,6 @@
  },
  "stalkdiscord": {
   "rel": "engine/nimbus/plugins/stalker/discordstalk.js",
-  "engine": "nimbus",
-  "tags": [
-   "stalker"
-  ]
- },
- "stalkff": {
-  "rel": "engine/nimbus/plugins/stalker/ffstalk.js",
   "engine": "nimbus",
   "tags": [
    "stalker"
@@ -11898,13 +10271,6 @@
    "stalker"
   ]
  },
- "stalkroblox": {
-  "rel": "engine/nimbus/plugins/stalker/robloxstalk.js",
-  "engine": "nimbus",
-  "tags": [
-   "stalker"
-  ]
- },
  "stalktg": {
   "rel": "engine/lumen/plugins/stalker/stalk-tguser.js",
   "engine": "lumen",
@@ -11961,25 +10327,11 @@
    "stalker"
   ]
  },
- "stalkyt": {
-  "rel": "engine/nimbus/plugins/stalker/ytstalk.js",
-  "engine": "nimbus",
-  "tags": [
-   "stalker"
-  ]
- },
  "starboy": {
   "rel": "engine/nimbus/plugins/canvas/starboy.js",
   "engine": "nimbus",
   "tags": [
    "canvas"
-  ]
- },
- "statusbot": {
-  "rel": "engine/lumen/plugins/info/info-runtime.js",
-  "engine": "lumen",
-  "tags": [
-   "info"
   ]
  },
  "stcqc": {
@@ -12010,29 +10362,8 @@
    "sticker"
   ]
  },
- "stickerinfo": {
-  "rel": "engine/zenith/plugins/premium/fstik.js",
-  "engine": "zenith",
-  "tags": [
-   "premium"
-  ]
- },
- "stickerly": {
-  "rel": "engine/nimbus/plugins/sticker/stickerly.js",
-  "engine": "nimbus",
-  "tags": [
-   "sticker"
-  ]
- },
  "stickerlysearch": {
   "rel": "engine/nimbus/plugins/sticker/stickerly.js",
-  "engine": "nimbus",
-  "tags": [
-   "sticker"
-  ]
- },
- "stickerpack": {
-  "rel": "engine/nimbus/plugins/sticker/stickerpack.js",
   "engine": "nimbus",
   "tags": [
    "sticker"
@@ -12043,20 +10374,6 @@
   "engine": "nimbus",
   "tags": [
    "canvas"
-  ]
- },
- "stickersearch": {
-  "rel": "engine/nimbus/plugins/sticker/stickerpack.js",
-  "engine": "nimbus",
-  "tags": [
-   "sticker"
-  ]
- },
- "stickertomp4": {
-  "rel": "engine/lumen/plugins/tools/tools-togif.js",
-  "engine": "lumen",
-  "tags": [
-   "tools"
   ]
  },
  "stickerwa": {
@@ -12150,13 +10467,6 @@
    "tools"
   ]
  },
- "suamiku": {
-  "rel": "engine/zenith/plugins/fun/gachahusbu.js",
-  "engine": "zenith",
-  "tags": [
-   "fun"
-  ]
- },
  "sub2unlock": {
   "rel": "engine/pulse/plugins/bypass/sub2unlock.js",
   "engine": "pulse",
@@ -12190,13 +10500,6 @@
   "engine": "zenith",
   "tags": [
    "premium"
-  ]
- },
- "summerbeach": {
-  "rel": "engine/zenith/plugins/ephoto/ephoto.js",
-  "engine": "zenith",
-  "tags": [
-   "ephoto"
   ]
  },
  "suno": {
@@ -12346,13 +10649,6 @@
    "islamic"
   ]
  },
- "tafsirmimpi": {
-  "rel": "engine/nimbus/plugins/primbon/tafsirmimpi.js",
-  "engine": "nimbus",
-  "tags": [
-   "primbon"
-  ]
- },
  "talkingphoto": {
   "rel": "engine/zenith/plugins/premium/talkingphoto.js",
   "engine": "zenith",
@@ -12430,23 +10726,9 @@
    "game"
   ]
  },
- "tdl": {
-  "rel": "engine/nimbus/plugins/download/threaddl.js",
-  "engine": "nimbus",
-  "tags": [
-   "download"
-  ]
- },
  "tebakanime": {
   "rel": "engine/zenith/plugins/game/tebakanime.js",
   "engine": "zenith",
-  "tags": [
-   "game"
-  ]
- },
- "tebakbendera": {
-  "rel": "engine/lumen/plugins/game/game-tebakbendera.js",
-  "engine": "lumen",
   "tags": [
    "game"
   ]
@@ -12461,13 +10743,6 @@
  "tebakff": {
   "rel": "engine/zenith/plugins/game/tebakff.js",
   "engine": "zenith",
-  "tags": [
-   "game"
-  ]
- },
- "tebakgame": {
-  "rel": "engine/aurora/plugins/game/tebakgame.js",
-  "engine": "aurora",
   "tags": [
    "game"
   ]
@@ -12493,13 +10768,6 @@
    "game"
   ]
  },
- "tebakkata": {
-  "rel": "engine/lumen/plugins/game/game-tebakkata.js",
-  "engine": "lumen",
-  "tags": [
-   "game"
-  ]
- },
  "tebaknime": {
   "rel": "engine/zenith/plugins/game/tebakanime.js",
   "engine": "zenith",
@@ -12510,13 +10778,6 @@
  "tebakpikiran": {
   "rel": "engine/aurora/plugins/game/tebakpikiran.js",
   "engine": "aurora",
-  "tags": [
-   "game"
-  ]
- },
- "tebaksurah": {
-  "rel": "engine/lumen/plugins/game/game-tebaksurah.js",
-  "engine": "lumen",
   "tags": [
    "game"
   ]
@@ -12533,13 +10794,6 @@
   "engine": "zenith",
   "tags": [
    "tools"
-  ]
- },
- "tekateki": {
-  "rel": "engine/lumen/plugins/game/game-tekateki.js",
-  "engine": "lumen",
-  "tags": [
-   "game"
   ]
  },
  "tekss": {
@@ -12584,13 +10838,6 @@
    "search"
   ]
  },
- "telestick": {
-  "rel": "engine/zenith/plugins/sticker/telestick.js",
-  "engine": "zenith",
-  "tags": [
-   "sticker"
-  ]
- },
  "temabilling": {
   "rel": "engine/zenith/plugins/panel/installtemabilling.js",
   "engine": "zenith",
@@ -12619,35 +10866,7 @@
    "panel"
   ]
  },
- "tempmail": {
-  "rel": "engine/lumen/plugins/tools/tools-tempmail.js",
-  "engine": "lumen",
-  "tags": [
-   "tools"
-  ]
- },
- "tenor": {
-  "rel": "engine/lumen/plugins/sticker/sticker-tenor.js",
-  "engine": "lumen",
-  "tags": [
-   "sticker"
-  ]
- },
  "tera": {
-  "rel": "engine/nimbus/plugins/download/terabox.js",
-  "engine": "nimbus",
-  "tags": [
-   "download"
-  ]
- },
- "terabox": {
-  "rel": "engine/nimbus/plugins/download/terabox.js",
-  "engine": "nimbus",
-  "tags": [
-   "download"
-  ]
- },
- "teraboxdl": {
   "rel": "engine/nimbus/plugins/download/terabox.js",
   "engine": "nimbus",
   "tags": [
@@ -12680,13 +10899,6 @@
   "engine": "aurora",
   "tags": [
    "owner"
-  ]
- },
- "text2img": {
-  "rel": "engine/nimbus/plugins/ai/text2img.js",
-  "engine": "nimbus",
-  "tags": [
-   "ai"
   ]
  },
  "text2img2": {
@@ -12780,27 +10992,6 @@
    "info"
   ]
  },
- "threaddl": {
-  "rel": "engine/nimbus/plugins/download/threaddl.js",
-  "engine": "nimbus",
-  "tags": [
-   "download"
-  ]
- },
- "threads": {
-  "rel": "engine/nimbus/plugins/download/threaddl.js",
-  "engine": "nimbus",
-  "tags": [
-   "download"
-  ]
- },
- "threadsdl": {
-  "rel": "engine/nimbus/plugins/download/threaddl.js",
-  "engine": "nimbus",
-  "tags": [
-   "download"
-  ]
- },
  "tiketbioskop": {
   "rel": "engine/zenith/plugins/canvas/fakekarcis.js",
   "engine": "zenith",
@@ -12813,13 +11004,6 @@
   "engine": "zenith",
   "tags": [
    "canvas"
-  ]
- },
- "tiktok": {
-  "rel": "engine/zenith/plugins/download/tiktokdl.js",
-  "engine": "zenith",
-  "tags": [
-   "download"
   ]
  },
  "tiktok-chat": {
@@ -12841,13 +11025,6 @@
   "engine": "nimbus",
   "tags": [
    "asupan"
-  ]
- },
- "tiktokaudio": {
-  "rel": "engine/lumen/plugins/downloader/down-ttmusic.js",
-  "engine": "lumen",
-  "tags": [
-   "download"
   ]
  },
  "tiktokboost": {
@@ -12900,13 +11077,6 @@
    "search"
   ]
  },
- "tiktokgirl": {
-  "rel": "engine/pulse/plugins/asupan/tiktokgirl.js",
-  "engine": "pulse",
-  "tags": [
-   "asupan"
-  ]
- },
  "tiktokimg": {
   "rel": "engine/zenith/plugins/download/ttimg.js",
   "engine": "zenith",
@@ -12933,20 +11103,6 @@
   "engine": "lumen",
   "tags": [
    "search"
-  ]
- },
- "tiktokslide": {
-  "rel": "engine/zenith/plugins/download/ttslide.js",
-  "engine": "zenith",
-  "tags": [
-   "download"
-  ]
- },
- "tiktokstalk": {
-  "rel": "engine/lumen/plugins/stalker/stalk-tiktok.js",
-  "engine": "lumen",
-  "tags": [
-   "stalker"
   ]
  },
  "timeis": {
@@ -13038,13 +11194,6 @@
    "maker"
   ]
  },
- "tobotak": {
-  "rel": "engine/lumen/plugins/maker/maker-hitamkan.js",
-  "engine": "lumen",
-  "tags": [
-   "maker"
-  ]
- },
  "tobrooklyn": {
   "rel": "engine/aurora/plugins/canvas/tobrooklyn.js",
   "engine": "aurora",
@@ -13073,13 +11222,6 @@
   "tags": [
    "maker",
    "ai"
-  ]
- },
- "tochibi": {
-  "rel": "engine/lumen/plugins/maker/maker-hitamkan.js",
-  "engine": "lumen",
-  "tags": [
-   "maker"
   ]
  },
  "tocodeqr": {
@@ -13197,13 +11339,6 @@
    "maker"
   ]
  },
- "tofigure": {
-  "rel": "engine/nimbus/plugins/ai/tofigure.js",
-  "engine": "nimbus",
-  "tags": [
-   "ai"
-  ]
- },
  "tofigurev2": {
   "rel": "engine/nimbus/plugins/ai/tofigurev2.js",
   "engine": "nimbus",
@@ -13265,33 +11400,12 @@
    "ai"
   ]
  },
- "togif": {
-  "rel": "engine/lumen/plugins/tools/tools-togif.js",
-  "engine": "lumen",
-  "tags": [
-   "tools"
-  ]
- },
  "togriffin": {
   "rel": "engine/pulse/plugins/ai-image/togriffin.js",
   "engine": "pulse",
   "tags": [
    "maker",
    "ai"
-  ]
- },
- "tohijab": {
-  "rel": "engine/nimbus/plugins/ai/tohijab.js",
-  "engine": "nimbus",
-  "tags": [
-   "ai"
-  ]
- },
- "tohitam": {
-  "rel": "engine/lumen/plugins/maker/maker-hitamkan.js",
-  "engine": "lumen",
-  "tags": [
-   "maker"
   ]
  },
  "toios": {
@@ -13353,20 +11467,6 @@
    "ai"
   ]
  },
- "toku": {
-  "rel": "engine/zenith/plugins/anime/tokusatsu.js",
-  "engine": "zenith",
-  "tags": [
-   "anime"
-  ]
- },
- "tokusatsu": {
-  "rel": "engine/zenith/plugins/anime/tokusatsu.js",
-  "engine": "zenith",
-  "tags": [
-   "anime"
-  ]
- },
  "tolego": {
   "rel": "engine/lumen/plugins/maker/maker-hitamkan.js",
   "engine": "lumen",
@@ -13390,13 +11490,6 @@
   ]
  },
  "toliquor": {
-  "rel": "engine/lumen/plugins/maker/maker-hitamkan.js",
-  "engine": "lumen",
-  "tags": [
-   "maker"
-  ]
- },
- "tomaid": {
   "rel": "engine/lumen/plugins/maker/maker-hitamkan.js",
   "engine": "lumen",
   "tags": [
@@ -13460,13 +11553,6 @@
   "engine": "lumen",
   "tags": [
    "maker"
-  ]
- },
- "tomp4": {
-  "rel": "engine/lumen/plugins/tools/tools-togif.js",
-  "engine": "lumen",
-  "tags": [
-   "tools"
   ]
  },
  "tonaruto": {
@@ -13541,27 +11627,6 @@
   "engine": "zenith",
   "tags": [
    "search"
-  ]
- },
- "toprompt": {
-  "rel": "engine/lumen/plugins/ai/ai-toprompt.js",
-  "engine": "lumen",
-  "tags": [
-   "ai"
-  ]
- },
- "toputih": {
-  "rel": "engine/lumen/plugins/maker/maker-hitamkan.js",
-  "engine": "lumen",
-  "tags": [
-   "maker"
-  ]
- },
- "toreal": {
-  "rel": "engine/lumen/plugins/maker/maker-hitamkan.js",
-  "engine": "lumen",
-  "tags": [
-   "maker"
   ]
  },
  "toroblox": {
@@ -13661,13 +11726,6 @@
    "ai"
   ]
  },
- "totalfitur": {
-  "rel": "engine/lumen/plugins/info/info-totalfitur.js",
-  "engine": "lumen",
-  "tags": [
-   "info"
-  ]
- },
  "totato": {
   "rel": "engine/lumen/plugins/maker/maker-hitamkan.js",
   "engine": "lumen",
@@ -13713,13 +11771,6 @@
    "ai"
   ]
  },
- "tourl": {
-  "rel": "engine/nimbus/plugins/tools/tourl.js",
-  "engine": "nimbus",
-  "tags": [
-   "tools"
-  ]
- },
  "tourlgh": {
   "rel": "engine/lumen/plugins/tools/tools-upgh.js",
   "engine": "lumen",
@@ -13741,20 +11792,6 @@
   "tags": [
    "maker",
    "ai"
-  ]
- },
- "tovid": {
-  "rel": "engine/pulse/plugins/convert/tovid.js",
-  "engine": "pulse",
-  "tags": [
-   "lainnya"
-  ]
- },
- "tovideo": {
-  "rel": "engine/pulse/plugins/convert/tovid.js",
-  "engine": "pulse",
-  "tags": [
-   "lainnya"
   ]
  },
  "toviking": {
@@ -13796,25 +11833,11 @@
    "ai"
   ]
  },
- "tozombie": {
-  "rel": "engine/lumen/plugins/maker/maker-hitamkan.js",
-  "engine": "lumen",
-  "tags": [
-   "maker"
-  ]
- },
  "tqto": {
   "rel": "engine/lumen/plugins/misc/tqto.js",
   "engine": "lumen",
   "tags": [
    "info"
-  ]
- },
- "tr": {
-  "rel": "engine/aurora/plugins/tools/translate.js",
-  "engine": "aurora",
-  "tags": [
-   "tools"
   ]
  },
  "traileranime": {
@@ -13852,20 +11875,6 @@
    "tools"
   ]
  },
- "translate": {
-  "rel": "engine/aurora/plugins/tools/translate.js",
-  "engine": "aurora",
-  "tags": [
-   "tools"
-  ]
- },
- "trap": {
-  "rel": "engine/orbit/plugins/nsfw/nsfw.js",
-  "engine": "orbit",
-  "tags": [
-   "nsfw"
-  ]
- },
  "ts": {
   "rel": "engine/aurora/plugins/tools/translate.js",
   "engine": "aurora",
@@ -13878,13 +11887,6 @@
   "engine": "aurora",
   "tags": [
    "sticker"
-  ]
- },
- "tt": {
-  "rel": "engine/zenith/plugins/download/tiktokdl.js",
-  "engine": "zenith",
-  "tags": [
-   "download"
   ]
  },
  "tt2": {
@@ -13906,13 +11908,6 @@
   "engine": "nimbus",
   "tags": [
    "asupan"
-  ]
- },
- "ttaudio": {
-  "rel": "engine/lumen/plugins/downloader/down-ttmusic.js",
-  "engine": "lumen",
-  "tags": [
-   "download"
   ]
  },
  "ttboost": {
@@ -13979,13 +11974,6 @@
    "download"
   ]
  },
- "ttmp3": {
-  "rel": "engine/aurora/plugins/download/ttmp3.js",
-  "engine": "aurora",
-  "tags": [
-   "download"
-  ]
- },
  "ttmp4": {
   "rel": "engine/zenith/plugins/download/tiktokdl.js",
   "engine": "zenith",
@@ -14021,13 +12009,6 @@
    "stalker"
   ]
  },
- "ttsearch": {
-  "rel": "engine/lumen/plugins/search/ttsearch.js",
-  "engine": "lumen",
-  "tags": [
-   "search"
-  ]
- },
  "ttselon": {
   "rel": "engine/nimbus/plugins/tts/ttselon.js",
   "engine": "nimbus",
@@ -14054,13 +12035,6 @@
   "engine": "zenith",
   "tags": [
    "tts"
-  ]
- },
- "ttslide": {
-  "rel": "engine/zenith/plugins/download/ttslide.js",
-  "engine": "zenith",
-  "tags": [
-   "download"
   ]
  },
  "ttsmickey": {
@@ -14112,13 +12086,6 @@
    "info"
   ]
  },
- "tutorial": {
-  "rel": "engine/pulse/plugins/main/guide.js",
-  "engine": "pulse",
-  "tags": [
-   "main"
-  ]
- },
  "tw": {
   "rel": "engine/lumen/plugins/downloader/downloader-twitter.js",
   "engine": "lumen",
@@ -14147,13 +12114,6 @@
    "tools"
   ]
  },
- "twitter": {
-  "rel": "engine/lumen/plugins/downloader/downloader-twitter.js",
-  "engine": "lumen",
-  "tags": [
-   "downloader"
-  ]
- },
  "txt2qr": {
   "rel": "engine/nimbus/plugins/tools/txt2qr.js",
   "engine": "nimbus",
@@ -14175,39 +12135,11 @@
    "maker"
   ]
  },
- "typographytext": {
-  "rel": "engine/zenith/plugins/ephoto/ephoto.js",
-  "engine": "zenith",
-  "tags": [
-   "ephoto"
-  ]
- },
  "uhdpaper": {
   "rel": "engine/zenith/plugins/image/uhdpaper.js",
   "engine": "zenith",
   "tags": [
    "image"
-  ]
- },
- "unblur": {
-  "rel": "engine/nimbus/plugins/tools/hd3.js",
-  "engine": "nimbus",
-  "tags": [
-   "tools"
-  ]
- },
- "underwatertext": {
-  "rel": "engine/zenith/plugins/ephoto/ephoto.js",
-  "engine": "zenith",
-  "tags": [
-   "ephoto"
-  ]
- },
- "unli": {
-  "rel": "engine/lumen/plugins/owner/cpanel.js",
-  "engine": "lumen",
-  "tags": [
-   "panel"
   ]
  },
  "unlimited": {
@@ -14265,20 +12197,6 @@
   "engine": "zenith",
   "tags": [
    "owner"
-  ]
- },
- "upscale": {
-  "rel": "engine/nimbus/plugins/tools/hd.js",
-  "engine": "nimbus",
-  "tags": [
-   "tools"
-  ]
- },
- "upscale1": {
-  "rel": "engine/zenith/plugins/tools/hd8.js",
-  "engine": "zenith",
-  "tags": [
-   "tools"
   ]
  },
  "upscale2": {
@@ -14356,13 +12274,6 @@
   "engine": "zenith",
   "tags": [
    "pushkontak"
-  ]
- },
- "vdl": {
-  "rel": "engine/nimbus/plugins/download/videy.js",
-  "engine": "nimbus",
-  "tags": [
-   "download"
   ]
  },
  "vercel": {
@@ -14449,13 +12360,6 @@
    "cewerandom"
   ]
  },
- "vnholo": {
-  "rel": "engine/zenith/plugins/tts/holotts.js",
-  "engine": "zenith",
-  "tags": [
-   "tts"
-  ]
- },
  "vos": {
   "rel": "engine/orbit/plugins/canvas/vos.js",
   "engine": "orbit",
@@ -14496,13 +12400,6 @@
   "engine": "lumen",
   "tags": [
    "stalker"
-  ]
- },
- "waifu": {
-  "rel": "engine/lumen/plugins/image/waifu.js",
-  "engine": "lumen",
-  "tags": [
-   "image"
   ]
  },
  "waifu2": {
@@ -14596,13 +12493,6 @@
    "internet"
   ]
  },
- "wanted": {
-  "rel": "engine/zenith/plugins/maker/wanted.js",
-  "engine": "zenith",
-  "tags": [
-   "maker"
-  ]
- },
  "wantedposter": {
   "rel": "engine/zenith/plugins/maker/wanted.js",
   "engine": "zenith",
@@ -14638,13 +12528,6 @@
    "canvas"
   ]
  },
- "watercolortext": {
-  "rel": "engine/zenith/plugins/ephoto/ephoto.js",
-  "engine": "zenith",
-  "tags": [
-   "ephoto"
-  ]
- },
  "wctext": {
   "rel": "engine/nimbus/plugins/canvas/watercolortext.js",
   "engine": "nimbus",
@@ -14657,13 +12540,6 @@
   "engine": "zenith",
   "tags": [
    "maker"
-  ]
- },
- "web2zip": {
-  "rel": "engine/zenith/plugins/tools/web2zip.js",
-  "engine": "zenith",
-  "tags": [
-   "tools"
   ]
  },
  "webget": {
@@ -14706,13 +12582,6 @@
   "engine": "nimbus",
   "tags": [
    "search"
-  ]
- },
- "whatmusic": {
-  "rel": "engine/nimbus/plugins/tools/musikapaini.js",
-  "engine": "nimbus",
-  "tags": [
-   "tools"
   ]
  },
  "who": {
@@ -14834,13 +12703,6 @@
    "ai"
   ]
  },
- "wormgpt": {
-  "rel": "engine/nimbus/plugins/ai/wormgpt.js",
-  "engine": "nimbus",
-  "tags": [
-   "ai"
-  ]
- },
  "wpanime": {
   "rel": "engine/zenith/plugins/anime/animewall.js",
   "engine": "zenith",
@@ -14853,13 +12715,6 @@
   "engine": "lumen",
   "tags": [
    "maker"
-  ]
- },
- "writetext": {
-  "rel": "engine/zenith/plugins/ephoto/ephoto.js",
-  "engine": "zenith",
-  "tags": [
-   "ephoto"
   ]
  },
  "wrml": {
@@ -14988,20 +12843,6 @@
    "download"
   ]
  },
- "youtubestalk": {
-  "rel": "engine/nimbus/plugins/stalker/ytstalk.js",
-  "engine": "nimbus",
-  "tags": [
-   "stalker"
-  ]
- },
- "yt": {
-  "rel": "engine/lumen/plugins/downloader/down-yt.js",
-  "engine": "lumen",
-  "tags": [
-   "downloader"
-  ]
- },
  "ytaudio": {
   "rel": "engine/nimbus/plugins/download/ytmp3.js",
   "engine": "nimbus",
@@ -15030,20 +12871,6 @@
    "downloader"
   ]
  },
- "ytmp3": {
-  "rel": "engine/nimbus/plugins/download/ytmp3.js",
-  "engine": "nimbus",
-  "tags": [
-   "download"
-  ]
- },
- "ytmp4": {
-  "rel": "engine/nimbus/plugins/download/ytmp4.js",
-  "engine": "nimbus",
-  "tags": [
-   "download"
-  ]
- },
  "ytpost": {
   "rel": "engine/aurora/plugins/download/ytpost.js",
   "engine": "aurora",
@@ -15054,13 +12881,6 @@
  "ytpoststalk": {
   "rel": "engine/aurora/plugins/stalker/ytpoststalk.js",
   "engine": "aurora",
-  "tags": [
-   "stalker"
-  ]
- },
- "ytstalk": {
-  "rel": "engine/nimbus/plugins/stalker/ytstalk.js",
-  "engine": "nimbus",
   "tags": [
    "stalker"
   ]
