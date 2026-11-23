@@ -1,73 +1,158 @@
 # Reindiandikarc SC (Alya)
 
-## Instalasi awal
+## Instalasi Lengkap
 
-1. Update package
+Bagian ini dimulai dari terminal kosong, tanpa Node.js terpasang. Ikuti sesuai sistem yang kamu pakai.
 
-```bash
-apt update && apt upgrade
-```
+### Kebutuhan
 
-2. Install nodejs
+- Node.js 20 atau lebih baru
+- Git
+- ffmpeg dan ffprobe
+- Python 3, `make`, dan compiler C/C++ untuk modul native
+- RAM minimal 2 GB, disarankan 4 GB
 
-```bash
-apt install nodejs -y
-```
-
-3. Install ffmpeg (ini diperlukan untuk mengkonversi ke format webp terutama pada "stiker")
+Setelah instalasi, cek dengan:
 
 ```bash
-apt install ffmpeg -y
+node -v
+npm -v
+git --version
+ffmpeg -version
 ```
 
-4. Install git
+### Linux Debian atau Ubuntu
 
 ```bash
-apt install git
+sudo apt update
+sudo apt upgrade -y
+sudo apt install -y git curl ca-certificates build-essential python3 ffmpeg
 ```
 
-5. Cloning repo
+Pasang Node.js 20 lewat NodeSource:
+
+```bash
+curl -fsSL https://deb.nodesource.com/setup_20.x | sudo -E bash -
+sudo apt install -y nodejs
+```
+
+Atau pakai nvm tanpa NodeSource:
+
+```bash
+curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/master/install.sh | bash
+source ~/.bashrc
+nvm install 20
+nvm use 20
+```
+
+### Termux
+
+Gunakan Termux dari F-Droid. Versi Play Store sering tertinggal dan bisa gagal membangun modul native.
+
+```bash
+pkg update -y
+pkg upgrade -y
+pkg install -y git nodejs ffmpeg python clang make
+termux-setup-storage
+```
+
+Cek `node -v`. Jika masih di bawah 20:
+
+```bash
+pkg upgrade -y nodejs
+```
+
+Jika tetap di bawah 20, pakai Ubuntu lewat proot-distro lalu ikuti langkah Linux di atas:
+
+```bash
+pkg install -y proot-distro
+proot-distro install ubuntu
+proot-distro login ubuntu
+```
+
+### Clone dan pasang dependency
+
+Lakukan langkah ini di Linux maupun Termux:
 
 ```bash
 git clone https://github.com/reindiandikarc/SC-Alisamikloivnakujou.git
-```
-
-## Cara Pasang
-
-### Prasyarat
-
-1. Saat Anda mendapatkan kode sumber ini, pastikan untuk menginstal semua modul yang diperlukan dengan menjalankan perintah ini di terminal atau command prompt:
-
-```bash
-cd /halaman/mengarah/ke/SC-Alisamikloivnakujou
-```
-
-```bash
+cd SC-Alisamikloivnakujou
 npm install
 ```
 
-2. Setelah selesai menginstal, jalankan bot dengan perintah:
+`npm install` akan membangun modul native seperti `better-sqlite3`, `sharp`, dan `@roamhq/wrtc`. Proses ini bisa memakan waktu beberapa menit. Kalau gagal pada tahap build native, pasang dulu build tools di atas lalu ulangi:
+
+```bash
+npm rebuild
+npm install
+```
+
+### Konfigurasi
+
+Edit `toolkit/set/config.json`:
+
+```bash
+nano toolkit/set/config.json
+```
+
+- `owner`: nomor WhatsApp kamu dengan format `62xxx`, tanpa `+` atau spasi.
+- `botname`, `botfullname`, `botnickname`: bawaan `Alya`. Nama ini dipakai persona autoai.
+- `mongodb.uri`: kosongkan untuk memakai penyimpanan JSON. Isi dengan URI MongoDB jika kamu memakai MongoDB.
+
+Variabel lingkungan `MONGODB_URI` juga bisa dipakai dan prioritasnya lebih tinggi daripada `config.json`. Contoh:
+
+```bash
+export MONGODB_URI='mongodb+srv://user:pass@cluster.mongodb.net/alyadb'
+```
+
+### Menjalankan bot
 
 ```bash
 npm start
 ```
 
-### Cara Menghubungkan ke Nomor WhatsApp
+atau:
 
-1. Setelah bot dijalankan, akan ada opsi untuk menghubungkan ke nomor WhatsApp Anda melalui QR atau pairing.
+```bash
+node index.js
+```
 
-2. Jika Anda memilih QR, Anda memerlukan perangkat tambahan. Disarankan untuk menggunakan opsi pairing.
+Akan muncul pilihan `qr` atau `pairing`.
 
-3. Jika Anda memilih pairing:
-   - Masukkan nomor WhatsApp Anda, contoh: 62831109XXXXX.
-   - Salin kode yang ditampilkan.
-   - Buka WhatsApp Anda dan ikuti langkah-langkah berikut:
-     - Klik titik tiga di kanan atas.
-     - Pilih "Perangkat tertaut" > "Masuk dengan nomor telepon".
-     - Masukkan kode yang Anda salin tadi.
-     - Tunggu proses koneksi, ini bisa memakan waktu.
+- `qr`: ketik `qr`, lalu buka WhatsApp > titik tiga > Perangkat tertaut > Tautkan perangkat, dan pindai kode yang muncul.
+- `pairing`: ketik `pairing`, masukkan nomor WhatsApp kamu, lalu salin kode yang muncul. Di WhatsApp buka titik tiga > Perangkat tertaut > Masuk dengan nomor telepon, lalu masukkan kode tersebut.
 
-Jika mengalami kesulitan, coba hapus folder `lib/connection/session` dan jalankan ulang bot.
+Tunggu sampai koneksi berstatus `open`. Sesi tersimpan di folder `session/`.
+
+### Menjalankan terus-menerus
+
+Untuk menjaga bot tetap hidup setelah terminal ditutup, pakai PM2:
+
+```bash
+npm install -g pm2
+pm2 start index.js --name alya
+pm2 logs alya
+pm2 save
+pm2 startup
+```
+
+Di Termux, `pm2 startup` mungkin tidak tersedia. Jalankan `pm2 start index.js --name alya` lagi setelah Termux dibuka.
+
+Update bot dengan:
+
+```bash
+git pull
+npm install
+pm2 restart alya
+```
+
+### Masalah umum
+
+- `node -v` di bawah 20: upgrade Node.js dulu.
+- `ERR_MODULE_NOT_FOUND`: jalankan `npm install` dari dalam folder `SC-Alisamikloivnakujou`.
+- Error `gyp` atau build native: pasang `build-essential python3` di Linux, atau `clang make python` di Termux, lalu jalankan `npm rebuild`.
+- Error terkait ffmpeg: pastikan `ffmpeg -version` berhasil.
+- Ingin ganti nomor atau sesi rusak: hapus folder `session/`, lalu jalankan ulang bot dan pilih `qr` atau `pairing`.
 
 ---
 
@@ -273,10 +358,6 @@ Jika namamu belum tercantum, atau ingin ditambahkan, silakan ajukan issue atau h
 - **Reindiandikarc**  
   [GitHub](https://github.com/reindiandikarc)  
   (Maintainer)
-
-- **Azfir (rifza.p.p)**  
-  [Instagram](https://www.instagram.com/rifza.p.p) • [GitHub](https://github.com/Rifza123) • [YouTube](https://www.youtube.com/@rifza) • [WhatsappChannel](https://whatsapp.com/channel/0029VaauxAt4Y9li9UtlCu1V)
-  (All contributions)
 
 - **Hanif skizo**  
   [Instagram](https://instagram.com/htr.ox)
