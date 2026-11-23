@@ -115,9 +115,11 @@ const injectRichResponseMessage = (message) => {
   if (typeof rich.messageType === 'string' || !rich.messageType) {
     const map = {
       AI_RICH_RESPONSE_TYPE_STANDARD: 1,
-      AI_RICH_RESPONSE_TYPE_CAROUSEL: 2,
+      AI_RICH_RESPONSE_TYPE_UNKNOWN: 0,
+      STANDARD: 1,
+      UNKNOWN: 0,
     };
-    rich.messageType = map[rich.messageType] || 1;
+    rich.messageType = map[rich.messageType] ?? 1;
   }
 
   if (rich.sections && !rich.unifiedResponse) {
@@ -128,7 +130,9 @@ const injectRichResponseMessage = (message) => {
   if (rich.unifiedResponse?.data) {
     try {
       let decodedJson = null;
-      if (
+      if (Buffer.isBuffer(rich.unifiedResponse.data)) {
+        decodedJson = JSON.parse(rich.unifiedResponse.data.toString('utf8'));
+      } else if (
         typeof rich.unifiedResponse.data === 'object' &&
         rich.unifiedResponse.data !== null
       ) {
@@ -163,25 +167,47 @@ const injectRichResponseMessage = (message) => {
 
   if (Array.isArray(rich.submessages)) {
     const subMap = {
-      AI_RICH_RESPONSE_IMAGE: 1,
+      AI_RICH_RESPONSE_UNKNOWN: 0,
+      AI_RICH_RESPONSE_GRID_IMAGE: 1,
       AI_RICH_RESPONSE_TEXT: 2,
+      AI_RICH_RESPONSE_INLINE_IMAGE: 3,
       AI_RICH_RESPONSE_TABLE: 4,
       AI_RICH_RESPONSE_CODE: 5,
+      AI_RICH_RESPONSE_DYNAMIC: 6,
+      AI_RICH_RESPONSE_MAP: 7,
+      AI_RICH_RESPONSE_LATEX: 8,
+      AI_RICH_RESPONSE_CONTENT_ITEMS: 9,
+      GRID_IMAGE: 1,
+      TEXT: 2,
+      INLINE_IMAGE: 3,
+      TABLE: 4,
+      CODE: 5,
+      DYNAMIC: 6,
+      MAP: 7,
+      LATEX: 8,
+      CONTENT_ITEMS: 9,
+      AI_RICH_RESPONSE_IMAGE: 1,
       AI_RICH_RESPONSE_REELS: 9,
     };
     for (let sub of rich.submessages) {
       if (typeof sub.messageType === 'string' || !sub.messageType) {
         sub.messageType =
-          subMap[sub.messageType] ||
-          (sub.gridImageMetadata
+          subMap[sub.messageType] ??
+          (sub.gridImageMetadata || sub.inlineImageMetadata
             ? 1
             : sub.codeMetadata
               ? 5
               : sub.tableMetadata
                 ? 4
-                : sub.contentItemsMetadata
-                  ? 9
-                  : 2);
+                : sub.mapMetadata
+                  ? 7
+                  : sub.latexMetadata
+                    ? 8
+                    : sub.dynamicMetadata
+                      ? 6
+                      : sub.contentItemsMetadata
+                        ? 9
+                        : 2);
       }
     }
   } else {
@@ -189,11 +215,11 @@ const injectRichResponseMessage = (message) => {
   }
 
   rich.contextInfo ??= {};
-  if (
-    rich.contextInfo.forwardOrigin === 'META_AI' ||
-    typeof rich.contextInfo.forwardOrigin === 'string'
-  ) {
+  if (rich.contextInfo.forwardOrigin === 'META_AI') {
     rich.contextInfo.forwardOrigin = 4;
+  } else if (typeof rich.contextInfo.forwardOrigin === 'string') {
+    const origin = Number(rich.contextInfo.forwardOrigin);
+    rich.contextInfo.forwardOrigin = Number.isFinite(origin) ? origin : 4;
   }
   rich.contextInfo.isForwarded ??= true;
   rich.contextInfo.forwardingScore ??= 1;
@@ -201,20 +227,24 @@ const injectRichResponseMessage = (message) => {
     botJid: '867051314767696@bot',
   };
   rich.contextInfo.botMessageSharingInfo ??= {
-    botEntryPointOrigin: 'AI_TAB',
+    botEntryPointOrigin: 18,
     forwardScore: 1,
   };
+  if (
+    rich.contextInfo.botMessageSharingInfo.botEntryPointOrigin === 'AI_TAB'
+  ) {
+    rich.contextInfo.botMessageSharingInfo.botEntryPointOrigin = 18;
+  }
 
   message.messageContextInfo ??= {};
+  message.messageContextInfo.deviceListMetadata ??= {};
+  message.messageContextInfo.deviceListMetadataVersion ??= 2;
+  message.messageContextInfo.botMetadata ??= {};
+  message.messageContextInfo.botMetadata.messageDisclaimerText ??= '';
+  message.messageContextInfo.botMetadata.botResponseId ??= ''.uuid();
   if (!message.messageContextInfo.messageSecret) {
-    delete message.messageContextInfo.messageSecret;
-    message.messageContextInfo.deviceListMetadata ??= {};
-    message.messageContextInfo.deviceListMetadataVersion ??= 2;
-    message.messageContextInfo.botMetadata ??= {};
-    message.messageContextInfo.botMetadata.messageDisclaimerText ??= '';
     message.messageContextInfo.botMetadata.verificationMetadata =
       {}.verificationMetadata();
-    message.messageContextInfo.botMetadata.botResponseId ??= ''.uuid();
   }
 
   if (message.richResponseMessage) {
@@ -657,7 +687,6 @@ export default async function initialize({ Exp, store }) {
                   },
                 }
               : {}),
-            carouselMessage: {},
             ...(config.nativeFlowMessage || config.limited_time_offer
               ? {
                   nativeFlowMessage: {
@@ -672,7 +701,12 @@ export default async function initialize({ Exp, store }) {
                     ...config.nativeFlowMessage,
                   },
                 }
-              : {}),
+              : {
+                  nativeFlowMessage: {
+                    buttons: [],
+                    messageParamsJson: '{}',
+                  },
+                }),
           },
         };
         type = 'interactiveMessage';

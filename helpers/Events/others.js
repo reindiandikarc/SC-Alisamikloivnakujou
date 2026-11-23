@@ -115,7 +115,7 @@ export default async function on({ cht, Exp, store, ev, is }) {
               quotedMessage: cht,
               forwardedNewsletterMessageInfo: cfg.chId || {
                 newsletterJid: '120363205560908891@newsletter',
-                newslettedName: 'Termai',
+                newsletterName: 'Termai',
                 serverMessageId: 152,
               },
             },
@@ -164,7 +164,7 @@ export default async function on({ cht, Exp, store, ev, is }) {
                 quotedMessage: cht.message,
                 forwardedNewsletterMessageInfo: cfg.chId || {
                   newsletterJid: '120363205560908891@newsletter',
-                  newslettedName: 'Termai',
+                  newsletterName: 'Termai',
                   serverMessageId: 152,
                 },
               },
@@ -288,7 +288,7 @@ export default async function on({ cht, Exp, store, ev, is }) {
               quotedMessage: cht,
               forwardedNewsletterMessageInfo: cfg.chId || {
                 newsletterJid: '120363205560908891@newsletter',
-                newslettedName: 'Termai',
+                newsletterName: 'Termai',
                 serverMessageId: 152,
               },
             },
@@ -541,9 +541,9 @@ export default async function on({ cht, Exp, store, ev, is }) {
           {
             orderMessage: {
               orderId: '530240676665078',
-              status: 'INQUIRY',
-              surface: 'CATALOG',
-              ItemCount: 0,
+              status: 1,
+              surface: 1,
+              itemCount: 0,
               message: text,
               sellerJid: '6281374955605@s.whatsapp.net',
               token: 'AR6oiV5cQjZsGfjvfDwl0DXfnAE+OPRkWAQtFDaB9wxPlQ==',
@@ -576,7 +576,7 @@ export default async function on({ cht, Exp, store, ev, is }) {
                 isForwarded: true,
                 forwardedNewsletterMessageInfo: cfg.chId || {
                   newsletterJid: '120363205560908891@newsletter',
-                  newslettedName: 'Termai',
+                  newsletterName: 'Termai',
                   serverMessageId: 152,
                 },
               },
@@ -614,7 +614,6 @@ export default async function on({ cht, Exp, store, ev, is }) {
                   title: cht.pushName,
                   body: 'Artificial Intelligence, The beginning of the robot era',
                   thumbnailUrl,
-                  sourceUrl: 'https://github.com/Rifza123',
                   mediaUrl: `http://ẉa.me/6283110928302/${Math.floor(Math.random() * 100000000000000000)}`,
                   renderLargerThumbnail: true,
                   mediaType: 1,
@@ -624,7 +623,7 @@ export default async function on({ cht, Exp, store, ev, is }) {
                 },
                 forwardedNewsletterMessageInfo: cfg.chId || {
                   newsletterJid: '120363205560908891@newsletter',
-                  newslettedName: 'Termai',
+                  newsletterName: 'Termai',
                   serverMessageId: 152,
                 },
               },
@@ -1675,7 +1674,7 @@ ${infos.others.readMore}
               quotedMessage: cht,
               forwardedNewsletterMessageInfo: cfg.chId || {
                 newsletterJid: '120363205560908891@newsletter',
-                newslettedName: 'Termai',
+                newsletterName: 'Termai',
                 serverMessageId: 152,
               },
             },

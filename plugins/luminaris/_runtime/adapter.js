@@ -15,6 +15,7 @@ import { CHAT, jidNum, rememberName } from './core-shim.js';
 import { createModuleData } from './store.js';
 
 const EVENT_ALLOW = new Set(['leveling']);
+const EXTRA_MENU = new Set(['quiz', 'minecraft', 'leaderboard', 'gitdl', 'capture', 'adventure', 'aq', 'manga']);
 
 export const registry = { handlers: [], answerHooks: [], eventHooks: [], skipped: [], failed: [], modules: [] };
 
@@ -103,7 +104,7 @@ export function registerModule({ def, moduleId, file, ev }) {
   if (skipped.length) registry.skipped.push({ module: label, cmds: skipped });
   if (!free.length) return { registered: [], skipped };
 
-  const rule = { cmd: free, listmenu: [free[0]], tag: def.category === 'game' ? 'game' : def.category || 'luminaris' };
+  const rule = { cmd: free, listmenu: [...new Set([free[0], ...free.filter((c) => EXTRA_MENU.has(c))])], tag: def.category === 'game' ? 'game' : def.category || 'luminaris' };
   if (def.role === 0) rule.isOwner = true;
   if (def.role === 5) { rule.isAdmin = true; rule.isGroup = true; }
   if (def.allow === CHAT.GROUP) rule.isGroup = true;

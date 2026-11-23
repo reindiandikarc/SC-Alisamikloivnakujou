@@ -576,25 +576,7 @@ ${loraText}
         await Exp.relayMessage(
           cht.id,
           {
-            messageContextInfo: {
-              messageSecret: '0hDCiRfrZHYooUocY7vooWJ8kSQLMJxjSSZqq4QyyWQ=',
-              botMetadata: {
-                verificationMetadata: {
-                  proofs: [
-                    {
-                      version: 1,
-                      useCase: 'WA_BOT_MSG',
-                      signature:
-                        'fNXsmJTAJGKerAJMwVOiYIbB1c/A2hVXUOPyRUvNu+0W8F1NUvnibUbnem2OismriiyvLmLmGAlXhlCksxqGCA==',
-                      certificateChain: [
-                        'MIICqTCCAk6gAwIBAgIUaxPH0fsyZiMDN5A8Wd0yrpLmqjMwCgYIKoZIzj0EAwIweTEiMCAGA1UEAwwZTWV0YSBXQSBTUyBJbnQgQ0EgMjAyNS0wOTELMAkGA1UEBhMCVVMxEzARBgNVBAgMCkNhbGlmb3JuaWExEzARBgNVBAcMCk1lbmxvIFBhcmsxHDAaBgNVBAoME01ldGEgUGxhdGZvcm1zIEluYy4wHhcNMjYwODI3MTgzMTU3WhcNMjcwMzE1MTgzMjA3WjAeMRwwGgYDVQQDDBNzdmM6d2EtYm90LW1zZy1sZWFmMCowBQYDK2VwAyEAqdut5Tx9yWzW6vvz7oYsRtpuOdoTXIm5KsU0nVELWiijggE8MIIBODALBgNVHQ8EBAMCB4AwHQYDVR0OBBYEFAnL8t65S5IJ7KhhcL28bbYsPC6XMIG0BgNVHSMEgawwgamAFO81YRGUWbuc0xuufO+lFiYAOjGOoXukeTB3MSAwHgYDVQQDDBdNZXRhIFdBIEZlYXR1cmUgUm9vdCBDQTELMAkGA1UEBhMCVVMxEzARBgNVBAgMCkNhbGlmb3JuaWExEzARBgNVBAcMCk1lbmxvIFBhcmsxHDAaBgNVBAoME01ldGEgUGxhdGZvcm1zIEluYy6CFEZvL5Zv8AJ8duOmVC+Foy7F4yg7MFMGCysGAQQBgsAVAgIQBEQMQlVSSTptcmw6Ly9jZXJ0aWZpY2F0ZV9zZXJ2aWNlLndoYXRzYXBwX3NpbXBsZV9zaWduYWwvU2VyaWFsTnVtYmVyczAKBggqhkjOPQQDAgNJADBGAiEAtF9K6ACFItXj8f8JuNEKKM8+rB2V5xJZinXFM2VRjKECIQD7sFe9r0N2WZV4i+H0+7TXvXJzGh165X0nJNNX/Ls7xA==',
-                        'MIIDeDCCAx2gAwIBAgIURm8vlm/wAnx246ZUL4WjLsXjKDswCgYIKoZIzj0EAwIwdzEgMB4GA1UEAwwXTWV0YSBXQSBGZWF0dXJlIFJvb3QgQ0ExCzAJBgNVBAYTAlVTMRMwEQYDVQQIDApDYWxpZm9ybmlhMRMwEQYDVQQHDApNZW5sbyBQYXJrMRwwGgYDVQQKDBNNZXRhIFBsYXRmb3JtcyBJbmMuMB4XDTI1MDkwNDE4MDU0OVoXDTI3MDkwNDE4MDU0OVoweTEiMCAGA1UEAwwZTWV0YSBXQSBTUyBJbnQgQ0EgMjAyNS0wOTELMAkGA1UEBhMCVVMxEzARBgNVBAgMCkNhbGlmb3JuaWExEzARBgNVBAcMCk1lbmxvIFBhcmsxHDAaBgNVBAoME01ldGEgUGxhdGZvcm1zIEluYy4wWTATBgcqhkjOPQIBBggqhkjOPQMBBwNCAATs+c+UVhvMBZzu4AHndKKTZASPLp2vUt1g84aUpdOFqmqCs5KEJ8Sxhi8F9GX4P7rPLjfOwfFJRA6yrp+2cX0zo4IBgzCCAX8wHQYDVR0OBBYEFO81YRGUWbuc0xuufO+lFiYAOjGOMIG0BgNVHSMEgawwgamAFNO7KMTVSYUxkL6VS3LyWJw7m76zoXukeTB3MSAwHgYDVQQDDBdNZXRhIFdBIEZlYXR1cmUgUm9vdCBDQTELMAkGA1UEBhMCVVMxEzARBgNVBAgMCkNhbGlmb3JuaWExEzARBgNVBAcMCk1lbmxvIFBhcmsxHDAaBgNVBAoME01ldGEgUGxhdGZvcm1zIEluYy6CFALbuULsZlYXxk/Cz5I35uNJkpdAMA4GA1UdDwEB/wQEAwIBhjASBgNVHRMBAf8ECDAGAQH/AgEAMEUGA1UdHwQ+MDwwOqA4oDaGNGh0dHBzOi8vbWV0YS5wdWJsaWNrZXlpbmZyYS5jb20vYXJsL3doYXRzYXBwX2ZlYXR1cmUwIAYIKwYBBQUHAQEEFDASMBAGCCsGAQUFBzABhgROb25lMBoGCWCGSAGG+EIBDQQNFgtPbmNhbGw6IHBraTAKBggqhkjOPQQDAgNJADBGAiEAq7Ycf2W/cSA2Ni3L0sgYmPmlRxkPcMgOm+ZRgkiQsdwCIQD2XRUvySFSRYJSfyQW2m4ka8N9gJ8KRMD1KTwyXghXHQ==',
-                      ],
-                    },
-                  ],
-                },
-              },
-            },
+            messageContextInfo: {},
             botForwardedMessage: {
               message: {
                 richResponseMessage: {
@@ -639,7 +621,7 @@ ${loraText}
                     },
                     forwardOrigin: 'META_AI',
                     botMessageSharingInfo: {
-                      botEntryPointOrigin: 'AI_TAB',
+                      botEntryPointOrigin: 18,
                       forwardScore: 1,
                     },
                   },
@@ -775,7 +757,7 @@ ${loraText}
                                     },
                                     forwardOrigin: 'META_AI',
                                     botMessageSharingInfo: {
-                                      botEntryPointOrigin: 'AI_TAB',
+                                      botEntryPointOrigin: 18,
                                       forwardScore: 1,
                                     },
                                   },
@@ -1890,14 +1872,13 @@ ${loraText}
       tag: 'ai',
       energy: 30,
       args: 'Please input prompt (English recommended)!',
+      media: { type: ['image', 'sticker'], save: false },
     },
-    async () => {
-      const img = is.quoted.image || is.image;
-      if (!img)
+    async ({ media, args }) => {
+      if (!media)
         return cht.reply('Harap kirim gambar atau reply gambar dengan prompt!');
-      let media = await (is.image ? cht.download() : cht.quoted.download());
       try {
-        if (is.sticker || is.quoted?.sticker) {
+        if (is.quoted?.sticker || cht.reaction?.sticker || cht.type === 'sticker') {
           let url = await tmpFiles(media);
           let cv = await convert({
             url,
@@ -1909,7 +1890,7 @@ ${loraText}
         Exp.sendMessage(
           id,
           {
-            image: await imageEdit(await func.minimizeImage(media), cht.q),
+            image: await imageEdit(await func.minimizeImage(media), args),
             ai: true,
           },
           { quoted: cht.reaction || cht }
@@ -2022,7 +2003,7 @@ ${loraText}
     },
     () => {
       cht.q = edits[cht.cmd];
-      ev.emit('edit', { cht });
+      ev.emit('edit', { cht, internal: true, args: cht.q });
     }
   );
 
@@ -2040,7 +2021,7 @@ ${loraText}
     },
     () => {
       cht.q = `create a Pixar-style movie poster inspired by Finding Nemo, underwater ocean background, colorful corals and fishes, cinematic lighting, text on the poster should say "Finding ${cht.q}" in bold Pixar-style font`;
-      ev.emit('edit');
+      ev.emit('edit', { internal: true, args: cht.q });
     }
   );
 }

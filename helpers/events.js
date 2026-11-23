@@ -44,11 +44,15 @@ export default class EventEmitter {
 
   getMediaType() {
     let notmedia = ['conversation', 'extendedTextMessage'];
-    return this.is.quoted && !notmedia.includes(this.is.quoted.type)
-      ? { quoted: true, type: this.is.quoted.type }
-      : this.is.reaction && !notmedia.includes(this.is.reaction.mtype)
-        ? { quoted: false, type: this.is.reaction.mtype }
-        : { quoted: false, type: this.cht.type };
+    let quoted = this.is?.quoted || this.cht?.quoted;
+    if (quoted && !notmedia.includes(quoted.type)) {
+      return { quoted: true, type: quoted.type };
+    }
+    let reaction = this.is?.reaction;
+    if (reaction && !notmedia.includes(reaction.mtype)) {
+      return { quoted: false, type: reaction.mtype };
+    }
+    return { quoted: false, type: this.cht?.type };
   }
 
   on(eventMap, resolve) {
@@ -167,6 +171,7 @@ export default class EventEmitter {
       await this.loadEventHandler(ev.eventFile);
       ev = Data.events[event];
       let cht = opts?.cht || this.cht;
+      let internal = Boolean(opts?.internal);
 
       let urls =
         cht.quoted?.url?.length > 0
@@ -179,7 +184,11 @@ export default class EventEmitter {
                 ? this.is.url
                 : [];
 
-      let args = opts?.args || cht?.q;
+      let args = opts?.args ?? cht?.q ?? '';
+      if (urls.length < 1 && typeof args === 'string') {
+        let argUrls = this.Exp.func.parseLink(args);
+        if (argUrls?.length > 0) urls = argUrls;
+      }
       let arg = cht?.args;
       let sender = cht.sender;
       let user = sender.split('@')[0];
@@ -262,7 +271,7 @@ export default class EventEmitter {
               : ev.isBotAdmin,
         },
         {
-          condition: ev.isQuoted && !cht.quoted,
+          condition: !internal && ev.isQuoted && !cht.quoted,
           message:
             typeof ev.isQuoted === 'boolean' ? messages.isQuoted : ev.isQuoted,
         },
@@ -305,7 +314,7 @@ export default class EventEmitter {
         );
       }
 
-      if (ev.args || ev.arg) {
+      if (!internal && (ev.args || ev.arg)) {
         if (ev.arg ? !arg : !args) {
           return cht.question(
             ev.args && ev.args !== true
@@ -337,7 +346,7 @@ export default class EventEmitter {
           ev.isMention !== true ? ev.isMention : messages.isMention
         );
 
-      if (ev.urls) {
+      if (!internal && ev.urls) {
         if (!(urls?.length > 0)) {
           return cht.question(
             ev.urls.msg !== true ? ev.urls.msg : messages.isUrl,
@@ -373,20 +382,23 @@ export default class EventEmitter {
         const { type, msg, etc } = ev.media;
         let { type: mediaType, quoted: isQuotedMedia } = this.getMediaType();
         if (!type.includes(mediaType)) {
-          return cht.question(
-            msg ||
-              func.tagReplacer(messages.isMedia, {
-                type: type.join('/'),
-                caption: cht.msg,
-              }),
-            {
-              emit: cht.cmd,
-              accepts: [],
-              exp: Date.now() + 20000,
-            }
-          );
+          if (!internal)
+            return cht.question(
+              msg ||
+                func.tagReplacer(messages.isMedia, {
+                  type: type.join('/'),
+                  caption: cht.msg,
+                }),
+              {
+                emit: cht.cmd,
+                accepts: [],
+                exp: Date.now() + 20000,
+              }
+            );
+          media = null;
         }
 
+        if (media !== null) {
         if (mediaType === 'audio') {
           if (etc && this.is.quoted?.audio?.seconds > etc.seconds) {
             return cht.question(
@@ -460,6 +472,7 @@ export default class EventEmitter {
         media = ev.media.save
           ? await func.downloadSave(save, mediaType)
           : await download();
+        }
 
         /*
                   if(mediaType == "image"){

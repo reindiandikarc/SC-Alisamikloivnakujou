@@ -642,7 +642,7 @@ export default async function on({ cht, Exp, store, ev, is }) {
                       newsletterJid: d.id,
                       serverMessageId: 2025,
                       newsletterName: name,
-                      newslettedName: name,
+                      newsletterName: name,
                     };
                     cfg.chId = cfg.menu.chId;
                     return cht.reply(infos.owner.setChidSuccess(name, d.id));
@@ -684,7 +684,7 @@ export default async function on({ cht, Exp, store, ev, is }) {
                   newsletterJid: jid,
                   serverMessageId: fwdInfo.serverMessageId || 2025,
                   newsletterName: name,
-                  newslettedName: name,
+                  newsletterName: name,
                 };
                 cfg.chId = cfg.menu.chId;
                 return cht.reply(infos.owner.setChidSuccess(name, jid));

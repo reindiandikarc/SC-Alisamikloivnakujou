@@ -25,7 +25,7 @@ export default async function react({ cht, Exp, store, is, ev }) {
     for (let i of Object.keys(c)) {
       cht[i] = c[i];
     }
-    return Ev.emit(cmd, opts);
+    return Ev.emit(cmd, { internal: true, ...opts, args: cht.q ?? opts?.args });
   };
 
   let urltype =

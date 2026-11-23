@@ -306,7 +306,10 @@ export default async function In({ cht, Exp, store, is, ev, chatDb, sewaDb }) {
                   footer: {
                     text: Data.infos.interactive.antiDeleteNote,
                   },
-                  carouselMessage: {},
+                  nativeFlowMessage: {
+                    buttons: [],
+                    messageParamsJson: '{}',
+                  },
                 },
               },
             },

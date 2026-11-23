@@ -276,10 +276,13 @@ export default async function detector({ Exp, store }) {
                 viewOnceMessage: {
                   message: {
                     interactiveMessage: {
-                      footer: {
+                      body: {
                         text: s.msg,
                       },
-                      carouselMessage: {},
+                      nativeFlowMessage: {
+                        buttons: [],
+                        messageParamsJson: '{}',
+                      },
                     },
                   },
                 },
@@ -352,12 +355,15 @@ Semoga puasa kita diterima Allah dan diberikan kekuatan serta kelancaran sepanja
                     },
                     ...(['magrib'].includes(data.now)
                       ? {
-                          contextIntfo: {
+                          contextInfo: {
                             mentionedJid: participants,
                           },
                         }
                       : {}),
-                    carouselMessage: {},
+                    nativeFlowMessage: {
+                      buttons: [],
+                      messageParamsJson: '{}',
+                    },
                   },
                 },
               },
