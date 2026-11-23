@@ -1,0 +1,122 @@
+[
+  {
+    "rel": "engine/lumen/plugins/ai/aipaimon.js",
+    "kinds": [
+      "before"
+    ]
+  },
+  {
+    "rel": "engine/lumen/plugins/game/akinator.js",
+    "kinds": [
+      "before"
+    ]
+  },
+  {
+    "rel": "engine/lumen/plugins/game/game-sambungkata.js",
+    "kinds": [
+      "before"
+    ]
+  },
+  {
+    "rel": "engine/lumen/plugins/game/game-tebakbendera.js",
+    "kinds": [
+      "all"
+    ]
+  },
+  {
+    "rel": "engine/lumen/plugins/game/game-tebakheroml.js",
+    "kinds": [
+      "all"
+    ]
+  },
+  {
+    "rel": "engine/lumen/plugins/game/game-tebakjkt.js",
+    "kinds": [
+      "all"
+    ]
+  },
+  {
+    "rel": "engine/lumen/plugins/game/game-tebakkata.js",
+    "kinds": [
+      "before"
+    ]
+  },
+  {
+    "rel": "engine/lumen/plugins/game/game-tebaksurah.js",
+    "kinds": [
+      "all"
+    ]
+  },
+  {
+    "rel": "engine/lumen/plugins/game/game-tebakwarna.js",
+    "kinds": [
+      "all"
+    ]
+  },
+  {
+    "rel": "engine/lumen/plugins/game/game-tekateki.js",
+    "kinds": [
+      "all"
+    ]
+  },
+  {
+    "rel": "engine/lumen/plugins/group/autosholat.js",
+    "kinds": [
+      "before"
+    ]
+  },
+  {
+    "rel": "engine/lumen/plugins/info/cuaca.js",
+    "kinds": [
+      "before"
+    ]
+  },
+  {
+    "rel": "engine/lumen/plugins/info/JKT48.js",
+    "kinds": [
+      "before"
+    ]
+  },
+  {
+    "rel": "engine/lumen/plugins/misc/notifberita.js",
+    "kinds": [
+      "all"
+    ]
+  },
+  {
+    "rel": "engine/lumen/plugins/search/stickersearch.js",
+    "kinds": [
+      "before"
+    ]
+  },
+  {
+    "rel": "engine/lumen/plugins/sticker/stickerly.js",
+    "kinds": [
+      "before"
+    ]
+  },
+  {
+    "rel": "engine/lumen/plugins/tools/tth.js",
+    "kinds": [
+      "before"
+    ]
+  },
+  {
+    "rel": "engine/vortex/plugins/group/group-autogpt.js",
+    "kinds": [
+      "before"
+    ]
+  },
+  {
+    "rel": "engine/zenith/plugins/game/tebakbola.js",
+    "kinds": [
+      "all"
+    ]
+  },
+  {
+    "rel": "engine/zenith/plugins/game/tebakff.js",
+    "kinds": [
+      "all"
+    ]
+  }
+]

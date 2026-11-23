@@ -1,0 +1,5 @@
+# Kredensial bawaan sumber vanXone disimpan sebagai placeholder di blob git.
+# Nilai asli tetap ada di working tree/runtime lewat filter smudge lokal.
+vx/settings.js filter=vxsecret
+vx/engine/lumen/plugins/tools/tools-upgh.js filter=vxsecret
+vx/engine/zenith/plugins/ai/artaai.js filter=vxsecret

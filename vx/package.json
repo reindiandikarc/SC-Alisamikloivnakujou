@@ -1,0 +1,6 @@
+{
+  "name": "vx-sandbox",
+  "private": true,
+  "type": "commonjs",
+  "description": "Kode vanXone hasil porting. Jenis modul ditentukan lib/vx/bootstrap.js dari isi file."
+}

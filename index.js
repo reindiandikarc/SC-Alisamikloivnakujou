@@ -519,10 +519,29 @@ alya.ev.on('creds.update', saveCreds)
     
 // Handler pesan masuk dipindah ke lib/inbound.js (selalu ber-log, proses semua pesan dalam batch,
 // laporkan pesan yang gagal didekripsi, owner dikenali walau JID berformat @lid).
+// [vx] Hook pasif (handler.all/before) dimuat malas sekali; bila lib/vx gagal
+// dimuat, jalur pesan Alya tetap normal.
+let vxPassive = undefined;
+function getVxPassive() {
+    if (vxPassive === undefined) {
+        try {
+            const vx = require('./lib/vx/dispatch')
+            vxPassive = typeof vx.tryPassive === 'function' ? vx.tryPassive : null
+        } catch (e) {
+            vxPassive = null
+            console.error('[vx] passive hook tidak aktif:', e?.message || e)
+        }
+    }
+    return vxPassive;
+}
 alya.ev.on('messages.upsert', createInboundHandler({
     getAlya: () => alya,
     getStore: () => store,
     smsg,
+    passive: (alya, m, store) => {
+        const fn = getVxPassive()
+        return fn ? fn(alya, m, store) : false
+    },
     dispatch: (...args) => require('./alya')(...args)
 }))
     async function getMessage(key){

@@ -3,3 +3,10 @@ session/
 *.log
 .env
 .env.*
+
+# Runtime cache/data hasil porting vanXone (dibuat saat smoke test & engine DB init)
+vx/.data/
+vx/.writable/
+database/cpanel/
+database/darling.json
+database/ourin/

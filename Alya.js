@@ -187,6 +187,11 @@ const {
   listRegisteredUsers: _listRegisteredUsers,
 } = require('./lib/userRegistration');
 
+// [vx] Porting vanXone: dispatch command ke kode vanXone asli (lib/vx/).
+// Gagal muat = porting nonaktif saja; mode case V13 tetap jalan normal.
+let vxDispatch = null
+try { vxDispatch = require('./lib/vx/dispatch') } catch (e) { console.error('[vx] dispatch gagal dimuat:', e?.message || e) }
+
 /**
  * Handler utama mode case-based.
  * Dipanggil dari alya.js dengan signature (alya, m, ctx) — sama seperti
@@ -252,6 +257,11 @@ module.exports = async function AlyaCaseHandler(alya, m, ctx) {
   let qur;
 
   try {
+
+// [vx] Command yang terdaftar di lib/vx/commands.json dijalankan dengan kode
+// vanXone asli — menimpa case V13 di bawah untuk command yang sama, dan
+// menangani command baru yang tidak punya case. Tidak terdaftar → lanjut switch.
+if (vxDispatch && await vxDispatch.tryHandle(command, alya, m, ctx)) return;
 
 switch (command) {
 	case 'arrow':
