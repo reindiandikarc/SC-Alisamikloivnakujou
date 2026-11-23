@@ -70,7 +70,7 @@ const {
   BufferJSON, WA_DEFAULT_EPHEMERAL, generateWAMessageFromContent, proto,
   generateWAMessageContent, generateWAMessage, prepareWAMessageMedia,
   areJidsSameUser, getContentType, generateForwardMessageContent,
-  downloadContentFromMessage, downloadMediaMessage,
+  downloadContentFromMessage, downloadMediaMessage, MessageBuilder,
 } = require('@whiskeysockets/baileys');
 
 // FIX: sendDynamicMenu dipanggil 30x di seluruh command *menu tapi tidak
@@ -78,6 +78,29 @@ const {
 // baru ada di lib/sendDynamicMenu.js (list-message WhatsApp biasa, pola sama
 // seperti lib/swgc.js yang sudah terbukti jalan di project ini).
 const { sendDynamicMenu } = require('./lib/sendDynamicMenu');
+
+// ── FIX AIRICH: pakai MessageBuilder bawaan fork ─────────────────────────────
+// Payload hardcoded lama cuma mengirim SATU stanza botForwardedMessage.
+// Klien Android butuh DUA stanza: pesan utama + protocolMessage type 14 yang
+// juga dibungkus botForwardedMessage. Field data unifiedResponse juga harus
+// di-escape Unicode-nya, dan contextInfo butuh botMessageSharingInfo.
+// AIRich.send() dari fork sudah melakukan semuanya dengan benar.
+async function sendAlyaAIRich(alya, jid, responseId, title, html) {
+  const AIRich = MessageBuilder.AIRich;
+  const rich = new AIRich(alya, { dynamic: false });
+  rich.setResponseId(responseId);
+  rich.setBotResponseId(responseId);
+  rich.addSection(
+    AIRich.newLayout('Single', {
+      __typename: 'GenAIaeacdsnwHtmlPrimitive',
+      payload: html,
+      trusted_sources: []
+    }),
+    { text: title }
+  );
+  return await rich.send(jid, { messageId: responseId });
+}
+
 
 // ── dhn-api (kumpulan scraper berita/komik/hiburan) ─────────────────────────
 const {
@@ -781,63 +804,7 @@ loop();
 })();
 </script>`
 
-        await alya.relayMessage(
-            m.chat,
-            {
-                messageContextInfo: {
-                    deviceListMetadata: {},
-                    deviceListMetadataVersion: 2,
-                    botMetadata: {
-                        messageDisclaimerText: "",
-                        botResponseId: responseId
-                    }
-                },
-                botForwardedMessage: {
-                    message: {
-                        richResponseMessage: {
-                            messageType: 1,
-                            submessages: [
-                                {
-                                    messageType: 2,
-                                    messageText: "Arrow Breakout"
-                                }
-                            ],
-                            unifiedResponse: {
-                                data: Buffer.from(
-                                    JSON.stringify({
-                                        response_id: responseId,
-                                        sections: [
-                                            {
-                                                view_model: {
-                                                    primitive: {
-                                                        __typename: "GenAIaeacdsnwHtmlPrimitive",
-                                                        payload: html,
-                                                        trusted_sources: []
-                                                    },
-                                                    __typename: "GenAISingleLayoutViewModel"
-                                                }
-                                            }
-                                        ]
-                                    })
-                                ).toString('base64')
-                            },
-                            contextInfo: {
-                                forwardingScore: 1,
-                                isForwarded: true,
-                                forwardedAiBotMessageInfo: {
-                                    botJid: "867051314767696@bot"
-                                },
-                                forwardOrigin: 4
-                            }
-                        }
-                    }
-                }
-            },
-            {
-                messageId: responseId
-            }
-        )
-
+        await sendAlyaAIRich(alya, m.chat, responseId, "Arrow Breakout", html);
     } catch (e) {
         console.error(e)
         replyalya(`❌ *Gagal merender Arrow Breakout!*\nLog error: ${e.message}`)
@@ -2808,63 +2775,7 @@ setStatus('Pilih warna untuk mulai','good');
 })();
 </script>`
 
-        await alya.relayMessage(
-            m.chat,
-            {
-                messageContextInfo: {
-                    deviceListMetadata: {},
-                    deviceListMetadataVersion: 2,
-                    botMetadata: {
-                        messageDisclaimerText: "",
-                        botResponseId: responseId
-                    }
-                },
-                botForwardedMessage: {
-                    message: {
-                        richResponseMessage: {
-                            messageType: 1,
-                            submessages: [
-                                {
-                                    messageType: 2,
-                                    messageText: "Chess Alya Ultimate v2"
-                                }
-                            ],
-                            unifiedResponse: {
-                                data: Buffer.from(
-                                    JSON.stringify({
-                                        response_id: responseId,
-                                        sections: [
-                                            {
-                                                view_model: {
-                                                    primitive: {
-                                                        __typename: "GenAIaeacdsnwHtmlPrimitive",
-                                                        payload: html,
-                                                        trusted_sources: []
-                                                    },
-                                                    __typename: "GenAISingleLayoutViewModel"
-                                                }
-                                            }
-                                        ]
-                                    })
-                                ).toString('base64')
-                            },
-                            contextInfo: {
-                                forwardingScore: 1,
-                                isForwarded: true,
-                                forwardedAiBotMessageInfo: {
-                                    botJid: "867051314767696@bot"
-                                },
-                                forwardOrigin: 4
-                            }
-                        }
-                    }
-                }
-            },
-            {
-                messageId: responseId
-            }
-        )
-
+        await sendAlyaAIRich(alya, m.chat, responseId, "Chess Alya Ultimate v2", html);
     } catch (e) {
         console.error(e)
         replyalya(`❌ *Gagal merender Catur!*\nLog error: ${e.message}`)
@@ -4886,63 +4797,7 @@ resize();
 })();
 </script>`
 
-        await alya.relayMessage(
-            m.chat,
-            {
-                messageContextInfo: {
-                    deviceListMetadata: {},
-                    deviceListMetadataVersion: 2,
-                    botMetadata: {
-                        messageDisclaimerText: "",
-                        botResponseId: responseId
-                    }
-                },
-                botForwardedMessage: {
-                    message: {
-                        richResponseMessage: {
-                            messageType: 1,
-                            submessages: [
-                                {
-                                    messageType: 2,
-                                    messageText: "Tetris Neon 2.0"
-                                }
-                            ],
-                            unifiedResponse: {
-                                data: Buffer.from(
-                                    JSON.stringify({
-                                        response_id: responseId,
-                                        sections: [
-                                            {
-                                                view_model: {
-                                                    primitive: {
-                                                        __typename: "GenAIaeacdsnwHtmlPrimitive",
-                                                        payload: html,
-                                                        trusted_sources: []
-                                                    },
-                                                    __typename: "GenAISingleLayoutViewModel"
-                                                }
-                                            }
-                                        ]
-                                    })
-                                ).toString('base64')
-                            },
-                            contextInfo: {
-                                forwardingScore: 1,
-                                isForwarded: true,
-                                forwardedAiBotMessageInfo: {
-                                    botJid: "867051314767696@bot"
-                                },
-                                forwardOrigin: 4
-                            }
-                        }
-                    }
-                }
-            },
-            {
-                messageId: responseId
-            }
-        )
-
+        await sendAlyaAIRich(alya, m.chat, responseId, "Tetris Neon 2.0", html);
     } catch (e) {
         console.error(e)
         replyalya(`❌ *Gagal merender Tetris!*\nLog error: ${e.message}`)
@@ -7104,76 +6959,7 @@ draw();
 </script>
 `
 
-        await alya.relayMessage(
-            m.chat,
-            {
-                messageContextInfo: {
-                    deviceListMetadata: {},
-                    deviceListMetadataVersion: 2,
-                    botMetadata: {
-                        messageDisclaimerText: "",
-                        botResponseId: responseId
-                    }
-                },
-
-                botForwardedMessage: {
-                    message: {
-                        richResponseMessage: {
-                            messageType: 1,
-
-                            submessages: [
-                                {
-                                    messageType: 2,
-                                    messageText: "Snake Neon Ultra"
-                                }
-                            ],
-
-                            unifiedResponse: {
-                                data: Buffer.from(
-                                    JSON.stringify({
-                                        response_id: responseId,
-
-                                        sections: [
-                                            {
-                                                view_model: {
-                                                    primitive: {
-                                                        __typename:
-                                                            "GenAIaeacdsnwHtmlPrimitive",
-
-                                                        payload: html,
-
-                                                        trusted_sources: []
-                                                    },
-
-                                                    __typename:
-                                                        "GenAISingleLayoutViewModel"
-                                                }
-                                            }
-                                        ]
-                                    })
-                                ).toString('base64')
-                            },
-
-                            contextInfo: {
-                                forwardingScore: 1,
-                                isForwarded: true,
-
-                                forwardedAiBotMessageInfo: {
-                                    botJid:
-                                        "867051314767696@bot"
-                                },
-
-                                forwardOrigin: 4
-                            }
-                        }
-                    }
-                }
-            },
-            {
-                messageId: responseId
-            }
-        )
-
+        await sendAlyaAIRich(alya, m.chat, responseId, "Snake Neon Ultra", html);
     } catch (e) {
 
         console.error(e)
@@ -7290,62 +7076,7 @@ resize();
 })();
 </script>`
 
-        await alya.relayMessage(
-            m.chat,
-            {
-                messageContextInfo: {
-                    deviceListMetadata: {},
-                    deviceListMetadataVersion: 2,
-                    botMetadata: {
-                        messageDisclaimerText: "",
-                        botResponseId: responseId
-                    }
-                },
-                botForwardedMessage: {
-                    message: {
-                        richResponseMessage: {
-                            messageType: 1,
-                            submessages: [
-                                {
-                                    messageType: 2,
-                                    messageText: "Flappy Bird"
-                                }
-                            ],
-                            unifiedResponse: {
-                                data: Buffer.from(
-                                    JSON.stringify({
-                                        response_id: responseId,
-                                        sections: [
-                                            {
-                                                view_model: {
-                                                    primitive: {
-                                                        __typename: "GenAIaeacdsnwHtmlPrimitive",
-                                                        payload: html,
-                                                        trusted_sources: []
-                                                    },
-                                                    __typename: "GenAISingleLayoutViewModel"
-                                                }
-                                            }
-                                        ]
-                                    })
-                                ).toString('base64')
-                            },
-                            contextInfo: {
-                                forwardingScore: 1,
-                                isForwarded: true,
-                                forwardedAiBotMessageInfo: {
-                                    botJid: "867051314767696@bot" 
-                                },
-                                forwardOrigin: 4
-                            }
-                        }
-                    }
-                }
-            },
-            {
-                messageId: responseId
-            }
-        )
+        await sendAlyaAIRich(alya, m.chat, responseId, "Flappy Bird", html);
     } catch (e) {
         console.error(e)
         replyalya(`❌ *Gagal merender UI Flappy Bird!*\nLog error: ${e.message}`)
