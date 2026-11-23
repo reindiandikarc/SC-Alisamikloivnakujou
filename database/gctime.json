@@ -1,0 +1,12 @@
+{
+  "12345@g.us": {
+    "openTime": "06:00",
+    "closeTime": "22:00",
+    "active": true
+  },
+  "999@g.us": {
+    "openTime": "06:00",
+    "closeTime": "22:30",
+    "active": true
+  }
+}
