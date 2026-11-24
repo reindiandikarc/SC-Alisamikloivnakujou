@@ -68,7 +68,7 @@ const materialQuote = () => ({
 
 async function main() {
   await test('rvome relay ke pengirim, rvo relay ke chat', async () => {
-    for (const [cmd, expected] of [['rvome', SENDER], ['rvo', CHAT]]) {
+    for (const [cmd, expected] of [['rvome', SENDER], ['rvo', CHAT], ['getviewonce', CHAT]]) {
       downloadCalls = 0
       const s = setup(cmd, materialQuote())
       await plugin.run(s.alaya, s.m, s.ctx)
@@ -90,12 +90,16 @@ async function main() {
     assert.strictEqual(img.fileLength, '71246')
   })
 
-  await test('quote placeholder tanpa material tidak di-relay (PDO tetap jalan)', async () => {
-    const s = setup('rvo', { imageMessage: { viewOnce: true, mimetype: 'image/jpeg' } })
-    s.ctx.isOwner = true
+  await test('quote tanpa mediaKey/directPath tetap di-relay (sama seperti Bell)', async () => {
+    const s = setup('rvo', { imageMessage: { viewOnce: true, mimetype: 'image/jpeg', fileSha256: Buffer.alloc(32, 7) } })
     await plugin.run(s.alaya, s.m, s.ctx)
-    assert.strictEqual(s.relayed.length, 0)
-    assert.ok(s.replied.join(' ').length > 0, 'harus ada balasan fallback')
+    assert.strictEqual(s.relayed.length, 1, 'descriptor metadata harus tetap direlay')
+    assert.strictEqual('viewOnce' in s.relayed[0].content.imageMessage, false)
+    assert.strictEqual(downloadCalls, 0, 'downloader tidak boleh dipanggil')
+  })
+
+  await test('alias getviewonce terdaftar di plugin', async () => {
+    assert.ok(plugin.command.includes('getviewonce'), 'plugin harus menerima getviewonce')
   })
 
   await test('helper tidak mengubah objek asli', async () => {
@@ -112,7 +116,8 @@ async function main() {
     assert.strictEqual(out.mediaType, 'image')
   })
 
-  console.log('RVO_RELAY_TEST_OK')
+  if (!process.exitCode) console.log('RVO_RELAY_TEST_OK')
+  else console.log('RVO_RELAY_TEST_FAIL')
 }
 
 main().catch(e => { console.log('RVO_RELAY_TEST_FAIL', e); process.exitCode = 1 })

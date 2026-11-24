@@ -21229,11 +21229,16 @@ _File sukses terkirim..._`
 			replyalya("❌ Terjadi kesalahan saat mengambil data.");
 		}
 	}
+case 'jadihitam':
 case 'hitamkan':
 case 'tohitam': {
-{
-    replyalya('⚠️ Fitur ini belum tersedia — endpoint belum diisi.')
-}
+    try {
+      const plug = require('./plugins/cmd/tohitam')
+      return await plug.run(alya, m, ctx)
+    } catch (e) {
+      console.error('[tohitam case Error]', e?.message || e)
+      return replyalya('❌ Gagal memproses gambar: ' + (e?.message || String(e)))
+    }
 }
 case 'tochibbi':
 case 'chibbi':
@@ -32541,7 +32546,8 @@ case '🐦':
 case 'readvo':
 case 'rvo':
 case 'readviewonce':
-case 'rvome': {
+case 'rvome':
+case 'getviewonce': {
     // [fix] Satu jalur logika untuk mode CASE maupun PLUGIN. Plugin rvo
     // memakai wrapper download sentral yang membuka pesan asli view-once
     // dari store / database/media-cache.json.
@@ -35374,11 +35380,16 @@ case 'confirmdelwl': {
 
     replyalya(`✅ Berhasil menghapus grup dari whitelist:\n🆔 ${id}`)
 }
+case 'jadiputih':
 case 'putihkan':
 case 'toputih': {
-{
-    replyalya('⚠️ Fitur ini belum tersedia — endpoint belum diisi.')
-}
+    try {
+      const plug = require('./plugins/cmd/toputih')
+      return await plug.run(alya, m, ctx)
+    } catch (e) {
+      console.error('[toputih case Error]', e?.message || e)
+      return replyalya('❌ Gagal memproses gambar: ' + (e?.message || String(e)))
+    }
 }
 break
 case 'fakeml':

@@ -256,7 +256,7 @@ test('plugin .rvo sukses lewat fakeObj.message saat quote & cache kosong (skenar
 
   try {
     const plugin = require('../plugins/cmd/readviewonce')
-    assert.deepStrictEqual(plugin.command, ['rvo', 'readviewonce', 'rvome'])
+    assert.deepStrictEqual(plugin.command, ['rvo', 'readviewonce', 'rvome', 'getviewonce'])
     assert.deepStrictEqual(plugin.tags, ['general'])
 
     global._rvoCache = new Map()

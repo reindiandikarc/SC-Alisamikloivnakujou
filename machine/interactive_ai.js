@@ -660,10 +660,10 @@ function _pickDeepBridge() {
 }
 
 
-async function generateVoice(text) {
-  
-  let cleanText = text
-    
+async function generateVoice(text, opts = {}) {
+  const strict = opts.strict === true
+  const speed = opts.speed || 0.95
+  let cleanText = opts.raw ? String(text || '').trim() : String(text || '')
     .replace(/\[_[^\]]*_\]/g, '')           
     .replace(/\[.*?\]/g, '')                
     .replace(/\*\*?([^*]+)\*\*?/g, '$1')   
@@ -699,21 +699,45 @@ async function generateVoice(text) {
 
   if (!cleanText || cleanText.length < 3) return null;
 
-  const selectedModel  = getVoiceModel();
+  const selectedModel  = opts.voice || getVoiceModel();
   const fallbackVoices = ['bella', 'nova', 'adam', 'echilling'];
-  const tryVoices      = [selectedModel, ...fallbackVoices.filter(v => v !== selectedModel)];
+  const tryVoices      = strict
+    ? [selectedModel]
+    : [selectedModel, ...fallbackVoices.filter(v => v !== selectedModel)];
 
-  
   for (const voice of tryVoices) {
     try {
-      const url = `${TERMAI_URL}/api/text2speech/elevenlabs?key=${TERMAI_KEY}&text=${encodeURIComponent(cleanText)}&voice=${voice}&speed=0.95`;
+      const url = `${TERMAI_URL}/api/text2speech/elevenlabs?key=${TERMAI_KEY}&text=${encodeURIComponent(cleanText)}&voice=${voice}&speed=${speed}`;
       const res = await fetch(url, { signal: AbortSignal.timeout(15000) });
-      if (!res.ok) continue;
       const ct  = res.headers.get('content-type') || '';
-      if (ct.includes('application/json')) continue;
+      if (!res.ok || ct.includes('application/json')) {
+        let payload = null;
+        try { payload = JSON.parse(await res.text()) } catch {}
+        if (strict) {
+          const e = new Error(payload?.message || payload?.status || 'API menolak permintaan TTS');
+          e.status = payload?.status || res.status;
+          e.apiError = true;
+          throw e;
+        }
+        continue;
+      }
       const buf = Buffer.from(await res.arrayBuffer());
       if (buf.length > 2000) return buf;
-    } catch {}
+      if (strict) {
+        const e = new Error('API mengembalikan audio kosong');
+        e.status = res.status;
+        e.apiError = true;
+        throw e;
+      }
+    } catch (e) {
+      if (strict && e?.apiError) throw e;
+    }
+  }
+
+  if (strict) {
+    const e = new Error('Gagal membuat audio dari ElevenLabs');
+    e.apiError = true;
+    throw e;
   }
 
   
@@ -1659,9 +1683,12 @@ Informasi tambahan:
       
       
       
+      case 'voice':
       case 'kirim_suara': {
-        
-        const speakText = await buildSpeakText(config, replyText, chat, {
+        const voiceCfg = config?.cmd === 'voice' && !config?.speakText
+          ? { ...config, speakText: config?.msg }
+          : config
+        const speakText = await buildSpeakText(voiceCfg, replyText, chat, {
           persona, sender, pushname, roleData,
         });
         console.log('[Alya VN] speakText →', speakText?.slice(0, 100));
@@ -1680,7 +1707,9 @@ Informasi tambahan:
         await new Promise(r => setTimeout(r, Math.min(recordingDelay, 4000)));
 
         
-        const audioBuffer = await generateVoice(speakText);
+        const audioBuffer = await generateVoice(speakText, {
+          voice: config?.voice || config?.cfg?.voice || undefined,
+        });
 
         if (audioBuffer) {
           

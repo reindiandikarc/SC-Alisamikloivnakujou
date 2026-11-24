@@ -62,7 +62,7 @@ function cacheEntryMatches(entry, m, jids, quotedSender, exact) {
 }
 
 module.exports = {
-  command: ['rvo', 'readviewonce', 'rvome'],
+  command: ['rvo', 'readviewonce', 'rvome', 'getviewonce'],
   tags: ['general'],
   category: 'tools',
   run: async (alaya, m, ctx) => {
@@ -78,6 +78,7 @@ module.exports = {
     }
     const cmd = (prefix || '.') + (command || 'rvo')
     const actionable = () =>
+      'Ups, sepertinya saya tidak dapat mendeteksi pesan 1x lihat yang dikirim oleh orang tersebut!\n\n' +
       '❌ *Media sekali lihat tidak ditemukan / gagal diunduh.*\n\n' +
       '> ◦ Kirim ulang foto/video/audio sebagai pesan *sekali lihat*, lalu reply pesan itu dengan *' + cmd + '*.\n' +
       '> ◦ Bisa juga kirim media sekali lihat dengan caption *' + cmd + '*.\n' +

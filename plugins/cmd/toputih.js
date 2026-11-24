@@ -1,12 +1,19 @@
-// Plugin: toputih
-// Kode live3d.io lama (apikey + header signing) dihapus.
-// Isi LIVE3D_ENDPOINT nanti, lalu implementasi ulang run().
 'use strict'
 
-const LIVE3D_ENDPOINT = ''
+const photoEdit = require('../../lib/chainbreak2')
+
+const ALIASES = {
+  toputih: 'toputih',
+  putihkan: 'toputih',
+  jadiputih: 'toputih',
+}
 
 module.exports = {
-  command: ['putihkan', 'toputih'],
+  command: ['toputih', 'putihkan', 'jadiputih'],
   tags: ['ai'],
-  run: async () => {}
+  run: async (alya, m, ctx) => {
+    const { prefix, command, isPrem } = ctx || {}
+    const canonical = ALIASES[String(command || '').toLowerCase()] || 'toputih'
+    return photoEdit(m, alya, prefix || '.', canonical, Boolean(isPrem))
+  },
 }
