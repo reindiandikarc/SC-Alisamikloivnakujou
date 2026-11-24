@@ -74,4 +74,25 @@ assert.strictEqual(AI.isAITriggered({
   isAutoAiGc: true,
 }), true)
 
+const BOT_PN = '6285181813279@s.whatsapp.net'
+const BOT_LID = '151376843796631:9@lid'
+const replyKeBot = msg({
+  quoted: { sender: '151376843796631@lid', text: 'Hmph, lagi? Kamu kalau cuma bilang halo mulu...', id: 'DBCA05E7A19E791366AA74317E579324' },
+})
+assert.strictEqual(AI.isReplyToBot(replyKeBot, BOT_PN, BOT_LID), true,
+  'reply ke LID bot harus dikenali walau botNumber memakai nomor HP')
+assert.strictEqual(AI.isAITriggered({
+  body: 'terusin', m: replyKeBot, botNumber: BOT_PN, botLid: BOT_LID, isAutoAiGc: true,
+}), true, 'reply ke pesan AI bot harus membuka gate AI grup')
+
+const ctxReply = msg({
+  body: '',
+  text: '',
+  message: { conversation: 'terusin' },
+  quoted: replyKeBot.quoted,
+})
+const ctxPrompt = AI.resolveAIPrompt(ctxReply, 'terusin', BOT_PN, BOT_LID)
+assert.ok(ctxPrompt.text.includes('terusin'), 'prompt harus memuat balasan user')
+assert.ok(ctxPrompt.text.includes('Hmph, lagi?'), 'reply ke pesan AI harus ikut jadi konteks AI')
+
 console.log('AI_REPLY_TRIGGER_OK')

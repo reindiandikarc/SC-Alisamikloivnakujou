@@ -17,7 +17,6 @@ const { clockString, parseMention, formatp, tanggal, getTime, isUrl, sleep, runt
 const { FajarNews, BBCNews, metroNews, CNNNews, iNews, KumparanNews, TribunNews, DailyNews, DetikNews, OkezoneNews, CNBCNews, KompasNews, SindoNews, TempoNews, IndozoneNews, AntaraNews, RepublikaNews, VivaNews, KontanNews, MerdekaNews, KomikuSearch, AniPlanetSearch, KomikFoxSearch, KomikStationSearch, MangakuSearch, KiryuuSearch, KissMangaSearch, KlikMangaSearch, PalingMurah, LayarKaca21, AminoApps, Mangatoon, WAModsSearch, Emojis, CoronaInfo, JalanTikusMeme,Cerpen, Quotes, Couples, Darkjokes } = require("dhn-api");
 const { Client } = require('ssh2');
 let _sewa = require("./lib/store")
-const { gemmy } = require('./scrape/gemmy');
 
 const { isAITriggered, isReplyToBot, resolveAIPrompt, runAIInteractive, handleSetRole, handleClearRole, getRoleOf, getEffectiveRole, getRoleByCount, ROLE_LEVELS, ROLE_NAMES, getChatCount, incrementChatCount, setChatCount, formatStatusCard, clearUserHistory, getGlobalLogic, setGlobalLogic, resetGlobalLogic, DEFAULT_LOGIC, setVoiceModel, getVoiceModel, getVoiceList, BELL_VOICES, generateVoice, getDailyInfo, incrementDaily, resetDailyLimit, markLimitMsgShown, DAILY_LIMIT_FREE, isPremiumUser, isFirstChat, getUserHistory, BOT_NICKNAME, BOT_FULLNAME } = require('./machine/interactive_ai');
 
@@ -3580,17 +3579,19 @@ if (!m.key.fromMe && !m.isBaileys) {
     
     if (!alya.user?.id) return;
     const _botNumber = alya.decodeJid(alya.user.id);
+    const _botLid = alya.decodeJid(alya.user.lid || '');
 
     
+    const _jidKey = (j) => String(j || '').split('@')[0].split(':')[0].replace(/\D/g, '');
     const _isBotMentioned = !!(m.mentionedJid?.some(j =>
-      j === _botNumber || j.split('@')[0] === _botNumber.split('@')[0]
+      _jidKey(j) && (_jidKey(j) === _jidKey(_botNumber) || (_botLid && _jidKey(j) === _jidKey(_botLid)))
     ));
 
     
     
     
     
-    const _prompt = resolveAIPrompt(m, budy);
+    const _prompt = resolveAIPrompt(m, budy, _botNumber, _botLid);
     let _aiBody = _prompt.text;
     if (_isBotMentioned && _aiBody) {
       _aiBody = _aiBody.replace(/@\d+/g, '').trim();
@@ -3604,6 +3605,7 @@ if (!m.key.fromMe && !m.isBaileys) {
       body: _bodyForAI,
       m: m,
       botNumber: _botNumber,
+      botLid: _botLid,
       isAutoAiGc: isAutoAiGcAlisa   
     });
 
@@ -3619,7 +3621,7 @@ if (!m.key.fromMe && !m.isBaileys) {
     
     
     if (m.isGroup && !_canRunAI) {
-      console.log(`[Alya AI Gate] Diabaikan di grup ${m.chat} — isAutoAiGcAlisa=${isAutoAiGcAlisa}, shouldAI=${_shouldAI}, replyBot=${isReplyToBot(m, _botNumber)}, mentioned=${_isBotMentioned}, source=${_prompt.source || '-'}, body="${(_bodyForAI || '').slice(0, 40)}"`);
+      console.log(`[Alya AI Gate] Diabaikan di grup ${m.chat} — isAutoAiGcAlisa=${isAutoAiGcAlisa}, shouldAI=${_shouldAI}, replyBot=${isReplyToBot(m, _botNumber, _botLid)}, mentioned=${_isBotMentioned}, source=${_prompt.source || '-'}, body="${(_bodyForAI || '').slice(0, 40)}"`);
     }
 
     if (_canRunAI) {
@@ -3654,37 +3656,23 @@ if (!global.alisaDisabled && m.isGroup && ChatAlya1.includes(m.chat) && !m.fromM
     if (m.text && ytRegex.test(m.text)) {
         return alya.emit('chat-update', { ...m, body: `${prefix}ytmp3 ${m.text}` });
     }
-    if (!global.alyaHistory[m.chat]) global.alyaHistory[m.chat] = [];
-
-let media = null;
-    const isImage = /image/.test(m.mtype) || (m.quoted && /image/.test(m.quoted.mtype));
-    const isAudio = /audio/.test(m.mtype) || (m.quoted && /audio/.test(m.quoted.mtype));
-    
-    if (isImage || isAudio) {
-        try {
-            media = await (m.quoted ? m.quoted.download() : m.download());
-        } catch (e) {
-            console.error("Gagal download media:", e);
-        }
-    }
 
     try {
-        await alya.sendPresenceUpdate('composing', m.chat);
-        
-        let userPrompt = m.text || (isImage ? "Lihat gambar ini" : "");
-        if (!userPrompt) return;
-
-        let response = await gemmy.chat(userPrompt, global.alyaHistory[m.chat], media);
-        
-        if (response.success) {
-            global.alyaHistory[m.chat] = response.history;
-            if (global.alyaHistory[m.chat].length > 10) {
-                global.alyaHistory[m.chat] = global.alyaHistory[m.chat].slice(-10);
-            }
-            await m.reply(response.reply);
-        }
+      if (!alya.user?.id) return;
+      const _chatBotNumber = alya.decodeJid(alya.user.id);
+      const _chatBotLid = alya.decodeJid(alya.user.lid || '');
+      const _chatPrompt = resolveAIPrompt(m, budy, _chatBotNumber, _chatBotLid);
+      await runAIInteractive({
+        body: _chatPrompt.text,
+        m: m,
+        alya: alya,
+        from: m.chat,
+        sender: sender,
+        pushname: pushname,
+        isGroup: true,
+      });
     } catch (err) {
-        console.error("Error Alya AutoChat:", err);
+      console.error('[Alya AutoChat Error]', err);
     }
 }
 

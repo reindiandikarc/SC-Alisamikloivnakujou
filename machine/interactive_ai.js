@@ -790,44 +790,69 @@ async function generateVoice(text) {
 
 function sameJidUser(a, b) {
   if (!a || !b) return false
-  const digits = (jid) => String(jid).split('@')[0].replace(/\D/g, '')
+  const digits = (jid) => String(jid).split('@')[0].split(':')[0].replace(/\D/g, '')
   const left = digits(a)
   const right = digits(b)
   return !!left && left === right
 }
 
-function isReplyToBot(m, botNumber) {
+function isReplyToBot(m, botNumber, botLid = '') {
   const q = m && m.quoted
   if (!q || typeof q !== 'object') return false
   if (q.fromMe === true || q.isBaileys === true) return true
   if (q.key?.fromMe === true || q.fakeObj?.key?.fromMe === true) return true
-  return sameJidUser(q.sender, botNumber)
+  const participants = [
+    q.sender, q.participant, q.participantAlt,
+    q.key?.participant, q.fakeObj?.key?.participant,
+  ]
+  return participants.some(p =>
+    sameJidUser(p, botNumber) || sameJidUser(p, botLid)
+  )
 }
 
 
 
-function resolveAIPrompt(m, fallbackText = '') {
+function resolveAIPrompt(m, fallbackText = '', botNumber = '', botLid = '') {
+  const quoted = typeof m?.quoted?.text === 'string' ? m.quoted.text.trim() : ''
+  let text = ''
+  let source = ''
+
   if (typeof fallbackText === 'string' && fallbackText.trim()) {
-    return { text: fallbackText.trim(), source: 'budy' }
+    text = fallbackText.trim()
+    source = 'budy'
+  } else {
+    const direct = typeof m?.body === 'string' ? m.body
+      : (typeof m?.text === 'string' ? m.text : '')
+    if (direct.trim()) {
+      text = direct.trim()
+      source = 'text'
+    } else if (quoted) {
+      return { text: quoted, source: 'quoted' }
+    }
   }
-  const direct = typeof m?.body === 'string' ? m.body
-    : (typeof m?.text === 'string' ? m.text : '')
-  if (direct.trim()) return { text: direct.trim(), source: 'text' }
-  const quoted = typeof m?.quoted?.text === 'string' ? m.quoted.text : ''
-  if (quoted.trim()) return { text: quoted.trim(), source: 'quoted' }
-  return { text: '', source: '' }
+
+  if (!text) return { text: '', source: '' }
+
+  if (quoted && quoted !== text && isReplyToBot(m, botNumber, botLid)) {
+    return {
+      text: `Konteks pesan yang aku balas:\n"${quoted}"\n\nPertanyaan/Balasan saya:\n${text}`,
+      source: `${source}+quoted`,
+    }
+  }
+
+  return { text, source }
 }
 
-function isAITriggered({ body, m, botNumber, isAutoAiGc }) {
+function isAITriggered({ body, m, botNumber, botLid = '', isAutoAiGc }) {
   if (!body && !m.mtype) return false;
   if (m.key.fromMe || m.isBaileys) return false;
   if (m.mtype === 'stickerMessage' || m.mtype === 'documentMessage') return false;
   const text       = (body || '').toLowerCase().trim();
   
   const calledName = /\b(alya|alisa)\b/i.test(text);
-  const isReplyBot = isReplyToBot(m, botNumber);
+  const isReplyBot = isReplyToBot(m, botNumber, botLid);
   const botMention = !!(m.mentionedJid?.some(j =>
-    j === botNumber || sameJidUser(j, botNumber)
+    j === botNumber || sameJidUser(j, botNumber) || sameJidUser(j, botLid)
   ));
   const isPrivate  = !m.isGroup;
 
