@@ -70,6 +70,8 @@ module.exports = {
 ┣⊱ 🎟 *${prefix}addredeem*
 ┣⊱ 🗑️ *${prefix}delredeem*
 ┣⊱ 📜 *${prefix}listredeem*
+┣⊱ 🖥️ *${prefix}uimode* - Atur tampilan menu (rich/text)
+┣⊱ 🤖 *${prefix}agy* | *${prefix}antigravity* - Tanya Antigravity AI
 ┃
 ╰══════════════════════════╯`
 
@@ -83,6 +85,7 @@ module.exports = {
           { title: "👤 Self",       description: "Mode self (hanya bot sendiri)",          id: `${prefix}self`     },
           { title: "🌐 GC Only",    description: "Aktifkan mode GC only",                 id: `${prefix}gconly`   },
           { title: "🔓 Public",     description: "Mode publik (semua bisa pakai)",         id: `${prefix}public`   },
+          { title: "🖥️ UI Mode",    description: "Pilih menu kartu (rich) atau teks",       id: `${prefix}uimode`   },
         ]
       },
       {
@@ -170,6 +173,7 @@ module.exports = {
           { title: "📜 Script",    description: "Info script bot",           id: `${prefix}script`   },
           { title: "⭐ Rating",    description: "Rating bot",                id: `${prefix}rating`   },
           { title: "ℹ️ Info Bot",  description: "Informasi bot",             id: `${prefix}infobot`  },
+          { title: "🤖 Antigravity",description: "Tanya AI Antigravity (owner)", id: `${prefix}agy`     },
         ]
       }
     ]

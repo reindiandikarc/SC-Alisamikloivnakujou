@@ -17,6 +17,18 @@ module.exports = {
   run: async (alya, m, ctx) => {
     const { prefix, pushname, replyalya, reply, alyaFitur, runtime, listbut3 } = ctx;
 
+    // Coba kartu menu Rich dulu. Mode 'text' / kegagalan kirim → lanjut menu lama apa adanya.
+    try {
+      const richmenu = require('../../lib/richmenu')
+      if (await richmenu.send({
+        sock: alya, m, prefix,
+        isOwner: !!(ctx.Ryuu || ctx.isOwn || ctx.isAly || ctx.isAlya),
+        isPremium: !!ctx.isPrem,
+      })) return
+    } catch (err) {
+      console.warn('[allmenu] rich fallback:', err && err.message)
+    }
+
     await alya.sendMessage(m.chat, { react: { text: '⏱️', key: m.key } });
 
     // ── Info sistem ─────────────────────────────────────────────────────────
@@ -146,6 +158,8 @@ module.exports = {
 ┃ 🧠 ${prefix}tofigure | ${prefix}tohitam | ${prefix}tochibi
 ┃ 🧠 ${prefix}remini | ${prefix}faceswap | ${prefix}nulis
 ┃ 🎤 ${prefix}setvoice | ${prefix}alisa on/off
+┃ 🤖 ${prefix}agy | ${prefix}antigravity — AI Antigravity (owner)
+┃ 🔄 ${prefix}rvo | ${prefix}rvome | ${prefix}readviewonce — baca media 1×
 ┃ → Lihat semua: *${prefix}aimenu*
 ┃
 ┣━━〔 📥 *DOWNLOADER* 〕━━⬣
@@ -300,6 +314,7 @@ module.exports = {
 ┃ 🔒 ${prefix}self | ${prefix}public | ${prefix}onlygc | ${prefix}onlypc
 ┃ 🔧 ${prefix}ban | ${prefix}unban | ${prefix}block | ${prefix}unblock
 ┃ 🔧 ${prefix}setlimit | ${prefix}setmoney | ${prefix}setlevel | ${prefix}setbank
+┃ 🖥️ ${prefix}uimode rich|text|status — atur tampilan menu
 ┃ → Lihat semua: *${prefix}ownermenu*
 ┃
 ┣━━〔 🐛 *BUG TOOLS* 〕━━⬣
@@ -344,7 +359,10 @@ ${newPluginSection}
       {
         title: '📊 LAINNYA',
         rows: [
-          { title: '📊 TOTAL FITUR', description: 'Lihat jumlah total fitur & breakdown', id: `${prefix}totalfitur` }
+          { title: '📊 TOTAL FITUR', description: 'Lihat jumlah total fitur & breakdown', id: `${prefix}totalfitur` },
+          { title: '🔄 READ VIEW ONCE', description: 'Baca media sekali lihat (rvo/rvome)', id: `${prefix}rvo` },
+          { title: '🤖 ANTIGRAVITY', description: 'Tanya AI Antigravity (owner)', id: `${prefix}agy` },
+          { title: '🖥️ UI MODE', description: 'Pilih menu rich atau teks (owner)', id: `${prefix}uimode` }
         ]
       }
     ];

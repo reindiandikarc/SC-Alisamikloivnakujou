@@ -32,7 +32,7 @@ module.exports = {
 ┣⊱ 👨‍🦲 *${prefix}botak*
 ┣⊱ 🌐 *${prefix}listonline* - Lihat member online
 ┣⊱ 🎥 *${prefix}tomp4* - Konversi video ke MP4
-┣⊱ 🔄 *${prefix}rvo* - Remove video watermark
+┣⊱ 🔄 *${prefix}rvo* - Baca pesan sekali lihat (view once)
 ┣⊱ 🤥 *${prefix}fitnah*
 ┣⊱ 🧕 *${prefix}hijabkan*
 ┣⊱ 🎨 *${prefix}edit (foto)*
@@ -51,7 +51,7 @@ module.exports = {
 ┣⊱ 🆔 *${prefix}cekidch*
 ┣⊱ 📅 *${prefix}ceksewa*
 ┣⊱ 📜 *${prefix}listsewa*
-┣⊱ 👁️ *${prefix}readviewonce*
+┣⊱ 👁️ *${prefix}readviewonce* | *${prefix}rvome*
 ┣⊱ 🔮 *${prefix}cekkhodam*
 ┣⊱ 📖 *${prefix}alkitab*
 ┣⊱ ⚙️ *${prefix}totalfitur*

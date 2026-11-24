@@ -20,12 +20,20 @@ const {
     generateWAMessageFromContent,
     generateMessageID,
     downloadContentFromMessage,
+    downloadMediaMessage,
+    getContentType,
     jidDecode,
     makeCacheableSignalKeyStore,
     getAggregateVotesInPollMessage,
     proto
 } = require("@whiskeysockets/baileys")
 const crypto = require('crypto')
+const viewonce = require('./lib/viewonce')
+// Deteksi view-once dipakai bareng lib/myfunc.js; implementasinya ada di modul
+// murni supaya bisa diuji offline (scripts/test-rvo-detect.js).
+const rvoDetect = require('./lib/rvo-detect')
+const rvoRecover = require('./lib/rvo-recover')
+const rvoPlaceholder = require('./lib/rvo-placeholder')
 const cfonts = require('cfonts');
 const { color, bgcolor } = require('./lib/color')
 const { TelegraPh } = require('./lib/uploader')
@@ -293,6 +301,90 @@ const MEDIA_CACHE_FILE = path.join(__dirname, 'database', 'media-cache.json')
 try {
     global._mediaCache = JSON.parse(fs.readFileSync(MEDIA_CACHE_FILE, 'utf8'))
 } catch { global._mediaCache = {} }
+
+// ── VIEW-ONCE: simpan BUFFER media saat pesan tiba ─────────────────────────
+// Diambil dari pola vanXone (handleAntiViewOnce): media sekali lihat harus
+// diunduh SEGERA setelah messages.upsert. Kalau ditunda sampai userreply
+// `.rvo`, WhatsApp sudah membuang url/directPath/mediaKey dari quote DAN bisa
+// mencabut media aslinya setelah dilihat — mustahil diunduh lagi.
+// Menyimpan buffer ke disk juga membuatnya selamat dari restart systemd.
+const VO_CACHE_DIR = path.join(__dirname, 'database', 'viewonce-cache')
+try { fs.mkdirSync(VO_CACHE_DIR, { recursive: true }) } catch {}
+const _voSafeId = (id) => String(id || '').replace(/[^a-zA-Z0-9_-]/g, '')
+global._viewonceBuffer = {
+    get(id) {
+        try {
+            const p = path.join(VO_CACHE_DIR, _voSafeId(id) + '.bin')
+            return fs.existsSync(p) ? fs.readFileSync(p) : null
+        } catch { return null }
+    },
+    // Media sekali lihat terakhir — dipakai kalau user kirim ".rvo" biasa
+    // (tanpa reply) setelah sebelumnya mengirim media sekali lihat.
+    latest() {
+        try {
+            const metas = fs.readdirSync(VO_CACHE_DIR)
+                .filter(f => f.endsWith('.bin.json'))
+                .map(f => {
+                    try { return { f, ...JSON.parse(fs.readFileSync(path.join(VO_CACHE_DIR, f), 'utf8')) } }
+                    catch { return null }
+                })
+                .filter(Boolean)
+                // Prioritaskan yang benar-benar view-once; media biasa hanya
+                // jadi cadangan terakhir supaya `.rvo` tidak mengirim foto
+                // normal secara tidak sengaja.
+                .sort((a, b) => (Number(!!b.vo) - Number(!!a.vo)) || (b.ts || 0) - (a.ts || 0))
+            for (const meta of metas) {
+                const buf = global._viewonceBuffer.get(meta.id)
+                if (buf?.length) return { id: meta.id, buffer: buf, mime: meta.mime || '', ts: meta.ts, vo: !!meta.vo, type: meta.type || '' }
+            }
+        } catch {}
+        return null
+    },
+    put(id, buffer, mime = '', extra = {}) {
+        try {
+            const safe = _voSafeId(id)
+            if (!safe || !buffer?.length || buffer.length > 12 * 1024 * 1024) return
+            const p = path.join(VO_CACHE_DIR, safe + '.bin')
+            fs.writeFileSync(p, buffer)
+            fs.writeFileSync(p + '.json', JSON.stringify({ id, mime, ts: Date.now(), vo: !!extra.vo, type: extra.type || '' }))
+            // batasi disk: simpan 200 media terakhir
+            const metas = fs.readdirSync(VO_CACHE_DIR)
+                .filter(f => f.endsWith('.bin.json'))
+                .map(f => {
+                    try { return { f, ts: JSON.parse(fs.readFileSync(path.join(VO_CACHE_DIR, f), 'utf8')).ts || 0 } }
+                    catch { return { f, ts: 0 } }
+                })
+                .sort((a, b) => b.ts - a.ts)
+            const drop = (f) => {
+                try {
+                    fs.unlinkSync(path.join(VO_CACHE_DIR, f))
+                    fs.unlinkSync(path.join(VO_CACHE_DIR, f.replace(/\.json$/, '')))
+                } catch {}
+            }
+            for (const { f } of metas.slice(200)) drop(f)
+            // Batasi juga total ukuran (maks ~300MB) agar media biasa tidak
+            // memenuhi disk saat fitur buffer menyeluruh aktif.
+            const MAX_TOTAL = 300 * 1024 * 1024
+            let total = 0
+            const bins = fs.readdirSync(VO_CACHE_DIR)
+                .filter(f => f.endsWith('.bin'))
+                .map(f => {
+                    try {
+                        const st = fs.statSync(path.join(VO_CACHE_DIR, f))
+                        return { f, size: st.size, ts: st.mtimeMs }
+                    } catch { return null }
+                })
+                .filter(Boolean)
+                .sort((a, b) => b.ts - a.ts)
+            for (const b of bins) total += b.size
+            for (const b of bins) {
+                if (total <= MAX_TOTAL) break
+                drop(b.f + '.json')
+                total -= b.size
+            }
+        } catch {}
+    }
+}
 let _mediaCacheTimer = null
 function _scheduleMediaCacheSave() {
     clearTimeout(_mediaCacheTimer)
@@ -300,20 +392,202 @@ function _scheduleMediaCacheSave() {
         try { fs.writeFileSync(MEDIA_CACHE_FILE, JSON.stringify(global._mediaCache)) } catch {}
     }, 1500)
 }
-alya.ev.on('messages.upsert', ({ messages }) => {
+// ── RVO: deteksi view-once REKURSIF + cache metadata ──────────────────────
+// Contract dipakai plugin .rvo:
+//   global._rvoCache     : Map id -> { type, content, buffer, mimetype, caption, ptt, chat, sender, cachedAt, vo }
+//   global._rvoCacheMeta : Map id -> { sender, time }
+if (!global._rvoCache) global._rvoCache = new Map()
+if (!global._rvoCacheMeta) global._rvoCacheMeta = new Map()
+// Placeholder 1x: id -> { key, msgData, chat, sender, ts, requestId? }
+if (!global._rvoPending) global._rvoPending = new Map()
+const _RVO_CACHE_LIMIT = 300
+// Helper diambil dari lib/rvo-detect.js supaya production dan test memakai
+// kode yang persis sama. `questionReplyMessage` (FutureProofMessage) ikut
+// dibuka, dan flag view-once juga dibaca dari quotedType/messageContextInfo.
+const {
+    WRAPPERS: _RVO_WRAPPERS,
+    ensureBuffer: _rvoEnsureBuffer,
+    unwrapEnvelopes: _rvoUnwrap,
+    scanForViewOnceMedia,
+    findAnyMedia,
+    contentHasViewOnce,
+    hasViewOnceSignal,
+    cacheRvoMedia,
+} = rvoDetect
+
+// ── RVO: backup WAMessage mentah (metode ALYA V13 lib/antidelete.js) ──────
+// V13 menyimpan setiap pesan ASLI keyed by stanzaId. Ini satu-satunya salinan
+// yang masih punya mediaKey/directPath saat quote WhatsApp sudah dikupas.
+// Bedanya dengan media-cache: backup ini menyimpan SEMUA pesan (termasuk
+// questionReplyMessage/viewOnceMessageV2) dan dipakai lebih dulu oleh .rvo.
+const RAW_BACKUP_FILE = path.join(__dirname, 'database', 'raw-backup.json')
+const RAW_BACKUP_LIMIT = 500
+const RAW_BACKUP_TTL = 6 * 60 * 60 * 1000
+try {
+    global._rawBackup = rvoRecover.loadRawBackup(JSON.parse(fs.readFileSync(RAW_BACKUP_FILE, 'utf8')))
+} catch { global._rawBackup = new Map() }
+let _rawBackupTimer = null
+function _scheduleRawBackupSave() {
+    clearTimeout(_rawBackupTimer)
+    _rawBackupTimer = setTimeout(() => {
+        try { fs.writeFileSync(RAW_BACKUP_FILE, JSON.stringify([...global._rawBackup])) } catch {}
+    }, 2000)
+}
+function _saveRawBackup(msg) {
+    const id = msg?.key?.id
+    if (!id || !msg?.message || global._rawBackup.has(id)) return
+    const now = Date.now()
+    for (const [key, entry] of global._rawBackup) {
+        if (now - (Number(entry.ts) || 0) > RAW_BACKUP_TTL) global._rawBackup.delete(key)
+    }
+    global._rawBackup.set(id, {
+        jid: msg.key.remoteJid || '',
+        participant: msg.key.participant || '',
+        message: msg.message,
+        ts: now,
+    })
+    while (global._rawBackup.size > RAW_BACKUP_LIMIT) {
+        global._rawBackup.delete(global._rawBackup.keys().next().value)
+    }
+    _scheduleRawBackupSave()
+}
+function _flushRawBackup() {
+    clearTimeout(_rawBackupTimer)
+    try { fs.writeFileSync(RAW_BACKUP_FILE, JSON.stringify([...global._rawBackup])) } catch {}
+}
+process.on('SIGINT', _flushRawBackup)
+process.on('SIGTERM', _flushRawBackup)
+
+alya.ev.on('messages.upsert', ({ messages, type: upsertType }) => {
     for (const msg of messages || []) {
         try {
-            const inner = msg.message?.viewOnceMessageV2?.message || msg.message?.viewOnceMessage?.message || msg.message
-            const ct = inner && Object.keys(inner).find(k => /Message$/.test(k))
-            const media = inner?.[ct]
-            if (msg.key?.id && media && (media.mediaKey || media.url || media.directPath)) {
-                global._mediaCache[msg.key.id] = { jid: msg.key.remoteJid, message: msg.message }
-                _scheduleMediaCacheSave()
-                if (process.env.ALYA_BUTTON_DEBUG === '1' && media.viewOnce) {
-                    console.log('[CACHE_DEBUG] view-once tersimpan id=' + msg.key.id + ' jid=' + msg.key.remoteJid)
+            const id = msg?.key?.id
+            const raw = msg?.message
+            if (!raw || !id) {
+                if (!raw && id) {
+                    const debugOn = process.env.ALYA_BUTTON_DEBUG === '1'
+                    if (debugOn) console.log(`[RVO diag] pesan TANPA konten ${rvoPlaceholder.describe(msg)}`)
+
+                    // `<unavailable type="view_once">` kini ditangani lebih awal
+                    // di Baileys (ALYA_V13_EARLY_RVO_PATCH) memakai messageKey
+                    // lengkap. Blok ini tetap jadi fallback manual kalau jalur
+                    // socket tidak aktif; requestPlaceholderResend akan dedupe
+                    // via placeholderResendCache.
+                    const tracked = rvoPlaceholder.trackPending(global._rvoPending, msg)
+                    if (tracked.request) {
+                        const p = tracked.pending
+                        Promise.resolve()
+                            .then(() => alya.requestPlaceholderResend(p.key, p.msgData))
+                            .then(requestId => {
+                                if (requestId && requestId !== 'RESOLVED') p.requestId = requestId
+                                console.log(`[RVO resend] diminta id=${id} requestId=${requestId || '-'}`)
+                            })
+                            .catch(err => console.log(`[RVO resend] gagal id=${id} ${err?.message || err}`))
+                    }
                 }
+                continue
             }
-        } catch {}
+            // Pesan asli sudah kembali (baik dari upsert biasa maupun dari
+            // placeholder resend). Hapus penanda pending agar .rvo tidak
+            // mengira masih perlu menunggu.
+            if (id && global._rvoPending?.has(id)) global._rvoPending.delete(id)
+            _saveRawBackup(msg)
+            // Diagnostik struktur pesan non-plain (bantu lihat wrapper baru).
+            const _topKeys = Object.keys(raw).filter(k => k !== 'messageContextInfo')
+            const _plain = ['conversation', 'extendedTextMessage', 'protocolMessage', 'reactionMessage',
+                            'senderKeyDistributionMessage', 'pollUpdateMessage']
+            if (_topKeys.length && !_topKeys.every(k => _plain.includes(k))) {
+                console.log(`[RVO diag] id=${id} upsert=${upsertType ?? '-'} keys=${_topKeys.join(',')}`)
+            }
+
+            // Pakai detektor yang sama dengan scripts/test-rvo-detect.js.
+            // questionReplyMessage / futureProof / flag di quotedType ikut
+            // terbaca; wrapper yang belum dikenal dilaporkan nama key-nya saja.
+            let found = scanForViewOnceMedia(raw, {
+                log: (line) => { if (process.env.ALYA_BUTTON_DEBUG === '1') console.log(line) }
+            })
+            let vo = found?.viewOnce === true
+            if (!found) {
+                // Fallback deteksi ALYA V20/V13: content.includes('viewOnceMessageV2').
+                const byContent = contentHasViewOnce(raw)
+                found = findAnyMedia(raw, { requireVO: false })
+                if (found && byContent && !found.viewOnce) {
+                    found.viewOnce = true
+                    found.detectedByContent = true
+                }
+                if (!found) continue
+            }
+            // BUG lama: `vo` dihitung SEBELUM fallback di atas, jadi pesan yang
+            // hanya terdeteksi lewat content/quotedType tidak pernah masuk
+            // jalur pre-download. Hitung ulang setelah final.
+            vo = vo || found.viewOnce === true || hasViewOnceSignal(raw)
+            const { type, content } = found
+            console.log(`[RVO diag] ${vo ? 'view-once terdeteksi' : 'media biasa'} id=${id} type=${type} ` +
+                        `viewOnce=${String(content?.viewOnce)} isViewOnce=${String(vo)} ` +
+                        `detectedByContent=${String(!!found.detectedByContent)} ` +
+                        `mediaKey=${!!(content?.mediaKey && content.mediaKey.length)} ` +
+                        `fromMe=${!!msg.key.fromMe}`)
+
+            // Cache lama tetap dipertahankan persis seperti sebelumnya.
+            global._mediaCache[id] = { jid: msg.key.remoteJid, message: msg.message }
+            _scheduleMediaCacheSave()
+
+            // ── Contract cache RVO ───────────────────────────────────────────
+            // Metadata disimpan DULU, sebelum download, supaya entry tetap ada
+            // (dan bisa di-retry .rvo) walau download saat ini gagal.
+            const entry = cacheRvoMedia({
+                detected: found,
+                id,
+                chat: msg.key.remoteJid || '',
+                sender: msg.key.participant || msg.key.remoteJid || 'unknown',
+                cache: global._rvoCache,
+                cacheMeta: global._rvoCacheMeta,
+                limit: _RVO_CACHE_LIMIT,
+            })
+
+            // cacheRvoMedia sudah mengubah mediaKey/hash jadi Buffer (juga
+            // untuk bentuk {type:'Buffer',data:[...]} dari JSON/store).
+            const mediaKey = _rvoEnsureBuffer(content.mediaKey)
+            if (!mediaKey?.length) {
+                console.log(`[RVO cache] mediaKey kosong saat masuk. id=${id} type=${type}`)
+                continue
+            }
+            // EVALUASI: dulu hanya media yang terdeteksi vo yang di-buffer.
+            // WhatsApp bisa mengirim 1x tanpa flag yang kita kenal (quote
+            // memakai field baru `interactiveAnnotations`/`annotations`), jadi
+            // sekarang SEMUA media yang masih punya mediaKey di-buffer saat
+            // diterima. .rvo tinggal ambil berdasarkan stanzaId.
+            // Ini radial dengan batas 200 file di _viewonceBuffer.put().
+            Promise.resolve()
+                .then(async () => {
+                    const stream = await downloadContentFromMessage(content, type.replace('Message', '').toLowerCase())
+                    const chunks = []
+                    for await (const chunk of stream) chunks.push(Buffer.from(chunk))
+                    return Buffer.concat(chunks)
+                })
+                .catch(async () => {
+                    // Fallback lama, dipakai kalau downloadContentFromMessage gagal.
+                    const buf = await downloadMediaMessage(msg, 'buffer', {})
+                    if (buf?.length) return buf
+                    return downloadMediaMessage({ key: msg.key, message: _rvoUnwrap(raw) }, 'buffer', {})
+                })
+                .then(buf => {
+                    if (!buf?.length) return
+                    entry.buffer = buf
+                    global._viewonceBuffer.put(id, buf, entry.mimetype, { vo, type })
+                    console.log(`[VIEWONCE] buffer tersimpan id=${id} bytes=${buf.length} mime=${entry.mimetype || '-'} jid=${entry.chat} vo=${String(vo)}`)
+                    if (process.env.ALYA_BUTTON_DEBUG === '1') {
+                        console.log(`[CACHE_DEBUG] view-once tersimpan id=${id} jid=${entry.chat}`)
+                    }
+                })
+                .catch(e => {
+                    console.log(`[VIEWONCE] download gagal id=${id} ${e?.message || e}`)
+                })
+        } catch (e) {
+            if (process.env.ALYA_BUTTON_DEBUG === '1') {
+                console.log('[RVO diag] error upsert ' + (e?.message || e))
+            }
+        }
     }
 })
 
@@ -548,6 +822,9 @@ alya.ev.on('messages.upsert', createInboundHandler({
         return null;
     }
     alya.ev.on('messages.update', async chatUpdate => {
+        // Placeholder 1x: messages.update hanya membawa requestId. Media asli
+        // tetap akan datang lewat messages.upsert (process-message.js).
+        try { rvoPlaceholder.recordRequestId(global._rvoPending, chatUpdate) } catch {}
         for(const { key, update } of chatUpdate) {
 			if(update.pollUpdates && !key.fromMe) {
 				const pollCreation = await getMessage(key)
@@ -791,65 +1068,69 @@ await alya.relayMessage(jid, waMessage.message, { messageId:  waMessage.key.id }
 return waMessage
 }
 
-alya.downloadAndSaveMediaMessage = async (message, filename, attachExtension = true) => {
-let quoted = message.msg ? message.msg : message
-let mime = (message.msg || message).mimetype || ''
-let messageType = message.mtype ? message.mtype.replace(/Message/gi, '') : mime.split('/')[0]
-if (!quoted || !messageType) {
-throw new Error('Media tidak valid: messageType/quoted tidak ditemukan (mimetype: ' + mime + ')')
-}
-const stream = await downloadContentFromMessage(quoted, messageType)
-let buffer = Buffer.from([])
-for await(const chunk of stream) {
-buffer = Buffer.concat([buffer, chunk])
-}
-if (!buffer || buffer.length === 0) {
-throw new Error('Gagal download media: buffer kosong (mediaKey invalid / media sudah expired)')
-}
-let type = await FileType.fromBuffer(buffer)
-if (!type) {
-// fallback: pakai mimetype asli kalau FileType gagal deteksi signature
-const mimeExtMap = {
-'image/webp': 'webp', 'image/jpeg': 'jpg', 'image/png': 'png',
-'video/mp4': 'mp4', 'audio/mpeg': 'mp3', 'audio/ogg': 'ogg',
-'application/pdf': 'pdf', 'text/plain': 'txt',
-'application/vnd.openxmlformats-officedocument.wordprocessingml.document': 'docx'
-}
-const fallbackExt = mimeExtMap[mime] || (mime.split('/')[1] || 'bin')
-type = { ext: fallbackExt, mime: mime || 'application/octet-stream' }
-}
-trueFileName = attachExtension ? (filename + '.' + type.ext) : filename
-await fs.writeFileSync(trueFileName, buffer)
-return trueFileName
-}
+// ── Download media sentral: reply biasa + pesan "sekali lihat" ───────────
+// WhatsApp membuang mediaKey/url/directPath dari salinan quotedMessage untuk
+// media view-once. Jadi download dari quote itu MUSTAHIL berhasil. Helper ini
+// mengambil pesan ASLI dari store Baileys, lalu dari cache persisten
+// database/media-cache.json (diisi di messages.upsert). Karena ditempatkan di
+// wrapper alya.downloadMediaMessage, semua command yang pakai pola
+// `alya.downloadMediaMessage(m.quoted)` ikut terselamatkan (.rvo, .swgc,
+// .tovid, .tomp4, dan lain-lain) tanpa perlu diedit satu per satu.
+const _viewonceDownload = viewonce.createDownloader({
+  store,
+  cache: global._mediaCache,
+  bufferCache: global._viewonceBuffer,
+  native: downloadMediaMessage,
+  protoImpl: proto
+})
 
 alya.downloadMediaMessage = async (message) => {
-    let msg = message.msg ? message.msg : message
-    let mime = msg.mimetype || ''
-    let messageType = message.mtype ? message.mtype.replace(/Message/gi, '') : mime.split('/')[0]
-    if (!msg.mediaKey) {
-        if (process.env.ALYA_BUTTON_DEBUG === '1') {
-            console.log("[DL_DEBUG] argKeys=" + Object.keys(message || {}).slice(0, 14).join(',') +
-                        " hasMsg=" + !!message?.msg +
-                        " msgKeys=" + Object.keys(msg || {}).slice(0, 14).join(',') +
-                        " mtype=" + message?.mtype + " mime=" + mime +
-                        " argMtype=" + message?.mtype)
-        }
-        console.log("Media Key tidak ditemukan, melewati proses download.")
-        return Buffer.from([]) 
-    }
+  const buf = await _viewonceDownload(message)
+  if (buf && buf.length) return buf
 
+  // Jalur terakhir untuk objek yang masih punya kunci tapi native gagal.
+  const { node, type } = viewonce.unwrapViewOnce(message)
+  const mime = node?.mimetype || ''
+  const messageType = type ? String(type).replace(/Message$/i, '') : mime.split('/')[0]
+  if (node && (node.mediaKey || node.url || node.directPath) && messageType) {
     try {
-        const stream = await downloadContentFromMessage(msg, messageType)
-        let buffer = Buffer.from([])
-        for await(const chunk of stream) {
-            buffer = Buffer.concat([buffer, chunk])
-        }
-        return buffer
-    } catch (e) {
-        console.error("Error saat download media:", e.message)
-        return Buffer.from([])
+      const stream = await downloadContentFromMessage(node, messageType)
+      const parts = []
+      for await (const chunk of stream) parts.push(Buffer.from(chunk))
+      const legacy = Buffer.concat(parts)
+      if (legacy.length) return legacy
+    } catch (e) { /* biarkan returns buffer kosong seperti sebelumnya */ }
+  }
+
+  if (process.env.ALYA_BUTTON_DEBUG === '1') {
+    console.log('[DL_DEBUG] gagal download (store/cache kosong): ' +
+      (message?.key?.id || message?.id || 'no-id') + ' mime=' + mime)
+  }
+  return Buffer.alloc(0)
+}
+
+alya.downloadAndSaveMediaMessage = async (message, filename = 'file', attachExtension = true) => {
+  const buffer = await alya.downloadMediaMessage(message)
+  if (!buffer || !buffer.length) {
+    throw new Error('Gagal download media: buffer kosong (mediaKey invalid / media sudah expired)')
+  }
+  let type = await FileType.fromBuffer(buffer)
+  if (!type) {
+    // fallback: pakai mimetype asli kalau FileType gagal deteksi signature
+    const { node } = viewonce.unwrapViewOnce(message)
+    const mime = node?.mimetype || ''
+    const mimeExtMap = {
+      'image/webp': 'webp', 'image/jpeg': 'jpg', 'image/png': 'png',
+      'video/mp4': 'mp4', 'audio/mpeg': 'mp3', 'audio/ogg': 'ogg',
+      'audio/mp4': 'm4a', 'application/pdf': 'pdf', 'text/plain': 'txt',
+      'application/vnd.openxmlformats-officedocument.wordprocessingml.document': 'docx'
     }
+    const fallbackExt = mimeExtMap[mime] || (mime.split('/')[1] || 'bin')
+    type = { ext: fallbackExt, mime: mime || 'application/octet-stream' }
+  }
+  const trueFileName = attachExtension ? (filename + '.' + type.ext) : filename
+  fs.writeFileSync(trueFileName, buffer)
+  return trueFileName
 }
 
 alya.getFile = async (PATH, save) => {

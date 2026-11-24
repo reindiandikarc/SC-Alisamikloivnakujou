@@ -8,6 +8,7 @@ const fs   = require('fs');
 const path = require('path');
 const { askAI } = require('../../lib/scraper-ai');
 const { askBell, askBellImage, askBellAudio } = require('../../lib/scraper-bell');
+const { isVpsStatusQuery, getVpsStatus, formatVpsStatus } = require('../../lib/vps-status');
 
 module.exports = {
   command: ['ai', 'alya'],
@@ -15,7 +16,14 @@ module.exports = {
   run    : async (alya, m, ctx) => {
     if (m.key.fromMe) return;
 
-    const { text, pushname, replyalya } = ctx;
+    const { text, pushname, replyalya, prefix } = ctx;
+
+    // ── Status VPS bot: dijawab LOKAL, tanpa API & tanpa potong limit ──
+    // Biar .ai benar-benar "mengenali" pertanyaan status server/VPS bot.
+    if (isVpsStatusQuery(text)) {
+      console.log('[VPS] .ai status query -> jawaban lokal');
+      return replyalya(formatVpsStatus(getVpsStatus({ socket: alya }), { prefix }));
+    }
 
     // ── Sama persis seperti V10 ──────────────────────────────────
     // V10: const quoted = m.quoted  (bukan ctx.quoted fallback)

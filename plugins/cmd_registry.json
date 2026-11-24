@@ -3642,5 +3642,9 @@
   "ttboost": "plugins/cmd/vx_vortex_plugins_tools_tools-tiktokboost.js",
   "boosttiktok": "plugins/cmd/vx_vortex_plugins_tools_tools-tiktokboost.js",
   "vxmenu": "plugins/cmd/vx_vxmenu.js",
-  "menuvx": "plugins/cmd/vx_vxmenu.js"
+  "menuvx": "plugins/cmd/vx_vxmenu.js",
+  "uimode": "plugins/cmd/uimode.js",
+  "agy": "plugins/cmd/antigravity.js",
+  "antigravity": "plugins/cmd/antigravity.js",
+  "rvome": "plugins/cmd/readviewonce.js"
 }

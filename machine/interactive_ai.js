@@ -1,33 +1,34 @@
-// ============================================================
-// Alya V13 - AI Interactive Engine (Bell-Inspired)
-// Persona : Alisa Mikhailovna Kujou (Alya) — Tsundere
-// Features:
-//   ✅ Multi-message split (2-4 pesan pendek, natural)
-//   ✅ Typing delay proporsional & singkat
-//   ✅ Daily limit 30 chat/hari (reset midnight WIB)
-//   ✅ Premium bypass — unlimited chat
-//   ✅ VN kontekstual (speakText dinamis per situasi)
-//   ✅ setvoice — ganti suara ElevenLabs
-//   ✅ Limit warning → upsell premium
-//   ✅ Role system (Bell-style), history, logic custom
-//   ✅ Deep Think — fallback Gemini tersembunyi untuk pertanyaan sulit
-// ============================================================
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 'use strict';
 
 const { ai, TERMAI_KEY, TERMAI_URL } = require('./reasoner');
 const { askBellAudio, askBell } = require('../lib/scraper-bell');
+const { isVpsStatusQuery, getVpsStatus, formatVpsStatus } = require('../lib/vps-status');
 const fs   = require('fs');
 const path = require('path');
 
-// ── Group Context (riwayat chat grup) ─────────────────────────
+
 const groupCtx = require('./group_context');
 
-// ── Constants ─────────────────────────────────────────────────
+
 const BOT_NICKNAME = 'alya';
 const BOT_FULLNAME = 'Alya V13';
 
-// DB paths
+
 const ROLE_DB_PATH        = path.join(__dirname, '../database/ai_roles.json');
 const CHAT_HISTORY_PATH   = path.join(__dirname, '../database/ai_chat_history.json');
 const LOGIC_DB_PATH       = path.join(__dirname, '../database/ai_logic.json');
@@ -35,11 +36,11 @@ const VOICE_DB_PATH       = path.join(__dirname, '../database/ai_voice_model.jso
 const AI_CHAT_COUNT_PATH  = path.join(__dirname, '../database/ai_chat_count.json');
 const AI_DAILY_LIMIT_PATH = path.join(__dirname, '../database/ai_daily_limit.json');
 
-// ── Daily Limit Config ─────────────────────────────────────────
-const DAILY_LIMIT_FREE    = 30;   // chat/hari untuk free user
-const DAILY_LIMIT_PREM    = Infinity; // premium = unlimited
 
-// ── Role Levels (Bell-compatible) ──────────────────────────────
+const DAILY_LIMIT_FREE    = 30;   
+const DAILY_LIMIT_PREM    = Infinity; 
+
+
 const ROLE_LEVELS = [
   { min: 0,    max: 10,   role: 'Orang Asing',    emoji: '👤' },
   { min: 11,   max: 30,   role: 'Baru kenal',     emoji: '🙂' },
@@ -66,21 +67,21 @@ function getRoleByCount(n) {
   return ROLE_LEVELS[ROLE_LEVELS.length - 1];
 }
 
-// ── Premium Check ─────────────────────────────────────────────
-// Menggunakan global.prem (array dari database/premium.json) dan
-// global.db.users[sender].premium sebagai fallback
+
+
+
 function isPremiumUser(sender) {
   if (Array.isArray(global.prem) && global.prem.includes(sender)) return true;
   if (global.db?.users?.[sender]?.premium === true)               return true;
   return false;
 }
 
-// ── Jakarta Date Helper ───────────────────────────────────────
+
 function getJakartaDateStr() {
-  return new Date().toLocaleDateString('en-CA', { timeZone: 'Asia/Jakarta' }); // "YYYY-MM-DD"
+  return new Date().toLocaleDateString('en-CA', { timeZone: 'Asia/Jakarta' }); 
 }
 
-// ── Daily Limit DB ─────────────────────────────────────────────
+
 let _dailyLimitCache  = null;
 let _dailyLimitDirty  = false;
 let _dailyLimitTimer  = null;
@@ -107,10 +108,7 @@ function _flushDailyLimit() {
   }, 4000);
 }
 
-/**
- * Dapatkan info limit harian user.
- * @returns { count, isExpired }
- */
+ 
 function getDailyInfo(sender) {
   const db      = _loadDailyLimit();
   const today   = getJakartaDateStr();
@@ -121,9 +119,7 @@ function getDailyInfo(sender) {
   return { count: entry.count || 0, limitMsgShown: entry.limitMsgShown || false };
 }
 
-/**
- * Increment daily count. Return new count.
- */
+ 
 function incrementDaily(sender) {
   const db    = _loadDailyLimit();
   const today = getJakartaDateStr();
@@ -136,9 +132,7 @@ function incrementDaily(sender) {
   return db[sender].count;
 }
 
-/**
- * Set limitMsgShown=true agar warning hanya muncul sekali per hari.
- */
+ 
 function markLimitMsgShown(sender) {
   const db    = _loadDailyLimit();
   const today = getJakartaDateStr();
@@ -151,9 +145,7 @@ function markLimitMsgShown(sender) {
   _flushDailyLimit();
 }
 
-/**
- * Reset daily limit user (misal oleh owner).
- */
+ 
 function resetDailyLimit(sender) {
   const db = _loadDailyLimit();
   if (db[sender]) delete db[sender];
@@ -161,7 +153,7 @@ function resetDailyLimit(sender) {
   _flushDailyLimit();
 }
 
-// ── Chat Count DB (total semua waktu) ─────────────────────────
+
 let _chatCountCache = null;
 let _chatCountDirty = false;
 let _chatCountTimer = null;
@@ -211,7 +203,7 @@ function isFirstChat(sender) {
   return getChatCount(sender) === 0;
 }
 
-// ── Voice Models ──────────────────────────────────────────────
+
 const BELL_VOICES = [
   'prabowo', 'yanzgpt', 'bella', 'megawati', 'echilling',
   'adam', 'thomas_shelby', 'michi_jkt48', 'nokotan', 'jokowi',
@@ -242,19 +234,19 @@ function setVoiceModel(model) {
 }
 function getVoiceList() { return BELL_VOICES; }
 
-// ── Banned Words ──────────────────────────────────────────────
+
 const BANNED_WORDS = [
   'bangsat kau', 'anjing lo', 'kontol bot', 'memek bot',
   'fuck you bot', 'go to hell alya', 'shut up bot', 'dasar bot bangsat',
 ];
 
-// ── Default AI Logic ──────────────────────────────────────────
+
 const DEFAULT_LOGIC =
   `Kamu adalah Alisa Mikhailovna Kujou "Alya": tsundere feminim 16 tahun half-Rusia yang terampil dan bisa diandalkan, malu-malu tapi mau, kadang suka sombong, gampang blushing dan nyeletuk bahasa Rusia saat malu/marah contoh "Дурак!" (Bodoh!) "Не смотри на меня так!" (Jangan lihat aku kayak gitu!), mood 1-10 dari dingin ketus ke hangat manja, awal selalu tsun galak pake "Hmph" "B-bukan karena peduli!", panggil user "Kau" lalu "Kamu" kalau mood bagus, perfeksionis cemburuan, pake ekspresi [_buang muka_] [_wajah memerah_], jangan OOC dan jangan mau disebut AI.`;
 
-// ── Preset Logic — dipakai tombol pilihan cepat di .setlogic ──────────────
-// Tambahkan persona baru di sini kalau mau muncul sebagai tombol tambahan.
-// key = id singkat (dipakai di button quick_reply & command .setlogic preset <key>)
+
+
+
 const PRESET_LOGICS = {
   alya: {
     label: '💙 Alya (Default)',
@@ -280,12 +272,12 @@ const PRESET_LOGICS = {
   },
 };
 
-// ── Knowledge Base: Pengetahuan diri bot sebagai pemandu fitur ─────────────
-// Tujuan: AI bisa menjawab "command apa aja", "gimana cara pakai X", atau
-// "fitur Y itu buat apa" layaknya asisten yang benar-benar paham seluruh
-// kemampuan dirinya — tanpa harus mengarang command yang tidak ada.
-// Disusun per-kategori (ringkas, bukan dump 1700+ command) supaya tetap
-// hemat token tapi tetap representatif.
+
+
+
+
+
+
 const BOT_KNOWLEDGE_BASE = `
 ═══════════════════════════════════════
 PENGETAHUAN DIRI: FITUR & COMMAND ALYA BOT
@@ -341,7 +333,7 @@ ATURAN MENJAWAB SOAL FITUR:
 
 const MAX_HISTORY_PER_USER = 20;
 
-// ── Logic DB ──────────────────────────────────────────────────
+
 function loadLogicDB() {
   try {
     if (!fs.existsSync(LOGIC_DB_PATH))
@@ -365,7 +357,7 @@ function resetGlobalLogic()  {
   saveLogicDB(db);
 }
 
-// ── Role DB ───────────────────────────────────────────────────
+
 function loadRoles() {
   try {
     if (!fs.existsSync(ROLE_DB_PATH)) fs.writeFileSync(ROLE_DB_PATH, '{}');
@@ -398,7 +390,7 @@ function handleSetRole(sender, roleText) {
 function handleClearRole(sender) { return clearManualRole(sender); }
 function getRoleOf(sender)       { return getManualRole(sender); }
 
-// ── Chat History ──────────────────────────────────────────────
+
 let _chatHistoryCache = null;
 let _chatHistoryDirty = false;
 let _chatHistoryTimer = null;
@@ -450,12 +442,12 @@ function buildHistoryContext(sender) {
   return `\n\n[Riwayat percakapan sebelumnya:\n${lines.join('\n')}\n]`;
 }
 
-// ── Message Splitter (Bell-style, PENDEK & NATURAL) ───────────
-// Tiap pesan maksimal CHUNK_MAX karakter.
-// Jumlah pesan dinamis 1-5 — mengikuti konteks/panjang respons AI,
-// TIDAK dipaksa minimal 2 (chat singkat seperti "Iya." cukup 1 balasan).
+
+
+
+
 const CHUNK_MAX = 200;
-const MAX_PARTS = 5;     // maksimal 5 pesan terpisah, sesuai konteks
+const MAX_PARTS = 5;     
 
 function splitIntoMessages(text) {
   if (!text) return [];
@@ -479,7 +471,7 @@ function splitIntoMessages(text) {
       continue;
     }
 
-    // Split per kalimat
+    
     const sentences = trimmed.match(/[^.!?…]+(?:[.!?…]+(?:\s|$)|$)/g) || [trimmed];
     let chunk = '';
     for (const s of sentences) {
@@ -497,19 +489,19 @@ function splitIntoMessages(text) {
   return messages.filter(Boolean).slice(0, dynMax);
 }
 
-// ── Timing Helpers (LEBIH SINGKAT dari sebelumnya) ─────────────
-// Typing delay: ~30 char/detik (lebih cepat), max 2.5 detik
+
+
 function naturalDelay(len) {
   const base  = Math.max(400, Math.min(2500, len * 15));
   const noise = (Math.random() - 0.5) * base * 0.35;
   return new Promise(r => setTimeout(r, Math.round(base + noise)));
 }
-// Jeda antar pesan: 600-1400 ms
+
 function interPause() {
   return new Promise(r => setTimeout(r, 600 + Math.random() * 800));
 }
 
-// ── Pinterest Search ──────────────────────────────────────────
+
 async function searchPinterest(query) {
   try {
     const endpoints = [
@@ -536,13 +528,13 @@ async function searchPinterest(query) {
   } catch (e) { console.error('[Pinterest]', e.message); return null; }
 }
 
-// ── Deep Think: Gemini fallback untuk pertanyaan sulit ────────
-// Dipanggil secara tersembunyi dari case 'tanya_mendalam'.
-// Tidak memotong limit user — ini internal engine Alya.
-// Hasilnya di-wrap dengan gaya Alya tsundere sebelum dikirim.
+
+
+
+
 async function callGeminiDeep(question, pushname, roleData) {
   try {
-    // Prompt: Alya tsundere yang lagi "berpikir keras"
+    
     const role       = roleData?.role || 'Orang Asing';
     const systemPrompt =
       `Kamu adalah Alisa Mikhailovna Kujou "Alya", gadis tsundere half-Rusia 16 tahun. ` +
@@ -555,10 +547,10 @@ async function callGeminiDeep(question, pushname, roleData) {
       `Jika pertanyaan teknis/akademis, jelaskan dengan analogi yang mudah dipahami. ` +
       `Akhiri dengan satu kalimat tsundere ringan.\n\nPertanyaan: ${question}`;
 
-    // FIX (V20 SC Alisa Bell): pakai lib/scraper-bell.js — apikey Bell409
-    // (termai.cc) sebagai jalur utama, fallback otomatis ke Gemini/Supabase
-    // kalau termai.cc gagal. Sebelumnya fungsi ini duplikasi logic Supabase
-    // manual; sekarang satu sumber kebenaran untuk semua panggilan AI teks.
+    
+    
+    
+    
     const result = await askBell({ prompt: systemPrompt });
     if (!result.status) {
       console.warn('[DeepThink] askBell gagal:', result.error);
@@ -572,18 +564,18 @@ async function callGeminiDeep(question, pushname, roleData) {
   }
 }
 
-// ── Media Vision (native, Bell-style): baca foto/video/audio ──────
-// Pola SC Alisa-Bell asli (helpers/interactive.js): image & video
-// dikirim sebagai base64 LANGSUNG di body request ke /api/chat/logic-bell
-// (satu request bareng teks & command routing) — BUKAN lewat endpoint
-// img2txt terpisah. Audio ditranskripsi dulu jadi teks (endpoint
-// audioProcessing/transcribe), baru masuk sebagai `chat` biasa.
-//
-// Video dibatasi 60 detik — sama seperti SC asli (videoSkipped).
+
+
+
+
+
+
+
+
 const VIDEO_MAX_SECONDS = 60;
 
 function detectIncomingMedia(m) {
-  // Prioritas: media yang di-reply (quoted) dulu, baru media yang dikirim langsung.
+  
   const candidates = [
     { src: m?.quoted, label: 'quoted' },
     { src: m, label: 'direct' },
@@ -612,13 +604,7 @@ function detectIncomingMedia(m) {
   return null;
 }
 
-/**
- * Download media + siapkan payload untuk dikirim langsung ke logic-bell.
- * Untuk image/video: kembalikan base64 string (dipasang di body.image / body.video).
- * Untuk audio: transkripsi lewat endpoint termai, kembalikan teksnya (dipasang di `chat`).
- *
- * @returns {Promise<{ imageB64?: string, videoB64?: string, transcribedText?: string, skippedReason?: string }>}
- */
+ 
 async function prepareMediaForBell(alya, mediaInfo) {
   let mediaPath = null;
   try {
@@ -642,7 +628,7 @@ async function prepareMediaForBell(alya, mediaInfo) {
       return { videoB64: buffer.toString('base64') };
     }
     if (mediaInfo.kind === 'audio') {
-      // Pola SC asli: transcribe dulu via termai, hasilnya masuk sebagai teks.
+      
       const trResult = await askBellAudio({ buffer, mimeType: mediaInfo.mime });
       if (trResult.status && trResult.text) {
         return { transcribedText: trResult.text };
@@ -658,7 +644,7 @@ async function prepareMediaForBell(alya, mediaInfo) {
   }
 }
 
-// Kalimat bridge yang dikirim Alya sebelum deep think (agar terasa natural)
+
 const _DEEP_BRIDGES = [
   'Hmph... pertanyaan yang lumayan susah. Bentar, aku pikirin dulu.',
   'Eh, tunggu. Ini perlu aku pikirin serius.',
@@ -673,35 +659,35 @@ function _pickDeepBridge() {
   return _DEEP_BRIDGES[Math.floor(Math.random() * _DEEP_BRIDGES.length)];
 }
 
-// Urutan fallback: ElevenLabs (Termai) → alt endpoint → VoiceRSS → Google TTS
+
 async function generateVoice(text) {
-  // Bersihkan dan normalisasi teks agar TTS mengucapkan dengan natural
+  
   let cleanText = text
-    // Hapus markdown formatting
-    .replace(/\[_[^\]]*_\]/g, '')           // [_buang muka_] → hilang
-    .replace(/\[.*?\]/g, '')                // [apapun] → hilang
-    .replace(/\*\*?([^*]+)\*\*?/g, '$1')   // **bold** → teks saja
-    .replace(/~~([^~]+)~~/g, '$1')          // ~~strikethrough~~ → teks
-    .replace(/`[^`]+`/g, '')               // `code` → hilang
-    .replace(/_{1,2}([^_]+)_{1,2}/g, '$1') // _italic_ → teks
-    // Hapus URL
+    
+    .replace(/\[_[^\]]*_\]/g, '')           
+    .replace(/\[.*?\]/g, '')                
+    .replace(/\*\*?([^*]+)\*\*?/g, '$1')   
+    .replace(/~~([^~]+)~~/g, '$1')          
+    .replace(/`[^`]+`/g, '')               
+    .replace(/_{1,2}([^_]+)_{1,2}/g, '$1') 
+    
     .replace(/https?:\/\/\S+/g, '')
-    // Normalisasi tanda baca untuk spoken
+    
     .replace(/[*_~`|\\]/g, '')
-    .replace(/\n{2,}/g, '. ')             // newline ganda → jeda kalimat
-    .replace(/\n/g, ', ')                 // newline tunggal → jeda
-    // Normalisasi tanda baca berlebihan
-    .replace(/\.{2,}/g, '...')            // .... → ...
+    .replace(/\n{2,}/g, '. ')             
+    .replace(/\n/g, ', ')                 
+    
+    .replace(/\.{2,}/g, '...')            
     .replace(/!{2,}/g, '!')
     .replace(/\?{2,}/g, '?')
-    // Bersihkan karakter non-printable
+    
     .replace(/[^\w\s\.,!?;:()\-–—'"…]/g, '')
     .replace(/\s{2,}/g, ' ')
     .trim();
 
-  // Potong di batas kalimat agar tidak terpotong di tengah kata
+  
   if (cleanText.length > 450) {
-    // Cari titik/tanda baca terakhir sebelum 450 karakter
+    
     const cutIdx = cleanText.lastIndexOf('.', 450);
     const cutIdx2 = cleanText.lastIndexOf('!', 450);
     const cutIdx3 = cleanText.lastIndexOf('?', 450);
@@ -717,7 +703,7 @@ async function generateVoice(text) {
   const fallbackVoices = ['bella', 'nova', 'adam', 'echilling'];
   const tryVoices      = [selectedModel, ...fallbackVoices.filter(v => v !== selectedModel)];
 
-  // 1. ElevenLabs via Termai
+  
   for (const voice of tryVoices) {
     try {
       const url = `${TERMAI_URL}/api/text2speech/elevenlabs?key=${TERMAI_KEY}&text=${encodeURIComponent(cleanText)}&voice=${voice}&speed=0.95`;
@@ -730,7 +716,7 @@ async function generateVoice(text) {
     } catch {}
   }
 
-  // 2. Termai alt endpoint
+  
   const altList = [
     `${TERMAI_URL}/api/tts?key=${TERMAI_KEY}&text=${encodeURIComponent(cleanText)}&lang=id`,
     `${TERMAI_URL}/api/text2speech?key=${TERMAI_KEY}&text=${encodeURIComponent(cleanText)}&voice=bella`,
@@ -746,7 +732,7 @@ async function generateVoice(text) {
     } catch {}
   }
 
-  // 3. VoiceRSS
+  
   try {
     const vr  = `https://api.voicerss.org/?key=demo&hl=id-id&src=${encodeURIComponent(cleanText.slice(0, 300))}&c=MP3&f=16khz_16bit_stereo`;
     const res = await fetch(vr, { signal: AbortSignal.timeout(10000) });
@@ -759,7 +745,7 @@ async function generateVoice(text) {
     }
   } catch {}
 
-  // 4. Google TTS chunked
+  
   try {
     const words = cleanText.split(' ');
     const chunks = [];
@@ -787,44 +773,76 @@ async function generateVoice(text) {
   return null;
 }
 
-// ── Trigger Check ─────────────────────────────────────────────
-// PENTING: .alisa on/off BUKAN auto-reply-semua-chat. Fungsi ini hanya
-// dipakai untuk jalur AI Interaktif (.alisa) — trigger-nya selalu
-// mention/reply/panggil-nama, di grup APAPUN (tidak perlu .alisa on).
-// `isAutoAiGc` (sebenarnya isi: status .alisa per grup) di sini HANYA
-// berfungsi sebagai gerbang on/off: kalau .alisa OFF di grup itu, semua
-// trigger AI interaktif diblokir; kalau ON, trigger mention/reply/nama
-// tetap berlaku seperti biasa — BUKAN auto-reply ke semua chat.
-// Auto-reply-semua-chat adalah tanggung jawab autoaigc/autosimi, yang
-// punya jalur terpisah sendiri di alya.js (tidak lewat fungsi ini).
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+function sameJidUser(a, b) {
+  if (!a || !b) return false
+  const digits = (jid) => String(jid).split('@')[0].replace(/\D/g, '')
+  const left = digits(a)
+  const right = digits(b)
+  return !!left && left === right
+}
+
+function isReplyToBot(m, botNumber) {
+  const q = m && m.quoted
+  if (!q || typeof q !== 'object') return false
+  if (q.fromMe === true || q.isBaileys === true) return true
+  if (q.key?.fromMe === true || q.fakeObj?.key?.fromMe === true) return true
+  return sameJidUser(q.sender, botNumber)
+}
+
+
+
+function resolveAIPrompt(m) {
+  const direct = typeof m?.body === 'string' ? m.body
+    : (typeof m?.text === 'string' ? m.text : '')
+  if (direct.trim()) return { text: direct.trim(), source: 'text' }
+  const quoted = typeof m?.quoted?.text === 'string' ? m.quoted.text : ''
+  if (quoted.trim()) return { text: quoted.trim(), source: 'quoted' }
+  return { text: '', source: '' }
+}
+
 function isAITriggered({ body, m, botNumber, isAutoAiGc }) {
   if (!body && !m.mtype) return false;
   if (m.key.fromMe || m.isBaileys) return false;
   if (m.mtype === 'stickerMessage' || m.mtype === 'documentMessage') return false;
   const text       = (body || '').toLowerCase().trim();
-  const calledName = text.startsWith('alya') || text.includes('alya');
-  const isReplyBot = !!(m.quoted?.sender &&
-    (m.quoted.sender === botNumber || m.quoted.fromMe));
+  
+  const calledName = /\b(alya|alisa)\b/i.test(text);
+  const isReplyBot = isReplyToBot(m, botNumber);
   const botMention = !!(m.mentionedJid?.some(j =>
-    j === botNumber || j.split('@')[0] === botNumber.split('@')[0]
+    j === botNumber || sameJidUser(j, botNumber)
   ));
   const isPrivate  = !m.isGroup;
 
-  // Di grup: .alisa harus ON dulu (gerbang), BARU trigger mention/reply/nama
-  // diizinkan. Di PM: selalu aktif (tidak perlu gerbang grup).
+  
+  
   const gateOpen = isPrivate || isAutoAiGc;
   const isExplicitTrigger = calledName || isReplyBot || botMention;
 
   return isPrivate || (gateOpen && isExplicitTrigger);
 }
 
-// ── Auto-ban check ────────────────────────────────────────────
+
 function checkAutoban(body) {
   const lower = (body || '').toLowerCase();
   return BANNED_WORDS.some(w => lower.includes(w.toLowerCase()));
 }
 
-// ── Multi-send helper (Bell-style) ───────────────────────────
+
 async function sendMultiMessages(alya, from, m, messages) {
   for (let i = 0; i < messages.length; i++) {
     const msg = messages[i];
@@ -845,8 +863,8 @@ async function sendMultiMessages(alya, from, m, messages) {
   try { await alya.sendPresenceUpdate('paused', from); } catch {}
 }
 
-// ── Limit-reached message ─────────────────────────────────────
-// Bell-inspired: tampilkan satu kali, lalu diam sampai besok
+
+
 function buildLimitMsg(pushname) {
   const tomorrow = new Date();
   tomorrow.setDate(tomorrow.getDate() + 1);
@@ -877,7 +895,7 @@ function buildLimitMsg(pushname) {
   );
 }
 
-// ── Format status card ────────────────────────────────────────
+
 function formatStatusCard({ pushname, chatCount, role, emoji, isManual, isFirstTime }) {
   const roleLine  = isManual ? `${role} _(Custom)_` : `${emoji || ''} ${role}`;
   const nextLevel = ROLE_LEVELS.find(r => r.min > chatCount);
@@ -915,11 +933,11 @@ function formatStatusCard({ pushname, chatCount, role, emoji, isManual, isFirstT
   );
 }
 
-// ── VN speakText Generator (contextual, spoken-style) ──────────
-// Tujuan: VN harus BERBEDA dari teks chat — lebih natural, lisan, interaktif.
-// Prioritas: speakText dari AI (sudah kontekstual) > konversi replyText ke spoken > fallback
 
-// Placeholder yang harus diabaikan (AI kadang ngisi ini kalau nggak ngerti)
+
+
+
+
 const _SPEAK_PLACEHOLDERS = [
   'tulis_di_sini_isi_pesan_suara_yang_kontekstual_dan_relevan_sesuai_percakapan',
   'isi_pesan_yang_akan_diucapkan_sesuai_karakter_alya',
@@ -928,7 +946,7 @@ const _SPEAK_PLACEHOLDERS = [
   'speaktext',
 ];
 
-// Filler/jeda natural ala orang ngomong untuk diselipkan di awal
+
 const _VN_STARTERS = [
   'Eh, ya jadi gini,',
   'Hmm... oke dengerin ya,',
@@ -946,24 +964,16 @@ function _pickRandom(arr) {
   return arr[Math.floor(Math.random() * arr.length)];
 }
 
-/**
- * Build speakText final untuk TTS.
- * Prioritas:
- *   1. AI speakText (dari respons utama) — dipakai kalau bukan placeholder & cukup layak
- *   2. Panggil AI SEKALI LAGI khusus minta dibuatkan konten lisan baru — BUKAN
- *      rewrite/reformat dari replyText. Ini memastikan VN selalu berisi ucapan
- *      yang independen & natural, bukan "teks yang sama dibaca ulang".
- *   3. Fallback generik terakhir kalau pemanggilan AI kedua juga gagal total.
- */
+ 
 async function buildSpeakText(config, replyText, userChat, ctx = {}) {
-  // 1. AI-generated speakText — pakai kalau bukan placeholder dan cukup panjang
+  
   const aiSpeak = config?.speakText;
   const isPlaceholder = !aiSpeak ||
     aiSpeak.length < 10 ||
     _SPEAK_PLACEHOLDERS.some(p => aiSpeak.toLowerCase().includes(p.toLowerCase()));
 
   if (!isPlaceholder) {
-    // Bersihkan sedikit dari formatting agar TTS baca dengan benar
+    
     const cleanAi = aiSpeak
       .replace(/\[_[^\]]*_\]/g, '')
       .replace(/\[.*?\]/g, '')
@@ -974,10 +984,10 @@ async function buildSpeakText(config, replyText, userChat, ctx = {}) {
     if (cleanAi.length > 10) return cleanAi;
   }
 
-  // 2. AI tidak kasih speakText yang layak → panggil AI SEKALI LAGI,
-  //    khusus generate konten ucapan baru berdasarkan konteks chat asli.
-  //    Ini BUKAN text-to-speech dari teks yang sudah ditulis — ini permintaan
-  //    konten baru yang memang ditulis untuk diucapkan.
+  
+  
+  
+  
   try {
     const regenPrompt =
       `${ctx.persona || ''}\n\n` +
@@ -999,7 +1009,7 @@ async function buildSpeakText(config, replyText, userChat, ctx = {}) {
       role:           ctx.roleData?.role || 'Temen biasa',
       msgtype:        'conversation',
       custom_profile: regenPrompt,
-      commands:       [], // tidak perlu command apapun, murni minta teks lisan
+      commands:       [], 
     });
 
     const regenText = (regen?.data?.msg || regen?.message || regen?.reply || '').trim();
@@ -1017,15 +1027,15 @@ async function buildSpeakText(config, replyText, userChat, ctx = {}) {
     console.error('[buildSpeakText] Regen AI error:', e.message);
   }
 
-  // 3. Fallback generik terakhir — hanya kalau AI benar-benar tidak bisa dihubungi
+  
   const starter = _pickRandom(_VN_STARTERS);
   return `${starter} hmm, aku mau bilang sesuatu. Jangan ge-er dulu ya. Pokoknya... ya gitu deh. Hmph!`;
 }
 
-// ── Main AI Runner ────────────────────────────────────────────
+
 async function runAIInteractive({ body, m, alya, from, sender, pushname, isGroup }) {
   try {
-    // ── Guard: banned ────────────────────────────────────────
+    
     const userDb = global.db?.users?.[sender];
     if (userDb?.banned) {
       console.log(`[Alya AI] Diam: user ${sender} berstatus banned, AI tidak merespon.`);
@@ -1035,9 +1045,23 @@ async function runAIInteractive({ body, m, alya, from, sender, pushname, isGroup
     let chat = (body || '').trim();
     if (chat.toLowerCase().startsWith('alya')) chat = chat.slice(4).trim();
 
-    // ── Media (Bell-native): siapkan image/video base64 atau transkrip
-    // audio, untuk disisipkan langsung ke body request logic-bell nanti.
-    // Ini pola SC Alisa-Bell asli — bukan 2 request terpisah.
+    
+    
+    
+    if (isVpsStatusQuery(chat)) {
+      try { await alya.sendPresenceUpdate('composing', from); } catch {}
+      const status = getVpsStatus({ socket: alya });
+      const text = formatVpsStatus(status);
+      await alya.sendMessage(from, { text }, { quoted: m });
+      addToHistory(sender, 'assistant', `Status VPS: ${status.service}, uptime ${status.systemUptimeSec}s, RAM ${status.memory.percent}%`);
+      try { await alya.sendPresenceUpdate('paused', from); } catch {}
+      console.log(`[VPS] auto-case dijawab lokal untuk ${sender || 'unknown'}`);
+      return;
+    }
+
+    
+    
+    
     let mediaImageB64 = null;
     let mediaVideoB64 = null;
     const incomingMedia = detectIncomingMedia(m);
@@ -1046,42 +1070,42 @@ async function runAIInteractive({ body, m, alya, from, sender, pushname, isGroup
       const mediaResult = await prepareMediaForBell(alya, incomingMedia);
 
       if (mediaResult.skippedReason) {
-        // Video kepanjangan / file kegedean / transkrip gagal → beri tahu
-        // user secara natural, tapi tetap lanjut ke jalur teks biasa
-        // (siapa tahu ada caption yang masih bisa dijawab).
+        
+        
+        
         await alya.sendMessage(from, {
           text: `Hmm... ${mediaResult.skippedReason} 😖`,
         }, { quoted: m });
-        if (!chat) return; // tidak ada teks lain untuk diproses, selesai
+        if (!chat) return; 
       } else if (mediaResult.imageB64) {
         mediaImageB64 = mediaResult.imageB64;
       } else if (mediaResult.videoB64) {
         mediaVideoB64 = mediaResult.videoB64;
       } else if (mediaResult.transcribedText) {
-        // Audio: hasil transkrip jadi teks chat (gabung dengan caption kalau ada)
+        
         chat = chat ? `${chat}\n\n[Isi voice note: "${mediaResult.transcribedText}"]` : mediaResult.transcribedText;
       }
     }
 
     if (!chat) chat = mediaImageB64 || mediaVideoB64 ? '' : 'Halo';
 
-    // ── Pre-processing: Shortcut tanpa panggil AI (lebih cepat) ──
-    // Deteksi intent cari gambar Pinterest langsung
+    
+    
     const chatLower = chat.toLowerCase();
     const isPinRequest = /\b(pin|pinterest|pinterst)\b/i.test(chatLower) &&
       /\b(cari|cariin|carikan|foto|gambar|image|wallpaper|kirim)\b/i.test(chatLower);
 
-    // Deteksi intent download langsung (ada URL + kata download)
+    
     const hasUrl   = /https?:\/\/[^\s]+/i.test(chat);
     const isDlReq  = /\b(download|dl|unduh|unduhkan|tolong\s*dl|ambilkan)\b/i.test(chatLower) && hasUrl;
 
-    // Deteksi intent cari lagu/musik Spotify langsung (tanpa URL, ada kata lagu/musik + cari)
+    
     const isSongReq = !hasUrl &&
       /\b(lagu|musik|song|spotify)\b/i.test(chatLower) &&
       /\b(cari|cariin|carikan|puter|putar|dengerin|dengarkan|kirim|ada)\b/i.test(chatLower);
 
     if (isSongReq) {
-      // Shortcut: langsung emit .spotify tanpa panggil AI
+      
       const cleanQuery = chat
         .replace(/\b(cari|cariin|carikan|puter|putar|dengerin|dengarkan|kirim|ada|lagu|musik|song|spotify|nya|dong|dulu)\b/gi, '')
         .replace(/\balya\b/gi, '')
@@ -1100,19 +1124,19 @@ async function runAIInteractive({ body, m, alya, from, sender, pushname, isGroup
           }],
           type: 'notify',
         });
-        return; // selesai tanpa panggil AI
+        return; 
       }
     }
 
     if (isPinRequest && !isDlReq) {
-      // Shortcut: langsung emit .pin tanpa panggil AI
+      
       const cleanQuery = chat
         .replace(/\b(cari|cariin|carikan|foto|gambar|image|wallpaper|kirim|di|ke|di\s+pin|pinterest|pinterst|pin)\b/gi, '')
         .replace(/\balya\b/gi, '')
         .trim();
       const pinQuery = cleanQuery || chat;
 
-      // Cek apakah ada URL Pinterest
+      
       const pinUrlMatch = chat.match(/https?:\/\/(www\.)?(pinterest\.com|pin\.it)\/[^\s]+/i);
 
       if (pinUrlMatch) {
@@ -1140,11 +1164,11 @@ async function runAIInteractive({ body, m, alya, from, sender, pushname, isGroup
           type: 'notify',
         });
       }
-      return; // selesai tanpa panggil AI
+      return; 
     }
 
     if (isDlReq) {
-      // Shortcut: langsung emit download command tanpa panggil AI
+      
       const urlMatch = chat.match(/https?:\/\/[^\s]+/i);
       if (urlMatch) {
         const dlUrl = urlMatch[0];
@@ -1173,13 +1197,13 @@ async function runAIInteractive({ body, m, alya, from, sender, pushname, isGroup
           }],
           type: 'notify',
         });
-        return; // selesai tanpa panggil AI
+        return; 
       }
     }
 
-    // ── Shortcut: link generik TANPA kata "download" & BUKAN Pinterest ──
-    // User cukup kirim link ke Alya (mention/reply/panggil nama) tanpa perlu
-    // bilang "download" secara eksplisit → tetap auto-download via .aio.
+    
+    
+    
     if (!isDlReq && !isPinRequest && hasUrl) {
       const genericUrlMatch = chat.match(/https?:\/\/[^\s]+/i);
       const isPinterestUrl  = /pinterest\.com|pin\.it/i.test(chat);
@@ -1210,11 +1234,11 @@ async function runAIInteractive({ body, m, alya, from, sender, pushname, isGroup
           }],
           type: 'notify',
         });
-        return; // selesai tanpa panggil AI
+        return; 
       }
     }
 
-    // ── Auto-ban offensive words ──────────────────────────────
+    
     if (checkAutoban(body)) {
       if (global.db?.users?.[sender]) {
         global.db.users[sender].banned     = true;
@@ -1226,35 +1250,35 @@ async function runAIInteractive({ body, m, alya, from, sender, pushname, isGroup
       return;
     }
 
-    // ── Daily Limit Check ─────────────────────────────────────
+    
     const prem = isPremiumUser(sender);
     if (!prem) {
       const dailyInfo = getDailyInfo(sender);
       if (dailyInfo.count >= DAILY_LIMIT_FREE) {
-        // Sudah habis limit
+        
         if (!dailyInfo.limitMsgShown) {
-          // Tampilkan warning hanya 1x per hari
+          
           markLimitMsgShown(sender);
           const limitMsg = buildLimitMsg(pushname);
           await alya.sendMessage(from, { text: limitMsg }, { quoted: m });
         } else {
-          // Sudah pernah kasih warning hari ini — LOG supaya owner tahu
-          // kenapa user ini "tidak dapat respon" (bukan bug, memang limit).
+          
+          
           console.log(`[Alya AI] Diam: limit harian habis untuk ${sender} (${dailyInfo.count}/${DAILY_LIMIT_FREE}), warning sudah ditampilkan hari ini.`);
         }
         return;
       }
     }
 
-    // ── Increment daily counter ───────────────────────────────
+    
     if (!prem) incrementDaily(sender);
 
-    // ── First chat & total chat count ────────────────────────
+    
     const _isFirst = isFirstChat(sender);
     const newCount = incrementChatCount(sender);
     const roleData = getEffectiveRole(sender);
 
-    // First chat welcome
+    
     if (_isFirst) {
       const card = formatStatusCard({
         pushname: pushname || 'User',
@@ -1268,7 +1292,7 @@ async function runAIInteractive({ body, m, alya, from, sender, pushname, isGroup
       await new Promise(r => setTimeout(r, 1000));
     }
 
-    // Role level-up notification
+    
     if (!_isFirst && !roleData.isManual) {
       const prevRole = getRoleByCount(newCount - 1);
       const newRole  = getRoleByCount(newCount);
@@ -1280,8 +1304,8 @@ async function runAIInteractive({ body, m, alya, from, sender, pushname, isGroup
       }
     }
 
-    // ── Grup komunitas invite — setiap kelipatan 30 total chat ─
-    // Kirim notif ajakan gabung grup setelah 30, 60, 90, ... chat total
+    
+    
     if (newCount > 0 && newCount % 30 === 0) {
       await new Promise(r => setTimeout(r, 600));
       await alya.sendMessage(from, {
@@ -1297,7 +1321,7 @@ async function runAIInteractive({ body, m, alya, from, sender, pushname, isGroup
       await new Promise(r => setTimeout(r, 500));
     }
 
-    // Sisa limit warning (5 chat terakhir) — hanya free user
+    
     if (!prem) {
       const dailyNow = getDailyInfo(sender);
       const sisa     = DAILY_LIMIT_FREE - dailyNow.count;
@@ -1309,11 +1333,11 @@ async function runAIInteractive({ body, m, alya, from, sender, pushname, isGroup
       }
     }
 
-    // ── Build persona prompt ──────────────────────────────────
+    
     const historyCtx   = buildHistoryContext(sender);
     const currentLogic = getGlobalLogic();
 
-    // Tambahkan konteks grup jika di grup
+    
     let groupContextStr = '';
     if (isGroup && from) {
       groupContextStr = groupCtx.buildGroupContext(from, chat);
@@ -1328,6 +1352,7 @@ Informasi tambahan:
 - Kalau ditanya nomor owner: 6285602845943
 - Kalau ditanya link grup/komunitas owner, atau user ingin bergabung grup: https://chat.whatsapp.com/L2huo828J2bD8SMxfC7ReO?s=cl&p=a&mlu=0
 - Kalau ditanya soal harga, info bot, sewa bot, atau order: arahkan ke nomor owner 6285602845943
+- Kalau ditanya status VPS/server/kondisi bot (online/offline, uptime, RAM, disk): kamu bisa mengeceknya sendiri lewat cmd status_vps — jangan mengaku tidak tahu.
 - Pengetahuanmu diperbarui hingga tahun 2026.
 - Kamu bisa membalas pesan teks, gambar, maupun voice note.
 - Gunakan bahasa Indonesia yang natural, gaul, dan sesuai karakter tsundere-mu.
@@ -1336,8 +1361,18 @@ Informasi tambahan:
 
     persona += `\n\nHubunganmu dengan ${pushname || 'user ini'}: *${roleData.role}* (Total chat: ${newCount}x). Sesuaikan gaya bicara:\n- Orang Asing/Baru kenal: Dingin, formal, waspada\n- Temen biasa-Ngobrol: Mulai santai tapi jaga jarak\n- Temen Gosip-Lama: Terbuka, manja, nyeletuk Rusia\n- Temen Deket-Akrab: Cerewet, posesif, banyak blush\n- Temen Baik-Sahabat: Sangat dekat, protektif\n- Sahabat Deket-Sejati: Tulus tapi tetap tsundere\n- Pacar: Manja berat, cemburu\n- 🎀Soulmate🦋: Tulus, penuh kasih`;
 
-    // ── AI Commands ───────────────────────────────────────────
+    
     const commands = [
+      {
+        description:
+          'Jika user menanya status VPS/server bot: online/offline, kondisi bot, uptime, RAM, disk, ' +
+          'resource server, atau apakah bot masih hidup. Contoh: "status vps", "server kamu masih hidup?", ' +
+          '"bot online gak?", "cek VPS bot". CW: hanya untuk pertanyaan STATUS SISTEM bot, bukan info umum.',
+        output: {
+          cmd: 'status_vps',
+          msg: 'Bentar aku cek dulu kondisi serverku...',
+        },
+      },
       {
         description: 'Jika diminta mengirim foto diri / selfie / pap / gambar kamu',
         output: {
@@ -1458,7 +1493,7 @@ Informasi tambahan:
       },
     ];
 
-    // ── Call AI ───────────────────────────────────────────────
+    
     try { await alya.sendPresenceUpdate('composing', from); } catch {}
     addToHistory(sender, 'user', mediaImageB64 ? `[kirim gambar] ${chat}` : mediaVideoB64 ? `[kirim video] ${chat}` : chat);
 
@@ -1474,9 +1509,9 @@ Informasi tambahan:
       msgtype:        m.mtype || 'conversation',
       custom_profile: persona,
       commands,
-      // ── Bell-native multimodal: sama persis pola SC Alisa-Bell asli
-      // (helpers/interactive.js) — image/video base64 dikirim LANGSUNG
-      // di body yang sama ke /api/chat/logic-bell, bukan request terpisah.
+      
+      
+      
       ...(mediaImageB64 ? { image: mediaImageB64 } : {}),
       ...(mediaVideoB64 ? { video: mediaVideoB64 } : {}),
     });
@@ -1485,10 +1520,10 @@ Informasi tambahan:
     const replyText = config?.msg || _ai?.message || _ai?.reply || '';
     if (replyText) addToHistory(sender, 'assistant', replyText);
 
-    // ── Handle AI command response ────────────────────────────
+    
     switch (config?.cmd) {
 
-      // ── kirim_gambar ────────────────────────────────────────
+      
       case 'kirim_gambar': {
         if (replyText) {
           const parts = splitIntoMessages(replyText);
@@ -1525,10 +1560,10 @@ Informasi tambahan:
         return;
       }
 
-      // ── kirim_stiker (Stiker Kontekstual) ────────────────────
-      // Sama persis mekanisme RICH:STICKER di Ourin: tiap emosi dipetakan
-      // ke 1 URL gambar statis, di-download, lalu dikirim sebagai stiker
-      // via sendImageAsSticker. Teks (msg) dikirim dulu, stiker menyusul.
+      
+      
+      
+      
       case 'kirim_stiker': {
         if (replyText) {
           const parts = splitIntoMessages(replyText);
@@ -1536,26 +1571,26 @@ Informasi tambahan:
         }
         try { await alya.sendPresenceUpdate('composing', from); } catch {}
 
-        // Sanitasi emotion dari AI — fallback ke "netral" kalau tidak dikenali/placeholder
+        
         const VALID_EMOTIONS = ['ngambek', 'kaget', 'bingung', 'senang', 'malu', 'bangga', 'sedih', 'setuju', 'netral'];
         let emotion = (config?.cfg?.emotion || 'netral').toLowerCase().trim();
         if (!VALID_EMOTIONS.includes(emotion)) emotion = 'netral';
 
-        // URL statis per emosi.
-        // ⚠️ CATATAN UNTUK OWNER: kategori "senang", "malu", "bangga", "sedih",
-        // "setuju" masih memakai URL sementara (reuse dari kategori lama) karena
-        // belum ada aset gambar khusus untuk emosi tersebut. Ganti value di bawah
-        // dengan URL gambar sendiri (host di iili.io / imgur / dsb) supaya tiap
-        // emosi benar-benar punya stiker berbeda.
+        
+        
+        
+        
+        
+        
         const STICKER_URLS = {
           ngambek: 'https://iili.io/BPBdFuj.md.jpg',
           kaget:   'https://iili.io/BPBFwVR.jpg',
           bingung: 'https://iili.io/BPBqKwg.md.jpg',
-          senang:  'https://iili.io/BPBFwVR.jpg',   // TODO: ganti dengan aset "senang" asli
-          malu:    'https://iili.io/BPBqKwg.md.jpg', // TODO: ganti dengan aset "malu/tersipu" asli
-          bangga:  'https://iili.io/BPBdFuj.md.jpg', // TODO: ganti dengan aset "bangga" asli
-          sedih:   'https://iili.io/BPBqKwg.md.jpg', // TODO: ganti dengan aset "sedih" asli
-          setuju:  'https://iili.io/BPBFwVR.jpg',   // TODO: ganti dengan aset "setuju/anggukan" asli
+          senang:  'https://iili.io/BPBFwVR.jpg',   
+          malu:    'https://iili.io/BPBqKwg.md.jpg', 
+          bangga:  'https://iili.io/BPBdFuj.md.jpg', 
+          sedih:   'https://iili.io/BPBqKwg.md.jpg', 
+          setuju:  'https://iili.io/BPBFwVR.jpg',   
           netral:  'https://iili.io/BPBdFuj.md.jpg',
         };
 
@@ -1581,7 +1616,7 @@ Informasi tambahan:
         } catch (e) { console.error('[kirim_stiker] gagal download/kirim:', e.message); }
 
         if (!sentSticker) {
-          // Download/kirim gagal — diam saja, teks (msg) sudah cukup
+          
           console.log(`[kirim_stiker] Gagal kirim stiker emosi "${emotion}" — skip.`);
         }
 
@@ -1590,44 +1625,44 @@ Informasi tambahan:
       }
 
 
-      // ── kirim_suara (VN Interaktif) ─────────────────────────
-      // Flow:
-      //   1. Kirim teks reaksi singkat (msg) — BERBEDA dari isi VN
-      //   2. Tunjukkan "recording..." indicator
-      //   3. Generate audio dari speakText (versi spoken, bukan teks chat)
-      //   4. Kirim VN
+      
+      
+      
+      
+      
+      
       case 'kirim_suara': {
-        // Build speakText: AI speakText > regenerasi AI khusus VN > fallback
+        
         const speakText = await buildSpeakText(config, replyText, chat, {
           persona, sender, pushname, roleData,
         });
         console.log('[Alya VN] speakText →', speakText?.slice(0, 100));
 
-        // 1. Kirim teks reaksi singkat dulu (kalau ada & berbeda dari speakText)
+        
         if (replyText && replyText.trim()) {
           const parts = splitIntoMessages(replyText);
           if (parts.length) await sendMultiMessages(alya, from, m, parts);
-          // Jeda sejenak setelah teks sebelum mulai recording
+          
           await new Promise(r => setTimeout(r, 500 + Math.random() * 400));
         }
 
-        // 2. Recording indicator — lebih lama = lebih natural
+        
         try { await alya.sendPresenceUpdate('recording', from); } catch {}
         const recordingDelay = 1200 + Math.random() * 1000 + (speakText?.length || 50) * 10;
         await new Promise(r => setTimeout(r, Math.min(recordingDelay, 4000)));
 
-        // 3. Generate audio dari speakText
+        
         const audioBuffer = await generateVoice(speakText);
 
         if (audioBuffer) {
-          // VN berhasil — kirim tanpa quoted kalau sudah ada teks sebelumnya
+          
           await alya.sendMessage(from, {
             audio:    audioBuffer,
             mimetype: 'audio/mpeg',
             ptt:      true,
           }, { quoted: replyText ? undefined : m });
         } else {
-          // VN gagal → fallback teks
+          
           await alya.sendMessage(from, {
             text: `😓 *Aduh, suaraku lagi bermasalah...*\n_Coba minta lagi nanti ya! (TTS timeout/limit)_`
           }, { quoted: m });
@@ -1637,14 +1672,14 @@ Informasi tambahan:
         return;
       }
 
-      // ── cari_gambar ─────────────────────────────────────────
+      
       case 'cari_gambar': {
         if (replyText) {
           const parts = splitIntoMessages(replyText);
           if (parts.length) await sendMultiMessages(alya, from, m, parts);
         }
 
-        // Ambil query, sanitasi placeholder
+        
         let kw = config?.cfg?.query || '';
         const KW_PLACEHOLDERS = [
           'kata kunci gambar yang dicari dalam bahasa Inggris',
@@ -1653,7 +1688,7 @@ Informasi tambahan:
           '',
         ];
         if (!kw || KW_PLACEHOLDERS.includes(kw.trim()) || kw.length < 2) {
-          // Extract dari chat langsung
+          
           kw = chat
             .replace(/carikan?|cari|cariin|kirim|gambar|foto|image|picture|wallpaper/gi, '')
             .trim() || chat;
@@ -1665,7 +1700,7 @@ Informasi tambahan:
             image: { url: imgUrl }, caption: `🔍 ${kw}`
           }, { quoted: m });
         } else {
-          // Fallback: relay ke .pin command
+          
           alya.ev.emit('messages.upsert', {
             messages: [{
               key: { ...m.key, fromMe: false, id: `ALYAPIN_${Date.now()}` },
@@ -1678,17 +1713,17 @@ Informasi tambahan:
         return;
       }
 
-      // ── download_link ────────────────────────────────────────
+      
       case 'download_link': {
         if (replyText) {
           const parts = splitIntoMessages(replyText);
           if (parts.length) await sendMultiMessages(alya, from, m, parts);
         }
         try {
-          // Ambil URL: dari config, atau extract dari chat, atau dari riwayat grup
+          
           let dlUrl = config?.cfg?.url || null;
 
-          // Sanitasi: jika masih placeholder, reset
+          
           if (dlUrl && (
             dlUrl === 'url_yang_akan_didownload' ||
             dlUrl === '' ||
@@ -1696,19 +1731,19 @@ Informasi tambahan:
             !dlUrl.startsWith('http')
           )) dlUrl = null;
 
-          // Coba extract URL dari teks chat langsung
+          
           if (!dlUrl) {
             const urlMatch = chat.match(/https?:\/\/[^\s]+/);
             if (urlMatch) dlUrl = urlMatch[0];
           }
 
-          // Coba dari riwayat grup
+          
           if (!dlUrl && m.isGroup) {
             const resolved = groupCtx.resolveDownloadRequest(from, chat);
             if (resolved) dlUrl = resolved.url;
           }
 
-          // Coba dari quoted message jika ada
+          
           if (!dlUrl && m.quoted) {
             const qBody = m.quoted.body || m.quoted.text || '';
             const qMatch = qBody.match(/https?:\/\/[^\s]+/);
@@ -1722,16 +1757,16 @@ Informasi tambahan:
             return;
           }
 
-          // Deteksi platform untuk pilih command yang tepat
+          
           const isYoutube   = /youtube\.com|youtu\.be/i.test(dlUrl);
           const isTiktok    = /tiktok\.com|vm\.tiktok\.com/i.test(dlUrl);
           const isInstagram = /instagram\.com/i.test(dlUrl);
           const isFacebook  = /fb\.watch|facebook\.com\/video/i.test(dlUrl);
           const isTwitter   = /twitter\.com|x\.com/i.test(dlUrl);
 
-          // Pilih command berdasarkan platform.
-          // Default fallback: .aio (All-In-One downloader) untuk link generik
-          // yang tidak cocok kategori spesifik manapun di bawah.
+          
+          
+          
           let dlCommand = `.aio ${dlUrl}`;
           if (isYoutube)   dlCommand = `.yt ${dlUrl}`;
           else if (isTiktok)    dlCommand = `.tiktok ${dlUrl}`;
@@ -1739,7 +1774,7 @@ Informasi tambahan:
           else if (isFacebook)  dlCommand = `.fb ${dlUrl}`;
           else if (isTwitter)   dlCommand = `.twitter ${dlUrl}`;
 
-          // Relay ke command handler
+          
           alya.ev.emit('messages.upsert', {
             messages: [{
               key: { ...m.key, fromMe: false, id: `ALYADL_${Date.now()}` },
@@ -1757,9 +1792,9 @@ Informasi tambahan:
         return;
       }
 
-      // ── cari_lagu ────────────────────────────────────────────
-      // Relay ke .spotify <query> — pencarian & pengiriman lagu
-      // sepenuhnya ditangani plugin spotify.js.
+      
+      
+      
       case 'cari_lagu': {
         if (replyText) {
           const parts = splitIntoMessages(replyText);
@@ -1802,7 +1837,7 @@ Informasi tambahan:
         return;
       }
 
-      // ── cari_pin ─────────────────────────────────────────────
+      
       case 'cari_pin': {
         if (replyText) {
           const parts = splitIntoMessages(replyText);
@@ -1812,7 +1847,7 @@ Informasi tambahan:
           let pinUrl   = config?.cfg?.pin_url || null;
           let pinQuery = config?.cfg?.query   || '';
 
-          // Sanitasi pin_url
+          
           if (pinUrl && (
             pinUrl === '' ||
             pinUrl === 'pin_url' ||
@@ -1820,7 +1855,7 @@ Informasi tambahan:
             (!pinUrl.includes('pin.it') && !pinUrl.includes('pinterest.com') && !pinUrl.includes('pindl'))
           )) pinUrl = null;
 
-          // Sanitasi pinQuery
+          
           const QUERY_PLACEHOLDERS = [
             'kata kunci pencarian Pinterest',
             'Pinterest search keywords',
@@ -1829,14 +1864,14 @@ Informasi tambahan:
             '',
           ];
           if (!pinQuery || QUERY_PLACEHOLDERS.includes(pinQuery.trim()) || pinQuery.length < 2) {
-            // Coba extract dari chat langsung
+            
             pinQuery = chat
               .replace(/carikan?|cari|cariin|pinterest|pinterst|pin\b|gambar|foto|wallpaper|aesthetic/gi, '')
               .replace(/di\s+pin(terest)?/gi, '')
               .trim();
           }
 
-          // Coba extract Pinterest URL dari teks chat
+          
           if (!pinUrl) {
             const pinMatch = chat.match(/https?:\/\/(www\.)?(pinterest\.com|pin\.it)\/[^\s]+/i);
             if (pinMatch) pinUrl = pinMatch[0];
@@ -1846,7 +1881,7 @@ Informasi tambahan:
           const hasQuery  = pinQuery && pinQuery.length > 1;
 
           if (hasPinUrl) {
-            // Ada link → .pindl
+            
             alya.ev.emit('messages.upsert', {
               messages: [{
                 key: { ...m.key, fromMe: false, id: `ALYAPINDL_${Date.now()}` },
@@ -1856,7 +1891,7 @@ Informasi tambahan:
               type: 'notify',
             });
 
-            // Kalau ada query juga, cari gambar serupa
+            
             if (hasQuery) {
               await new Promise(r => setTimeout(r, 800));
               alya.ev.emit('messages.upsert', {
@@ -1869,7 +1904,7 @@ Informasi tambahan:
               });
             }
           } else if (hasQuery) {
-            // Tidak ada link, cari via .pin query
+            
             alya.ev.emit('messages.upsert', {
               messages: [{
                 key: { ...m.key, fromMe: false, id: `ALYAPIN_${Date.now()}` },
@@ -1889,44 +1924,53 @@ Informasi tambahan:
         return;
       }
 
-      // ── tanya_mendalam (Deep Think via Gemini) ───────────────
-      // Dipicu otomatis kalau AI Termai mendeteksi pertanyaan sulit.
-      // Flow tersembunyi: bridge msg → composing → Gemini → format → kirim
-      // Tidak memotong limit user — engine internal Alya.
+      
+      case 'status_vps': {
+        const status = getVpsStatus({ socket: alya });
+        await alya.sendMessage(from, { text: formatVpsStatus(status) }, { quoted: m });
+        addToHistory(sender, 'assistant',
+          `Status VPS: ${status.service}, uptime ${status.systemUptimeSec}s, RAM ${status.memory.percent}%`);
+        return;
+      }
+
+      
+      
+      
+      
       case 'tanya_mendalam': {
-        // 1. Kirim bridge dulu (kalimat tsundere "lagi mikir")
+        
         const bridgeMsg = replyText || _pickDeepBridge();
         await alya.sendMessage(from, { text: bridgeMsg }, { quoted: m });
 
-        // 2. Tunjukkan "composing" agak lama — terasa seperti lagi berpikir serius
+        
         try { await alya.sendPresenceUpdate('composing', from); } catch {}
         const thinkDelay = 2000 + Math.random() * 2000;
         await new Promise(r => setTimeout(r, thinkDelay));
 
-        // 3. Ambil pertanyaan: dari cfg.question > chat asli user
+        
         let deepQ = config?.cfg?.question || '';
         const Q_PLACEHOLDER = 'pertanyaan user persis seperti ditulis';
         if (!deepQ || deepQ === Q_PLACEHOLDER || deepQ.length < 3) deepQ = chat;
 
-        // 4. Panggil Gemini secara tersembunyi
+        
         console.log('[DeepThink] Memanggil Gemini untuk:', deepQ.slice(0, 80));
         const geminiAnswer = await callGeminiDeep(deepQ, pushname, roleData);
 
         if (geminiAnswer) {
-          // Simpan ke history sebagai jawaban Alya
+          
           addToHistory(sender, 'assistant', geminiAnswer);
 
-          // Kirim dengan multi-message split (Bell-style)
+          
           const parts = splitIntoMessages(geminiAnswer);
           if (parts.length) {
-            // Jeda singkat setelah bridge sebelum mulai jawab
+            
             await new Promise(r => setTimeout(r, 600));
             await sendMultiMessages(alya, from, m, parts);
           } else {
             await alya.sendMessage(from, { text: geminiAnswer });
           }
         } else {
-          // Gemini gagal → fallback ke jawaban Termai biasa kalau ada, atau pesan jujur
+          
           const fallback =
             _ai?.message || _ai?.reply ||
             'Hmph... aku lagi nggak bisa jawab ini sekarang. ' +
@@ -1939,16 +1983,16 @@ Informasi tambahan:
         return;
       }
 
-      // ── default (teks biasa) ─────────────────────────────────
+      
       default: {
         if (replyText) {
           const parts = splitIntoMessages(replyText);
           if (parts.length) await sendMultiMessages(alya, from, m, parts);
         } else {
-          // ⚠️ FIX PENTING: sebelumnya kalau replyText KOSONG (semua sumber
-          // AI gagal — termai.cc down + Gemini fallback juga gagal), fungsi
-          // selesai TANPA mengirim apapun dan TANPA error → user merasa bot
-          // "diam total" padahal sebenarnya AI-nya gagal total merespon.
+          
+          
+          
+          
           console.log(`[Alya AI] AI tidak menghasilkan cmd maupun msg untuk chat: "${chat.slice(0, 60)}" — mengirim fallback.`);
           await alya.sendMessage(from, {
             text: `Hmph... aku lagi bingung mau jawab apa. 😖\n_Coba tanya lagi dengan kalimat lain ya!_`,
@@ -1958,12 +2002,12 @@ Informasi tambahan:
     }
 
   } catch (err) {
-    // ⚠️ FIX PENTING: sebelumnya blok ini HANYA console.error tanpa
-    // memberi tahu user sama sekali → user merasa bot "tidak respon
-    // sama sekali" padahal sebenarnya crash di tengah proses (misal:
-    // searchPinterest timeout, ai() gagal parsing, config undefined, dll).
-    // Sekarang: selalu log lengkap (dengan stack) DAN kirim fallback
-    // singkat ke user supaya jelas ada masalah, bukan diam membisu.
+    
+    
+    
+    
+    
+    
     console.error('[Alya AI Error]', err?.stack || err?.message || err);
     try {
       await alya.sendMessage(from, {
@@ -1975,18 +2019,20 @@ Informasi tambahan:
   }
 }
 
-// ── Exports ───────────────────────────────────────────────────
+
 module.exports = {
-  // Core
+  
   isAITriggered,
+  isReplyToBot,
+  resolveAIPrompt,
   runAIInteractive,
-  // Voice
+  
   setVoiceModel,
   getVoiceModel,
   getVoiceList,
   BELL_VOICES,
   generateVoice,
-  // Role
+  
   handleSetRole,
   handleClearRole,
   getRoleOf,
@@ -1994,33 +2040,33 @@ module.exports = {
   getRoleByCount,
   ROLE_LEVELS,
   ROLE_NAMES,
-  // Chat count (total)
+  
   getChatCount,
   incrementChatCount,
   setChatCount,
   isFirstChat,
   formatStatusCard,
-  // Daily limit
+  
   getDailyInfo,
   incrementDaily,
   resetDailyLimit,
   markLimitMsgShown,
   DAILY_LIMIT_FREE,
-  // History
+  
   clearUserHistory,
   getUserHistory,
-  // Logic
+  
   getGlobalLogic,
   setGlobalLogic,
   resetGlobalLogic,
   DEFAULT_LOGIC,
   PRESET_LOGICS,
   BOT_KNOWLEDGE_BASE,
-  // Premium check
+  
   isPremiumUser,
-  // Constants
+  
   BOT_NICKNAME,
   BOT_FULLNAME,
-  // Group context (re-export for external use)
+  
   groupCtx,
 };

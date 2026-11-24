@@ -95,6 +95,18 @@ module.exports = {
       reply, listbut2, alyaFitur, runtime, user
     } = ctx
 
+    // Coba kartu menu Rich dulu. Mode 'text' / kegagalan kirim → lanjut menu lama apa adanya.
+    try {
+      const richmenu = require('../../lib/richmenu')
+      if (await richmenu.send({
+        sock: alya, m, prefix,
+        isOwner: !!(Ryuu || isOwn || ctx.isAly || ctx.isAlya),
+        isPremium: !!isPrem,
+      })) return
+    } catch (err) {
+      console.warn('[menu] rich fallback:', err && err.message)
+    }
+
     const moment = require('moment-timezone')
     const wib     = moment.tz('Asia/Jakarta')
     const time    = wib.format('HH:mm:ss')
@@ -319,6 +331,13 @@ ${tsundereGreet}
 │ 📸 IG  : instagram.com/${ig}
 └─────────────────────
 
+🌸 *COMMAND BARU*
+┌─────────────────────
+│ 🔄 ${prefix}rvo | ${prefix}rvome — baca pesan sekali lihat
+│ 🤖 ${prefix}agy | ${prefix}antigravity — AI Antigravity (owner)
+│ 🖥️ ${prefix}uimode — pilih tampilan menu (owner)
+└─────────────────────
+
 _Pilih menu di bawah ini ya~_ 🎀
 
 ${readmore}${categoryList}`
@@ -358,7 +377,9 @@ ${readmore}${categoryList}`
           { title: '🔮 PRIMBON MENU',  description: 'Fitur ramalan & primbon',           id: `${prefix}primbonmenu`  },
           { title: '💬 QUOTES MENU',   description: 'Kumpulan kata-kata bijak',          id: `${prefix}quotesmenu`   },
           { title: '📶 CEK KUOTA',     description: 'Cek kuota internet semua operator', id: `${prefix}cekkuota`     },
-          { title: '💰 CEK PULSA',     description: 'Cek saldo pulsa semua operator',   id: `${prefix}cekpulsa`     }
+          { title: '💰 CEK PULSA',     description: 'Cek saldo pulsa semua operator',   id: `${prefix}cekpulsa`     },
+          { title: '🔄 READ VIEW ONCE',description: 'Baca pesan foto/video sekali lihat', id: `${prefix}rvo`         },
+          { title: '🤖 ANTIGRAVITY',   description: 'Tanya AI Antigravity (owner only)', id: `${prefix}agy`         }
         ]
       },
       {
@@ -404,6 +425,7 @@ ${readmore}${categoryList}`
         title: '👑 OWNER & ADMIN',
         rows: [
           { title: '👤 OWNER MENU', description: 'Khusus untuk pengembang bot', id: `${prefix}ownermenu` },
+          { title: '🖥️ UI MODE',    description: 'Pilih menu kartu rich atau teks', id: `${prefix}uimode` },
           { title: '👥 GROUP MENU', description: 'Pengaturan grup & admin',     id: `${prefix}groupmenu` }
         ]
       }

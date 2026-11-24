@@ -1,0 +1,166 @@
+/* © Kureza MD — Hitoshi MD V1
+ * Tema NEO BRUTALISM untuk kartu rich (menu + semua kartu lain).
+ * Ciri: latar krem, border hitam tebal, bayangan keras tanpa blur, warna flat, huruf kapital tebal.
+ * Dipakai lewat lib/rich/theme.cjs (tema "brutal"). Ganti lewat chat: .tema brutal / .tema aurora
+ */
+:root{--ink:#0a0a0a;--muted:#3a3a3a;--line:#0a0a0a;--deep:#fff4d6;--a:#ffd93d;--b:#ff6b9d;--sys:system-ui,-apple-system,'Segoe UI',Roboto,'Helvetica Neue',Arial,sans-serif}
+html,body{color:#0a0a0a}
+
+/* ── cangkang kartu ── */
+.card{background:#fff4d6;border:4px solid #0a0a0a;border-radius:0;box-shadow:8px 8px 0 #0a0a0a;color:#0a0a0a}
+.card::after{display:none}
+.bg,.orb,.veil,.grain,.sp,.topline{display:none}
+.grid{opacity:1;background-image:radial-gradient(rgba(10,10,10,.22) 1.3px,transparent 1.5px);background-size:16px 16px}
+.banner{border:3px solid #0a0a0a;border-radius:0;box-shadow:5px 5px 0 #0a0a0a}
+.banner .bncap{background:#ffd93d;color:#0a0a0a;border-top:3px solid #0a0a0a;padding:8px 12px}
+.banner .bncap b{background:none;-webkit-text-fill-color:#0a0a0a;color:#0a0a0a;text-transform:uppercase;font-weight:900}
+.banner .bncap span{color:#0a0a0a;font-weight:700}
+
+/* ── header kartu umum ── */
+.ico{background:var(--a);border:3px solid #0a0a0a;border-radius:0;box-shadow:4px 4px 0 #0a0a0a}
+.ico::before,.ico::after{display:none}
+.ico .fi{color:#0a0a0a;filter:none}
+.eyebrow{color:#0a0a0a;font-weight:800}
+.eyebrow .fi{color:#0a0a0a}
+.title{background:none;-webkit-text-fill-color:#0a0a0a;color:#0a0a0a;text-transform:uppercase;font-weight:900;letter-spacing:-.01em}
+.badge{background:#ff6b9d;color:#0a0a0a;border:3px solid #0a0a0a;border-radius:0;box-shadow:3px 3px 0 #0a0a0a}
+.badge::before{background:#0a0a0a;box-shadow:none;border-radius:0}
+.tone{background:#fff;border:3px solid #0a0a0a;border-radius:0;box-shadow:4px 4px 0 #0a0a0a;color:#0a0a0a}
+.tone::before{width:10px;background:var(--tc);box-shadow:none;border-right:3px solid #0a0a0a}
+.tone .tic{background:var(--tc);border:3px solid #0a0a0a;border-radius:0;box-shadow:none}
+.tone .tic .fi{color:#0a0a0a}
+.tone .tl{text-transform:uppercase;font-weight:900}
+.tone .ts{color:#0a0a0a}
+
+/* ── isi kartu umum ── */
+.panel{background:#fff;border:3px solid #0a0a0a;border-radius:0;box-shadow:4px 4px 0 #0a0a0a}
+.row{border-bottom:2px dashed #0a0a0a}
+.k{color:#0a0a0a;font-weight:700}
+.ki{background:var(--h,var(--a));border:2px solid #0a0a0a;border-radius:0}
+.ki .fi{color:#0a0a0a}
+.kd{background:#0a0a0a;box-shadow:none;border-radius:0}
+.v{color:#0a0a0a}
+.v.pos{color:#0a7a2f}.v.neg{color:#c0112b}
+.h{color:#0a0a0a;font-weight:900}
+.h::before{width:8px;border-radius:0;background:#0a0a0a;box-shadow:none}
+.h::after{height:3px;background:#0a0a0a}
+.h .fi{color:#0a0a0a}
+.p,.p b,.v b,.li b{color:#0a0a0a}
+.p i,.li i{color:#333}
+.mn,.lk{color:#0b57d0}
+.callout{background:#fff;border:3px solid #0a0a0a;border-radius:0;box-shadow:4px 4px 0 #0a0a0a;color:#0a0a0a}
+.callout>.fi{color:#0a0a0a}
+.note{color:#333;border-left:4px solid #0a0a0a}
+.li{background:#fff;border:2px solid #0a0a0a;border-radius:0;color:#0a0a0a}
+.li .dot{background:#0a0a0a;box-shadow:none;border-radius:0}
+.li .n{background:var(--a);border:2px solid #0a0a0a;border-radius:0;color:#0a0a0a}
+.li.g1{background:#ffd93d;box-shadow:none}
+.code{background:#0a0a0a;color:#ffd93d;border:3px solid #0a0a0a;border-left:8px solid #ff6b9d;border-radius:0}
+.cmd{background:#fff;border:3px solid #0a0a0a;border-radius:0;box-shadow:3px 3px 0 #0a0a0a;color:#0a0a0a}
+.cmd .fi,.cmd small{color:#0a0a0a}
+.chip{background:#fff;border:2px solid #0a0a0a;border-radius:0;color:#0a0a0a}
+.chip .fi{color:#0a0a0a}
+.hero{background:var(--a);border:3px solid #0a0a0a;border-radius:0;box-shadow:5px 5px 0 #0a0a0a}
+.hero::before{display:none}
+.hero .s{color:#0a0a0a;font-weight:700}
+.hero .big{background:none;-webkit-text-fill-color:#0a0a0a;color:#0a0a0a;filter:none;font-weight:900}
+.reel{background:#fff;border:3px solid #0a0a0a;border-radius:0;box-shadow:4px 4px 0 #0a0a0a}
+.ring{background:conic-gradient(var(--c) calc(var(--p)*1%),#fff 0);border:3px solid #0a0a0a;box-shadow:none}
+.ring::before{background:#fff4d6}
+.ring span,.g .gl,.g .gs{color:#0a0a0a}
+.pc .pn{color:#0a0a0a}
+.pc .bl{border:3px solid #0a0a0a;border-radius:0;box-shadow:none;color:#0a0a0a}
+.meta{background:#fff;border:3px solid #0a0a0a;border-radius:0}
+.meta .mh{color:#0a0a0a}
+.meta .mh .fi{color:#0a0a0a}
+.meta .mh::after{height:2px;background:#0a0a0a}
+.mi{background:#fff4d6;border:2px solid #0a0a0a;border-radius:0}
+.mi i{color:#333}
+.mi b{color:#0a0a0a}
+.live{background:#0a0a0a;box-shadow:none;border-radius:0}
+.pb .t,.pb .t b{color:#0a0a0a}
+.tr{height:14px;background:#fff;border:3px solid #0a0a0a;border-radius:0}
+.fl{background:#ff6b9d;border-radius:0;box-shadow:none;animation:none}
+.fl::after{display:none}
+
+/* ── kartu menu (.card.app) ── */
+.bk{border:3px solid #0a0a0a;border-radius:0;background:#ffd93d;color:#0a0a0a;box-shadow:3px 3px 0 #0a0a0a}
+.bk:active,.dice:active,.pgb:active{transform:translate(3px,3px);box-shadow:none}
+.sr{height:38px;border:3px solid #0a0a0a;border-radius:0;background:#fff;color:#0a0a0a;font-weight:700}
+.sr:focus{border-color:#0a0a0a;box-shadow:4px 4px 0 #0a0a0a}
+.sr::placeholder{color:#555}
+.srw .fi{color:#0a0a0a;top:12px}
+.tp:active{opacity:1;transform:translate(3px,3px)}
+.hb{background:#ffd93d;border:3px solid #0a0a0a;border-radius:0;box-shadow:5px 5px 0 #0a0a0a}
+.hb::before{display:none}
+.avr{padding:0;border-radius:0;background:none;box-shadow:none}
+.avr::before{display:none}
+.av{border-radius:0;border:3px solid #0a0a0a;background:#ff6b9d;color:#0a0a0a}
+.pf .nm{color:#0a0a0a;text-transform:uppercase;font-weight:900}
+.pf .sb,.gr{color:#0a0a0a;font-weight:700}
+.gr b{color:#0a0a0a;background:#fff;border:2px solid #0a0a0a;padding:0 4px}
+.sb .fi,.gr .fi{color:#0a0a0a}
+.lvp{background:#ff6b9d;color:#0a0a0a;border:2px solid #0a0a0a;border-radius:0}
+.tile{background:#fff;border:3px solid #0a0a0a;border-radius:0;box-shadow:4px 4px 0 #0a0a0a;color:#0a0a0a}
+.tile::before{height:6px;background:var(--h,var(--a))}
+.tile .tl{color:#0a0a0a;font-weight:800}
+.tile .tl .fi{color:#0a0a0a}
+.tile.k3{background:var(--a);padding:14px 4px 9px}
+.tile.k3::before{display:none}
+.k3 .ce{background:#fff;border:3px solid #0a0a0a;border-radius:0;box-shadow:none;animation:none}
+.k3 .ce .fi{color:#0a0a0a;filter:none}
+.k3 .tt{color:#0a0a0a;font-weight:900;text-transform:uppercase}
+.k3 .tc{color:#0a0a0a;font-weight:700}
+.hot .fi{color:#0a0a0a}
+.bigbtn{background:#ff6b9d;color:#0a0a0a;border:3px solid #0a0a0a;border-radius:0;box-shadow:5px 5px 0 #0a0a0a;text-transform:uppercase;font-weight:900;letter-spacing:.04em}
+.bigbtn:active{box-shadow:1px 1px 0 #0a0a0a}
+.legal{background:#fff;border:3px dashed #0a0a0a;border-radius:0;color:#0a0a0a}
+.legal .lt{color:#0a0a0a}
+.legal .lg{border-left:4px solid #0a0a0a}
+.rnd{background:#fff;border:3px solid #0a0a0a;border-radius:0;box-shadow:4px 4px 0 #0a0a0a}
+.rnd .t1,.rnd .t3{color:#3a3a3a}
+.rnd .t2{color:#0a0a0a}
+.rnd .t2 .fi,.rnd .e .fi{color:#0a0a0a}
+.rnd .e{animation:none}
+.dice{background:#ffd93d;border:3px solid #0a0a0a;border-radius:0;color:#0a0a0a;box-shadow:3px 3px 0 #0a0a0a}
+.catrow{background:#fff;border:3px solid #0a0a0a;border-radius:0;box-shadow:4px 4px 0 #0a0a0a;color:#0a0a0a}
+.catrow:active,.tile.k3:active{box-shadow:1px 1px 0 #0a0a0a}
+.catrow .ce{background:var(--a);border:3px solid #0a0a0a;border-radius:0;box-shadow:none}
+.catrow .ce .fi{color:#0a0a0a}
+.catrow .n{color:#0a0a0a;text-transform:uppercase;font-weight:900}
+.catrow .n .fi{color:#0a0a0a}
+.catrow .d{color:#3a3a3a}
+.catrow .bar{height:10px;background:#fff;border:2px solid #0a0a0a;border-radius:0}
+.catrow .bar i{background:var(--a);border-radius:0}
+.catrow .cnt{background:#0a0a0a;color:#fff;border-radius:0}
+.chev{color:#0a0a0a}
+.cathead{background:var(--a);border:3px solid #0a0a0a;border-radius:0;box-shadow:5px 5px 0 #0a0a0a;color:#0a0a0a}
+.cathead::before{display:none}
+.cathead .ce{background:#fff;border:3px solid #0a0a0a;border-radius:0;box-shadow:none;animation:none}
+.cathead .ce .fi{color:#0a0a0a}
+.cathead .n{text-transform:uppercase;font-weight:900}
+.cathead .d{color:#0a0a0a;font-weight:600}
+.sec{background:#fff;border:3px solid #0a0a0a;border-radius:0;box-shadow:4px 4px 0 #0a0a0a}
+.sech .e{background:var(--a);border:3px solid #0a0a0a;border-radius:0;box-shadow:none}
+.sech .e .fi{color:#0a0a0a}
+.sech .n{color:#0a0a0a;text-transform:uppercase;font-weight:900}
+.sech .c{background:#0a0a0a;color:#fff;border-radius:0}
+.ci{border-bottom:2px dashed #0a0a0a}
+.ci .e{background:var(--a);border:2px solid #0a0a0a;border-radius:0}
+.ci .e .fi{color:#0a0a0a}
+.ci .c{color:#0a0a0a}
+.ci .d{color:#3a3a3a}
+.ci .go{color:#0a0a0a;opacity:1}
+.hl{background:#ffd93d;color:#0a0a0a;border-radius:0}
+.tabs{background:#fff;border:3px solid #0a0a0a;border-radius:0;box-shadow:4px 4px 0 #0a0a0a;padding:4px}
+.tab{border:2px solid transparent;border-radius:0;color:#0a0a0a;font-weight:900;text-transform:uppercase}
+.tab.on{background:#ffd93d;color:#0a0a0a;border-color:#0a0a0a;box-shadow:none}
+.empty,.empty .fi{color:#0a0a0a}
+.toast{background:#ffd93d;color:#0a0a0a;border:3px solid #0a0a0a;border-radius:0;box-shadow:4px 4px 0 #0a0a0a;font-weight:800}
+.bgmwrap{background:#fff;border:3px solid #0a0a0a;border-radius:0}
+.bgmwrap .bgmlabel{color:#0a0a0a}
+.foot{color:#0a0a0a;font-weight:800}
+.foot::before{height:3px;margin:0 18px 9px;background:#0a0a0a}
+.foot .fi{color:#0a0a0a}
+.pgb{border:3px solid #0a0a0a;border-radius:0;background:#ffd93d;color:#0a0a0a;box-shadow:3px 3px 0 #0a0a0a}
+.pgi{color:#0a0a0a;font-weight:800}

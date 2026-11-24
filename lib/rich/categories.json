@@ -1,0 +1,43 @@
+{
+  "order": ["info","profil","ai","downloader","search","stalker","sticker","image","maker","anime","audio","video","dokumen","tools","cek","primbon","fun","game","rpg","islam","group","channel","store","panel","premium","broadcast","owner"],
+  "meta": {
+    "info":       { "icon": "ℹ️", "label": "INFO",       "desc": "Info bot, ping, status & bantuan" },
+    "profil":     { "icon": "👤", "label": "PROFIL",     "desc": "Level, energi, daftar & ulang tahun" },
+    "ai":         { "icon": "🤖", "label": "AI",         "desc": "Chatbot, AI gambar, suara & karakter" },
+    "downloader": { "icon": "📥", "label": "DOWNLOADER", "desc": "Unduh video, musik & gambar dari berbagai platform" },
+    "search":     { "icon": "🔎", "label": "PENCARIAN",  "desc": "Cari lagu, gambar, berita, wiki & info lain" },
+    "stalker":    { "icon": "🕵️", "label": "STALKER",    "desc": "Intip profil sosmed & akun publik" },
+    "sticker":    { "icon": "🎨", "label": "STIKER",     "desc": "Bikin & ubah stiker dari foto, video, teks" },
+    "image":      { "icon": "🖼️", "label": "GAMBAR",     "desc": "Edit foto, efek, kartu & canvas" },
+    "maker":      { "icon": "🛠️", "label": "MAKER",      "desc": "Pembuat logo, teks 3D, efek & ephoto" },
+    "anime":      { "icon": "🌸", "label": "ANIME",      "desc": "Gambar, info & hiburan seputar anime" },
+    "audio":      { "icon": "🎧", "label": "AUDIO",      "desc": "Efek suara, TTS & musik" },
+    "video":      { "icon": "🎬", "label": "VIDEO",      "desc": "Potong, balik, loop & edit video" },
+    "dokumen":    { "icon": "📄", "label": "DOKUMEN",    "desc": "PDF, OCR, ZIP & konversi file" },
+    "tools":      { "icon": "🧰", "label": "TOOLS",      "desc": "Alat bantu serbaguna sehari-hari" },
+    "cek":        { "icon": "🔮", "label": "CEK-CEKAN",  "desc": "Cek khodam, jodoh, sifat & seru-seruan" },
+    "primbon":    { "icon": "📜", "label": "PRIMBON",    "desc": "Ramalan, weton, zodiak & primbon" },
+    "fun":        { "icon": "🎉", "label": "FUN",        "desc": "Hiburan, tebak-tebakan & candaan" },
+    "game":       { "icon": "🎮", "label": "GAME",       "desc": "Main game seru & rebut peringkat" },
+    "rpg":        { "icon": "⚔️", "label": "RPG",        "desc": "Petualangan, kerja, ekonomi & clan" },
+    "islam":      { "icon": "🕌", "label": "ISLAMI",     "desc": "Quran, doa, jadwal sholat & kiblat" },
+    "group":      { "icon": "👥", "label": "GRUP",       "desc": "Moderasi & pengaturan grup" },
+    "channel":    { "icon": "📢", "label": "SALURAN",    "desc": "Posting & kelola Saluran WhatsApp" },
+    "store":      { "icon": "🛒", "label": "TOKO",       "desc": "Toko, pembayaran QRIS & order otomatis" },
+    "panel":      { "icon": "🖥️", "label": "PANEL",      "desc": "Beli & kelola panel hosting otomatis" },
+    "premium":    { "icon": "💎", "label": "PREMIUM",    "desc": "Fitur khusus pengguna premium" },
+    "broadcast":  { "icon": "📡", "label": "BROADCAST",  "desc": "Sebar pesan ke banyak grup & kontak" },
+    "owner":      { "icon": "👑", "label": "OWNER",      "desc": "Kontrol penuh bot, khusus owner" }
+  },
+  "alias": {
+    "download": "downloader", "downloads": "downloader", "rich": "downloader",
+    "canvas": "image", "ephoto": "maker", "colorgrade": "maker",
+    "tts": "audio", "music": "audio", "media": "audio",
+    "doc": "dokumen", "islamic": "islam", "religi": "islam",
+    "random": "fun", "clan": "rpg", "economy": "rpg", "xp": "rpg",
+    "store_autoorder": "store", "jpm": "broadcast", "pushkontak": "broadcast",
+    "main": "info", "ui": "info", "user": "profil", "internet": "tools",
+    "database": "owner", "testing": "owner", "test": "owner",
+    "💬 protocol & socket router": "tools", "lainnya": "tools", "custom": "tools"
+  }
+}

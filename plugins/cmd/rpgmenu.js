@@ -108,6 +108,29 @@ module.exports = {
 ┣⊱ 🎰 *${prefix}slot*
 ┣⊱ 🏎️ *${prefix}balapan*
 ┣⊱ 🌴 *${prefix}nyawit*
+┣⊱ ── RPG LANJUTAN (command tersembunyi) ──
+┣⊱ 🏰 *${prefix}dungeon* | *${prefix}explore* | *${prefix}loginisekai*
+┣⊱ 🎒 *${prefix}inventory* | *${prefix}me* | *${prefix}profil*
+┣⊱ 🏰 *${prefix}guild* | *${prefix}guildstats* | *${prefix}guildcheckquest*
+┣⊱ 👹 *${prefix}bossraid* | *${prefix}tantangbos*
+┣⊱ 🗡️ *${prefix}inventoryweapon* | *${prefix}pilihweapon* | *${prefix}equipweapon*
+┣⊱ ⚔️ *${prefix}gachaweapon* | *${prefix}upgradeweapon* | *${prefix}setlevelweapon*
+┣⊱ 🛡️ *${prefix}selectclass* | *${prefix}setclass* | *${prefix}setlevelclass*
+┣⊱ 📊 *${prefix}levelinfo* | *${prefix}resetlevel* | *${prefix}tambahexp*
+┣⊱ 📈 *${prefix}chatstat* | *${prefix}statcku* | *${prefix}levelchat*
+┣⊱ 🏆 *${prefix}leaderboardchat* | *${prefix}topchat* | *${prefix}topchatter*
+┣⊱ 💰 *${prefix}money* | *${prefix}cekuang* | *${prefix}dompet*
+┣⊱ 🛒 *${prefix}shop* | *${prefix}blackshop* | *${prefix}buy* | *${prefix}sell*
+┣⊱ 🎰 *${prefix}slot1* | *${prefix}highlow* | *${prefix}poker3* | *${prefix}raffle*
+┣⊱ 📈 *${prefix}invest* | *${prefix}investvip* | *${prefix}portofolio*
+┣⊱ 🔫 *${prefix}rampokbank* | *${prefix}robery* | *${prefix}ngepet*
+┣⊱ ⚔️ *${prefix}duel* | *${prefix}battle* | *${prefix}fighting* | *${prefix}perangnaga*
+┣⊱ 🏆 *${prefix}tophighplayer* | *${prefix}topplayer* | *${prefix}toppower*
+┣⊱ 💍 *${prefix}mywaifu* | *${prefix}istriku* | *${prefix}pilihwaifu*
+┣⊱ 🤍 *${prefix}pilihhusbu* | *${prefix}gachahusbu* | *${prefix}marry2*
+┣⊱ 💕 *${prefix}kencan* | *${prefix}kencanwaifu* | *${prefix}kencanhusbu*
+┣⊱ 💔 *${prefix}cerihusbu* | *${prefix}divorcehusbu* | *${prefix}lahiranwaifu*
+┣⊱ 🌸 *${prefix}jadianime* | *${prefix}toanime* | *${prefix}animefyme*
 ┃
 ╰╼╼╼╼╼╼╼╼╼╼╼╼╼╼╼╼╼╼╼╼╼╼╼╼╯`
 

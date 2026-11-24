@@ -1,8 +1,4 @@
-/*
-• SC INI DI PRODUKSI DAN DI JUAL OLEH REINDIANDIKARC, INFORMASI MENGENAI HARGA BELI NYA BISA CONTACT 6285602845943
-• SC INI DI PRODUKSI DAN DI JUAL OLEH REINDIANDIKARC, INFORMASI MENGENAI HARGA BELI NYA BISA CONTACT 6285602845943
-• SC INI DI PRODUKSI DAN DI JUAL OLEH REINDIANDIKARC, INFORMASI MENGENAI HARGA BELI NYA BISA CONTACT 6285602845943
-*/
+ 
 require('./settings')
 const { isMediaPayload } = require('./plugins/reply_greeting')
 const { resolveCardThumb, buildOurinSenderCtx } = require('./plugins/metacard')
@@ -22,16 +18,16 @@ const { FajarNews, BBCNews, metroNews, CNNNews, iNews, KumparanNews, TribunNews,
 const { Client } = require('ssh2');
 let _sewa = require("./lib/store")
 const { gemmy } = require('./scrape/gemmy');
-// ======= Alya V19 + AI Interactive (Bell System) =======
-const { isAITriggered, runAIInteractive, handleSetRole, handleClearRole, getRoleOf, getEffectiveRole, getRoleByCount, ROLE_LEVELS, ROLE_NAMES, getChatCount, incrementChatCount, setChatCount, formatStatusCard, clearUserHistory, getGlobalLogic, setGlobalLogic, resetGlobalLogic, DEFAULT_LOGIC, setVoiceModel, getVoiceModel, getVoiceList, BELL_VOICES, generateVoice, getDailyInfo, incrementDaily, resetDailyLimit, markLimitMsgShown, DAILY_LIMIT_FREE, isPremiumUser, isFirstChat, getUserHistory, BOT_NICKNAME, BOT_FULLNAME } = require('./machine/interactive_ai');
-// ── Group Context (riwayat pesan grup untuk AI) ──────────────
+
+const { isAITriggered, isReplyToBot, resolveAIPrompt, runAIInteractive, handleSetRole, handleClearRole, getRoleOf, getEffectiveRole, getRoleByCount, ROLE_LEVELS, ROLE_NAMES, getChatCount, incrementChatCount, setChatCount, formatStatusCard, clearUserHistory, getGlobalLogic, setGlobalLogic, resetGlobalLogic, DEFAULT_LOGIC, setVoiceModel, getVoiceModel, getVoiceList, BELL_VOICES, generateVoice, getDailyInfo, incrementDaily, resetDailyLimit, markLimitMsgShown, DAILY_LIMIT_FREE, isPremiumUser, isFirstChat, getUserHistory, BOT_NICKNAME, BOT_FULLNAME } = require('./machine/interactive_ai');
+
 const groupCtx = require('./machine/group_context');
-// ========================================================
+
 let ChatAlya1 = JSON.parse(fs.readFileSync('./database/ChatAlya1.json'));
 if (global.alyaHistory === undefined) global.alyaHistory = {};
 
-// ✅ Preload salamuser/salamowner/salamadmin ke global (pola sama seperti
-// openaigc/alisagc) agar toggle on/off langsung efektif tanpa restart bot.
+
+
 const _salamCategories = {
     salamuser: 'salamuser.json',
     salamowner: 'salamowner.json',
@@ -46,7 +42,7 @@ for (const [_gKey, _fileName] of Object.entries(_salamCategories)) {
     }
 }
 
-// ✅ PERF-FIX: Preload _sewaStore saat module dimuat (bukan per pesan)
+
 if (!global._sewaStore) {
     try {
         const _swPath = require('path').join(process.cwd(), 'database', 'sewastore.json');
@@ -67,7 +63,7 @@ const { isSetWelcome, addSetWelcome, changeSetWelcome, removeSetWelcome } = requ
 const { Primbon } = require('scrape-primbon')
 const packageJson = require('./package.json'); 
 const primbon = new Primbon()
-// canvafy - loaded lazily per-command (tidak dipakai di level ini)
+
 const scrapeEnkaProfile = require('./scrape/genshinstalk')
 const { AplynCallnode } = require('./lib/bugs/callbug');
 const { enpezee } = require('./lib/bugs/dellbug');
@@ -79,7 +75,7 @@ const { fakeXnxx } = require('./scrape/fxnxx')
 const { kusonime } = require('./fitur/kusonime')
 const { dataHiragana, dataKatakana, dataKanji, dataSoalJepang } = require('./fitur/belajarjepang')
 const { dataLPK } = require('./fitur/lpkkerjajepang')
-// ── Kursus Bahasa Jepang Terstruktur (Premium) ──
+
 const _kursusJepangPlugins = require('./fitur/belajarjepang_kursus')
 const { handleJawaban: _handleJawaban, getUserData: _kursusGetUser, kirimSoal: _kursusSoal, kirimMateri: _kursusMateri } = require('./fitur/belajarjepang_kursus')
 const CreateImg = require('./lib/createimg')
@@ -100,7 +96,7 @@ const loadJSON = (path) => {
 let antibot = loadJSON(antibotPath)
 let antibotSettings = loadJSON(antibotSettingsPath)
 
-// 🔧 FIX: writeFileSync blocking → debounced (max 1x per 3 detik)
+
 const saveAntibot = () =>
   debouncedWrite(antibotPath, () => antibot)
 
@@ -126,11 +122,11 @@ const { resolveWid } = require('./lib/jid')
 const { isSetLeft, addSetLeft, removeSetLeft, changeSetLeft } = require('./lib/setleft');
 const { getTextSetWelcome } = require('./lib/setwelcome');
 const { getTextSetLeft } = require('./lib/setleft');
-// ⚠️ DEPRECATED: registeredFile/registeredUsers di bawah ini TIDAK LAGI jadi
-// sumber data registrasi (lihat lib/userRegistration.js + global.db.users).
-// Dibiarkan ada (bukan dihapus) supaya tidak ReferenceError kalau ada
-// pemakaian lain yang belum ketangkap saat audit, tapi jangan pakai variabel
-// ini untuk fitur baru — datanya basi (cuma di-load sekali saat startup).
+
+
+
+
+
 const registeredFile = './database/registered.json';
 let registeredUsers = fs.existsSync(registeredFile) ? JSON.parse(fs.readFileSync(registeredFile)) : [];
 const { color, bgcolor } = require('./lib/color')
@@ -153,7 +149,7 @@ const reactChannelHandler = require("./lib/reactchannel");
 const fakeTwitHandler = require("./lib/faketwit");
 const antidelete = require('./lib/antidelete')
 let messagesBackup = antidelete.messagesBackup
-// antidelete.registerListener(alya) dipanggil dari index.js setelah connect
+
 const scp1 = require('./scrape/scraper') 
 const scp2 = require('./scrape/scraperr')
 const cron = require('node-cron')
@@ -171,11 +167,11 @@ const { hdr } = require('./scrape/iloveimg.js')
 const vm = require('node:vm')
 const { EmojiAPI } = require("emoji-api")
 const emoji = new EmojiAPI()
-// ✅ FIX: owner.json dulu dibaca SEKALI saat module load (const owner = require/readFileSync).
-//   Karena alya.js di-cache Node (nocache hanya reload saat FILE .js berubah, bukan .json),
-//   perubahan owner.json via panel/SSH (tanpa restart bot) TIDAK PERNAH kebaca ulang.
-//   Sekarang dibuat live loader dengan TTL cache singkat (mirip pola mute.json/isMute di bawah),
-//   supaya edit owner.json langsung berefek dalam hitungan detik tanpa perlu restart proses.
+
+
+
+
+
 function getOwnerList() {
     const _now = Date.now();
     if (!global._ownerCache || (_now - global._ownerCache.ts) > 3000) {
@@ -190,26 +186,26 @@ function getOwnerList() {
     }
     return global._ownerCache.data;
 }
-// `owner` di bawah ini dipertahankan sebagai getter live (bukan array statis lagi),
-// supaya SEMUA pemakaian `owner.map(...)`, `owner.includes(...)`, dst di seluruh file
-// tetap jalan tanpa perlu diganti satu-satu, tapi datanya selalu fresh dari disk.
+
+
+
 const owner = new Proxy([], {
     get(_target, prop) { return getOwnerList()[prop]; },
     has(_target, prop) { return prop in getOwnerList(); }
 });
 const owned = `6283166570663@s.whatsapp.net`
 const prem = JSON.parse(fs.readFileSync('./database/premium.json'))
-// Expose ke global agar plugin addprem/delprem/addowner/delowner bisa mutate langsung
+
 Object.defineProperty(global, 'owner', { get: getOwnerList, configurable: true });
 global.prem = prem
 
-// ============================================================
-// GLOBAL EXPOSE — agar semua plugin bisa akses tanpa require()
-// Fix: fetchJson, axios, primbon, UploadFileUgu, sleep, isUrl,
-//      fs, moment, proto is not defined errors di plugins
-// Fix tambahan: getBuffer, getRandom, tanggal, clockString,
-//               formatp, jsonformat, runtime, reSize, dll
-// ============================================================
+
+
+
+
+
+
+
 global.fetchJson       = fetchJson
 global.axios           = axios
 global.primbon         = primbon
@@ -219,7 +215,7 @@ global.isUrl           = isUrl
 global.fs              = fs
 global.moment          = moment
 global.proto           = proto
-// myfunc extras
+
 global.getBuffer       = getBuffer
 global.getRandom       = getRandom
 global.tanggal         = tanggal
@@ -231,13 +227,13 @@ global.reSize          = reSize
 global.parseMention    = parseMention
 global.getTime         = getTime
 global.generateProfilePicture = generateProfilePicture
-// uploader
+
 global.TelegraPh       = TelegraPh
-// api-dylux
+
 global.fg              = fg
-// modul extras
+
 global.cheerio         = cheerio
-// ============================================================
+
 const badPath = './database/bad.json';
 const antiToxicPath = './database/antitoxic.json'
 const resellerp = JSON.parse(fs.readFileSync('./database/resellerpanel.json'))
@@ -280,7 +276,7 @@ let spamData = fs.existsSync(dbSpamCounter)
     ? JSON.parse(fs.readFileSync(dbSpamCounter))
     : (fs.writeFileSync(dbSpamCounter, JSON.stringify({})), {})
 
-// Warn system database
+
 const dbWarnSystem = './database/warn-system.json'
 let warnSystem = fs.existsSync(dbWarnSystem)
     ? JSON.parse(fs.readFileSync(dbWarnSystem))
@@ -291,11 +287,11 @@ const AlyaSticker = JSON.parse(fs.readFileSync('./data/AlyaMedia/database/xeonst
 const ImageAlya = JSON.parse(fs.readFileSync('./data/AlyaMedia/database/xeonimage.json'))
 const VideoAlya = JSON.parse(fs.readFileSync('./data/AlyaMedia/database/xeonvideo.json'))
 const pler = JSON.parse(fs.readFileSync('./database/idgrup.json').toString())
-// ✅ FIX: siminya (autosimi) — sebelumnya `const` tanpa try/catch (bot crash
-// total saat boot kalau database/simi.json hilang/corrupt), dan tidak pernah
-// disinkronkan ke global, sehingga .autosimi on/off plugin-nya push/splice ke
-// global.siminya yang undefined → sync tidak pernah benar-benar jalan,
-// toggle baru efektif setelah restart bot. Disamakan dengan pola alisagc.
+
+
+
+
+
 let siminya = (() => {
   try {
     if (!fs.existsSync('./database/simi.json'))
@@ -363,7 +359,7 @@ function saveBadwords() {
 
     let p=db.marketPrice[type]
 
-    /* NPC trade tiap 1 menit */
+     
     if (now-p.lastNPC>=60000){
       npcTrade()
       p.lastNPC=now
@@ -376,18 +372,18 @@ function saveBadwords() {
     let elapsed=Math.max(1,Math.floor((now-p.last)/60000))
     let move=(Math.random()*(max-min)+min)*elapsed
 
-    /* efek NPC */
+     
     move+=db.market.npc*0.15
 
     p.price=Math.max(10,p.price+move)
     p.last=now
 
-    /* decay efek NPC */
+     
     db.market.npc*=0.85
 
     return p.price
   }
-  /* ========= NPC ENGINE ========= */
+   
   function npcTrade() {
   if (!global.db || !db.market) return 'HOLD'
   const chance = {
@@ -410,10 +406,10 @@ function saveBadwords() {
 }
 
 function saveAntiToxic() {
-    debouncedWrite(antiToxicPath, () => nttoxic, 3000); // 🔧 FIX: tulis nttoxic (array), bukan antiToxic (object)
+    debouncedWrite(antiToxicPath, () => nttoxic, 3000); 
 }
 function saveNtToxic() {
-    debouncedWrite(antiToxicPath, () => nttoxic, 3000); // 🔧 FIX
+    debouncedWrite(antiToxicPath, () => nttoxic, 3000); 
 }
 function gayaHalah(text) {
     if (/cangratalataans|laval|rala|raward|samakan|sarang|barantaraksa|nashakaga chasata/i.test(text)) {
@@ -457,7 +453,7 @@ function gayaHilih(text) {
         .replace(/money/gi, 'miniy')
 }
 
-// 🔧 FIX: debounced agar tidak blocking event loop
+
 function saveWhitelist() {
     debouncedWrite('./database/whitelist.json', () => whitelist)
 }
@@ -480,15 +476,15 @@ let ntilinkytvid =JSON.parse(fs.readFileSync('./database/antilinkytvideo.json'))
 let antitagsw = JSON.parse(fs.readFileSync('./database/antitagsw.json'))
 let warnTagSw = JSON.parse(fs.readFileSync('./database/antitagsw-warning.json'))
 
-// 🔧 FIX: debounced
+
 function saveAntitagWarning() {
     debouncedWrite('./database/antitagsw-warning.json', () => warnTagSw)
 }
-// ✅ FIX: openaigc (autoaigc) — tidak pernah disinkronkan ke global,
-// sehingga .autoaigc on/off plugin-nya push/splice ke global.openaigc yang
-// undefined → sync tidak pernah benar-benar jalan, toggle baru efektif
-// setelah restart bot. Juga dibuat defensif (try/catch) agar tidak crash
-// boot kalau file hilang/corrupt — disamakan dengan pola alisagc.
+
+
+
+
+
 let openaigc = (() => {
   try {
     if (!fs.existsSync('./database/openaigc.json'))
@@ -497,8 +493,8 @@ let openaigc = (() => {
   } catch { return [] }
 })()
 global.openaigc = openaigc
-// ✅ ALISA GC — database TERPISAH khusus .alisa on/off (AI Interaktif)
-// Tidak menyentuh openaigc (autoaigc) maupun simi (autosimi)
+
+
 let alisagc = (() => {
   try {
     if (!fs.existsSync('./database/alisa_gc.json'))
@@ -507,7 +503,7 @@ let alisagc = (() => {
   } catch { return [] }
 })()
 global.alisagc = alisagc
-// 🛡️ ALISA KILL-SWITCH: load status dari disk saat bot start
+
 ;(() => {
   try {
     const _alisaStatusPath = './database/alisa_status.json'
@@ -527,7 +523,7 @@ let set_welcome_db = JSON.parse(fs.readFileSync('./database/set_welcome.json'));
 let set_left_db = JSON.parse(fs.readFileSync('./database/set_left.json'));
 let _welcome = JSON.parse(fs.readFileSync('./database/welcome.json'))
 let _left = JSON.parse(fs.readFileSync('./database/left.json'))
-// ✅ FIX: Auto-reload welcome/left DB saat file berubah (dari .welcome on/off)
+
 fs.watchFile('./database/welcome.json', () => { try { _welcome = JSON.parse(fs.readFileSync('./database/welcome.json')); } catch(_){} });
 fs.watchFile('./database/left.json', () => { try { _left = JSON.parse(fs.readFileSync('./database/left.json')); } catch(_){} });
 fs.watchFile('./database/set_welcome.json', () => { try { set_welcome_db = JSON.parse(fs.readFileSync('./database/set_welcome.json')); } catch(_){} });
@@ -536,8 +532,8 @@ let set_proses = JSON.parse(fs.readFileSync('./database/set_proses.json'))
 let set_done = JSON.parse(fs.readFileSync('./database/set_done.json'))
 let db_respon_list = JSON.parse(fs.readFileSync('./database/list-message.json'));
 let autoCloseDB = JSON.parse(fs.readFileSync('./database/autoco.json'));
-let autoCloseLastAction = {}; // Penanda eksekusi terakhir grup
-// 🔧 FIX: debounced — saveAutoClose dipanggil tiap ada perubahan autoco
+let autoCloseLastAction = {}; 
+
 function saveAutoClose() {
     debouncedWrite('./database/autoco.json', () => autoCloseDB)
 }
@@ -559,9 +555,9 @@ const { markDirty: _markDirty, flushDB: _flushDB } = require('./lib/dbwriter');
 const { debouncedWrite, flushAllDebounced } = require('./lib/debouncewriter');
 
 function saveDB(db) {
-  // 🔴 BUG FIX: Dulunya writeFileSync blocking → event loop freeze saat ramai
-  // Sekarang: tandai dirty → ditulis ke disk max 1x per 10 detik (non-blocking)
-  // Data tidak hilang: flushDB() dipanggil saat graceful shutdown
+  
+  
+  
   _markDirty();
 }
 global.db = loadDB();
@@ -576,19 +572,19 @@ settings: {},
 ...(global.db || {})
 }
 
-// 🔧 FIX: Dulu saveDB()/_markDirty() hanya dipanggil di 1 dari 55+ titik mutasi
-// global.db (level, premium, owner, money, dll mutasi langsung tanpa lewat
-// saveDB()) → perubahan data tersebut HANYA tersimpan jika "kebetulan" ada
-// mutasi lain (cekpesan counter) di window 10 detik yang sama. Kalau tidak,
-// data hilang saat bot restart/crash sebelum sempat ke-flush.
-//
-// Solusi: bungkus setiap kategori top-level (users/chats/settings/dst) dengan
-// Proxy REKURSIF (deep) — mayoritas mutasi nyata di codebase berbentuk
-// `global.db.users[jid].money = x` (level kedua/dalam), bukan hanya
-// `global.db.users[jid] = {...}` (level pertama). Proxy dangkal akan melewatkan
-// mutasi level-dalam ini, jadi setiap object/array anak juga di-wrap secara
-// lazy saat diakses. Overhead ini microseconds, jauh di bawah I/O — tidak
-// memengaruhi fastrespon.
+
+
+
+
+
+
+
+
+
+
+
+
+
 {
   const _proxyCache = new WeakMap();
   const _wrap = (obj) => {
@@ -597,7 +593,7 @@ settings: {},
     const proxy = new Proxy(obj, {
       get(target, prop, receiver) {
         const val = Reflect.get(target, prop, receiver);
-        // Lazy-wrap anak object/array hanya saat diakses (hindari wrap semua di awal)
+        
         if (val !== null && typeof val === 'object' && !(val instanceof Buffer)) {
           return _wrap(val);
         }
@@ -624,7 +620,7 @@ settings: {},
   }
 }
 
-// read database
+
 let tebaklagu = []
 let _family100 = []
 let kuismath = []
@@ -647,7 +643,7 @@ let tebaktekateki = []
 let vote = db.others.vote = []
 let tebakanml = {}
 global.tebakanml = tebakanml
-// ✅ FIX: expose data Japanese game sebagai global agar plugin bisa akses
+
 global.dataSoalJepang = dataSoalJepang
 global.dataHiragana = dataHiragana
 global.dataKatakana = dataKatakana
@@ -686,7 +682,7 @@ function startAutoSahur(alya) {
     })
 }
 
-// startAutoSahur dijalankan sekali saat modul dimuat, bukan setiap pesan
+
 let _autoSahurAlya = null;
 function initAutoSahur(alya) {
     if (!_autoSahurAlya) {
@@ -716,20 +712,20 @@ try {
 const bady = (m.mtype === 'conversation') ? m.message.conversation : (m.mtype == 'imageMessage') ? m.message.imageMessage.caption : (m.mtype == 'videoMessage') ? m.message.videoMessage.caption : (m.mtype == 'extendedTextMessage') ? m.message.extendedTextMessage.text : (m.mtype == 'buttonsResponseMessage') ? m.message.buttonsResponseMessage.selectedButtonId : (m.mtype == 'listResponseMessage') ? m.message.listResponseMessage.singleSelectReply.selectedRowId : (m.mtype == 'templateButtonReplyMessage') ? m.message.templateButtonReplyMessage.selectedId : (m.mtype == 'interactiveResponseMessage') ? appenTextMessage(JSON.parse(m.msg.nativeFlowResponseMessage.paramsJson).id, chatUpdate) : (m.mtype == 'templateButtonReplyMessage') ? appenTextMessage(m.msg.selectedId, chatUpdate) : (m.mtype === 'messageContextInfo') ? (m.message.buttonsResponseMessage?.selectedButtonId || m.message.listResponseMessage?.singleSelectReply.selectedRowId || m.text) : ' '
 
 let budy = m.message.conversation || (m.message.extendedTextMessage && m.message.extendedTextMessage.text) || ''
-// ✅ MULTI-PREFIX: prefix tidak lagi hardcode '.', tapi dideteksi dinamis
-// dari database/setting.json (lihat lib/prefix.js). Mendukung beberapa
-// prefix sekaligus (mis. . / !) — semuanya valid dipakai bersamaan.
-// matchedPrefix = prefix yang benar-benar cocok dengan pesan ini (atau null
-// kalau body tidak diawali prefix apapun → bukan command).
-// prefix tetap dipertahankan sebagai variabel agar seluruh kode lama yang
-// memakai `${prefix}` (teks bantuan/menu) tidak perlu diubah satu-satu —
-// nilainya diisi prefix pertama yang terdaftar sebagai default tampilan.
+
+
+
+
+
+
+
+
 const matchedPrefix = matchPrefix(body)
 const activePrefixes = getPrefixes()
 const prefix = matchedPrefix || activePrefixes[0] || '.'
-// Helper: cek apakah sebuah string diawali SALAH SATU prefix yang terdaftar
-// (dipakai guard AI auto-reply agar tidak ke-trigger ganda kalau user pakai
-// prefix selain `prefix` default, mis. pakai "!" sedangkan default ".")
+
+
+
 function isAnyPrefix(str) {
   if (typeof str !== 'string' || !str) return false
   return activePrefixes.some((p) => str.startsWith(p))
@@ -755,10 +751,10 @@ alya.ev.emit('messages.upsert', msg)
         const pes = (m.mtype === 'conversation' && m.message.conversation) ? m.message.conversation : (m.mtype == 'imageMessage') && m.message.imageMessage.caption ? m.message.imageMessage.caption : (m.mtype == 'videoMessage') && m.message.videoMessage.caption? m.message.videoMessage.caption : (m.mtype == 'extendedTextMessage') && m.message.extendedTextMessage.text ? m.message.extendedTextMessage.text: ' '
         const messagesC = pes.slice(0).trim()
         const content = JSON.stringify(m.message)
-        // ✅ MULTI-PREFIX: isCmd & command parsing pakai matchedPrefix (prefix
-        // yang benar-benar cocok dengan body pesan ini), bukan prefix statis.
-        // Kalau body tidak diawali prefix manapun yang terdaftar, isCmd=false
-        // dan command di-parse dari body utuh (fallback aman, tidak pernah match registry).
+        
+        
+        
+        
         const isCmd = matchedPrefix !== null
         const from = m.key.remoteJid
         const messagesD = body.slice(0).trim().split(/ +/).shift().toLowerCase()
@@ -766,29 +762,29 @@ alya.ev.emit('messages.upsert', msg)
           ? body.slice(matchedPrefix.length).trim().split(/ +/).shift().toLowerCase()
           : body.trim().split(/ +/).shift().toLowerCase()
         const args = body.trim().split(/ +/).slice(1)
-        // ✅ FIX KRITIS — bot hening total tanpa jejak log:
-        // Log ini SENGAJA ditaruh di titik PALING AWAL yang mungkin (begitu body/
-        // isCmd/command selesai diparsing), SEBELUM 32+ blok fitur lain (duel, kuis,
-        // family100, sewa enforcement, onlyadmin, dll) yang masing-masing punya jalur
-        // `return` sendiri. DIAG log yang lama (dulu di baris ~7134, jauh di bawah)
-        // baru muncul SETELAH semua blok itu — jadi kalau salah satu blok itu
-        // `return` duluan (atau melempar error yang somehow tertangkap tanpa log),
-        // log lama itu TIDAK PERNAH tercetak dan pesan terlihat "hilang" tanpa jejak
-        // sama sekali. Log ini tidak bergantung pada apapun di bawahnya — begitu
-        // sebuah pesan sampai ke alya.js, baris ini PASTI tercetak duluan.
-        // Selalu log command yang masuk ke dispatcher (bukan hanya saat DEBUG_DIAG / non-production)
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
         if (isCmd) console.log(`[CMD] ${matchedPrefix}${command} dari ${(m.sender || '').split('@')[0]} (${m.isGroup ? 'grup' : 'pribadi'})`)
         if (global.DEBUG_DIAG) console.log('[DIAG-ENTRY] alya.js menerima pesan. chat=', m.chat, 'sender=', m.sender, 'body=', JSON.stringify(body), 'isCmd=', isCmd, 'command=', command)
-        // ✅ FIX: cleanArgs — args dengan "@" di-strip agar plugin bisa build JID dengan aman
-        // Contoh: args=["@628123"] → cleanArgs=["628123"] → "628123@s.whatsapp.net" ✓
+        
+        
         const pushname = m.pushName || "Alya User"
-        const botNumber = alya.decodeJid(alya.user.id)  // decodeJid tidak async, hapus await
+        const botNumber = alya.decodeJid(alya.user.id)  
         let Ryuu = owner.map(v => v.replace(/[^0-9]/g, '') + '@s.whatsapp.net').includes(m.sender);
-        // KEAMANAN: daftar owner dari tabel Supabase milik pihak lain (anon key tertanam di kode)
-        // dulu SELALU aktif -> siapa pun yang ada di tabel itu otomatis jadi OWNER bot kamu
-        // (termasuk bisa .getsession = kirim creds.json = akses penuh ke akun WA bot).
-        // Sekarang NONAKTIF secara default. Aktifkan hanya jika kamu sadar & percaya sumbernya:
-        //   global.allowRemoteOwners = true   (di settings.js)
+        
+        
+        
+        
+        
         if (!Ryuu && global.allowRemoteOwners === true) {
             if (global._supaOwnerCache === undefined) global._supaOwnerCache = new Set();
             if (global._supaOwnerCache.has(m.sender)) {
@@ -799,11 +795,11 @@ alya.ev.emit('messages.upsert', msg)
                     if (allOwners) allOwners.forEach(o => global._supaOwnerCache.add(o.jid));
                     global._supaOwnerCacheLoaded = true;
                     if (global._supaOwnerCache.has(m.sender)) Ryuu = true;
-                } catch (e) { /* fallback ke lokal */ }
+                } catch (e) {   }
             }
         }
         const text = q = args.join(" ")
-        // ✅ FIX: cleanQ dan cleanArgs — sudah strip "@" → aman untuk build JID
+        
         const cleanArgs = args.map(a => a.replace(/^@/, ''))
         const cleanQ = q.replace(/^@/, '').replace(/@(\d+)/g, '$1')
         const quoted = m.quoted ? m.quoted : m
@@ -823,8 +819,8 @@ alya.ev.emit('messages.upsert', msg)
         const isQuotedContact = type === 'extendedTextMessage' && content.includes('contactMessage')
         const isQuotedDocument = type === 'extendedTextMessage' && content.includes('documentMessage')
 
-        // ✅ PERF-FIX: groupMetadata TTL 60s→120s → fetch API WA setengah lebih jarang
-        //   Admin/peserta grup jarang berubah; 2 menit aman untuk sebagian besar kasus.
+        
+        
         if (!global._gcMetaCache) global._gcMetaCache = {};
         let groupMetadata = '';
         if (m.isGroup) {
@@ -842,52 +838,52 @@ alya.ev.emit('messages.upsert', msg)
         if (m.isGroup && m.sender.endsWith("@lid")) {
             m.sender = participants.find(p => p.lid === m.sender)?.jid || m.sender;
         }
-        // ✅ FIX: re-validasi Ryuu setelah m.sender di-resolve dari @lid → JID asli.
-        // Sebelumnya Ryuu dihitung di atas (sebelum blok @lid ini) memakai m.sender
-        // mentah, jadi kalau owner kirim pesan dari grup dan WA ngirim sender-nya
-        // dalam format @lid, Ryuu salah jadi false — owner ke-block kayak user biasa
-        // (termasuk pas mode SELF aktif, jadi gak bisa .public lagi dari grup itu).
+        
+        
+        
+        
+        
         if (!Ryuu) {
             Ryuu = owner.map(v => v.replace(/[^0-9]/g, '') + '@s.whatsapp.net').includes(m.sender)
                 || (global._supaOwnerCache && global._supaOwnerCache.has(m.sender));
         }
         const groupAdmins = m.isGroup ? participants.filter((v) => v.admin !== null).map((i) => i.jid || i.id) : [];
-        // ✅ FIX .onlyadmin: sebelumnya isAdmins hanya cocokkan m.sender persis-sama dengan
-        // entri groupAdmins (i.jid || i.id). Dengan sistem @lid WhatsApp, participant.jid
-        // kadang masih format @lid sedangkan m.sender sudah dinormalisasi ke PN (@s.whatsapp.net)
-        // di baris 779-781 — atau sebaliknya — sehingga string-nya tidak pernah persis sama,
-        // padahal secara nomor orangnya sama. Akibatnya admin asli dianggap bukan admin, dan
-        // .onlyadmin salah nge-block orang yang seharusnya boleh pakai bot.
-        // FIX: tambahkan fallback pencocokan BY NOMOR TELEPON (strip @s.whatsapp.net/@lid),
-        // supaya cocok walau salah satu sisi masih dalam format @lid.
+        
+        
+        
+        
+        
+        
+        
+        
         const _groupAdminNums = m.isGroup ? groupAdmins.map(a => (a || '').split('@')[0]) : [];
         const _senderNum = (m.sender || '').split('@')[0];
-        // ✅ FIX: groupOwner & groupMembers hilang saat refactor V20 padahal masih
-        // dipakai ratusan plugin (ctx destructure) — bikin ReferenceError
-        // "groupMembers/groupOwner is not defined" saat build objek `ctx` (shorthand
-        // property butuh variabel ini benar-benar ada di scope), yang bikin SELURUH
-        // pipeline pesan crash baik di grup maupun di chat pribadi.
-        // Nilai balikan mengikuti pola V11: groupOwner = pembuat grup, groupMembers = participants.
+        
+        
+        
+        
+        
+        
         const groupOwner = m.isGroup ? (groupMetadata.owner || '') : ''
         const groupMembers = m.isGroup ? (participants || []) : []
         const isBotAdmins = m.isGroup ? (groupAdmins.includes(botNumber) || _groupAdminNums.includes((botNumber || '').split('@')[0])) : false
         const isGroupAdmins = m.isGroup ? (groupAdmins.includes(m.sender) || _groupAdminNums.includes(_senderNum)) : false
     	const isAdmins = m.isGroup ? (groupAdmins.includes(m.sender) || _groupAdminNums.includes(_senderNum)) : false
 		const isAdminOrOwner = isAdmins || Ryuu
-        const isGroup = m.isGroup // ✅ FIX: isGroup was never declared
+        const isGroup = m.isGroup 
         const sender = m.sender
         const senderNumber = sender.split('@')[0]
 
-        // ══════════════════════════════════════════════════════════════════
-        // 🚨 SALAM USER / OWNER / ADMIN — .salamuser / .salamowner / .salamadmin
-        // Jalan untuk SEMUA pesan grup (bukan cuma command). Prioritas cek:
-        //   1) OWNER BOT (database/owner.json) — kalau match, admin di-skip
-        //      untuk orang yang sama (owner tidak boleh dapat 2 pesan sekaligus)
-        //   2) ADMIN GRUP (dideteksi real-time dari groupAdmins, bukan DB)
-        //   3) USER TERDAFTAR (.daftar)
-        // Tiap kategori hanya kirim pesan kalau grup ybs mengaktifkan toggle
-        // masing-masing DAN pengirim sudah diam >= 1 jam (khusus kategori itu).
-        // ══════════════════════════════════════════════════════════════════
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
         if (isGroup && !m.key.fromMe) {
             try {
                 const { isSalamActive, checkAndMarkSalam } = require('./lib/salamuser');
@@ -895,7 +891,7 @@ alya.ev.emit('messages.upsert', msg)
                 const _isBotOwner = _ownerNums.includes(_senderNum);
 
                 if (_isBotOwner && isSalamActive('owner', m.chat)) {
-                    // ── SALAM OWNER (prioritas — admin di-skip kalau ini match) ──
+                    
                     if (checkAndMarkSalam('owner', m.chat, sender)) {
                         const _ownerMsg =
 `🚨 *SISTEM BOOTING SELESAI - OWNER MASUK* 🚨
@@ -934,7 +930,7 @@ Semoga server kita kuat dan dompet kita gak ke-\`.transfer\``;
                         alya.sendMessage(m.chat, { text: _ownerMsg, mentions: [sender] }).catch(() => {});
                     }
                 } else if (isGroupAdmins && isSalamActive('admin', m.chat)) {
-                    // ── SALAM ADMIN (hanya kalau BUKAN owner-match di atas) ──
+                    
                     if (checkAndMarkSalam('admin', m.chat, sender)) {
                         const _adminMsg =
 `🚨 *UPACARA PENYAMBUTAN DIMULAI* 🚨
@@ -970,7 +966,7 @@ Semoga masa jabatan beliau membawa berkah... dan gak bawa sanksi kick`;
                     }
                 }
 
-                // ── SALAM USER (independen — tetap jalan meski dia owner/admin) ──
+                
                 if (isSalamActive('user', m.chat)) {
                     const { findRegisteredUser: _findRegUserSalam } = require('./lib/userRegistration')
                     const _regUser = _findRegUserSalam(global.db, sender);
@@ -1012,7 +1008,7 @@ Semoga kita selamat sampai kode berubah jadi *KODE HIJAU: DIA OFFLINE* 🫡💀`
         const jangan = m.isGroup ? pler.includes(m.chat) : false
     	const senderJidVariants = [
     	  m.sender,
-    	  m.sender.split('@')[0] + '@s.whatsapp.net'  // fallback jika sender = @lid
+    	  m.sender.split('@')[0] + '@s.whatsapp.net'  
     	]
     	const isPrem = senderJidVariants.some(jid => prem.includes(jid))
     	const isAly = alys.includes(m.sender)
@@ -1023,70 +1019,63 @@ Semoga kita selamat sampai kode berubah jadi *KODE HIJAU: DIA OFFLINE* 🫡💀`
     	const isOwn = ownp.includes(m.sender)
     	const isUser = alyaverifikasiuser.includes(sender)
     	const mentionUser = [...new Set([...(m.mentionedJid || []), ...(m.quoted ? [m.quoted.sender] : [])])]
-        // ✅ FIX: mentionByTag — pakai m.mentionedJid sebagai sumber utama (sudah diparse simple.js)
-        // Fallback ke contextInfo jika m.mentionedJid kosong (kompatibilitas lama)
+        
+        
         const mentionByTag = (() => {
-          // Prioritas 1: m.mentionedJid dari simple.js (paling reliable)
+          
           if (m.mentionedJid && m.mentionedJid.length > 0) return m.mentionedJid
-          // Prioritas 2: contextInfo dari extendedTextMessage
+          
           if (type == 'extendedTextMessage' && m.message?.extendedTextMessage?.contextInfo?.mentionedJid?.length)
             return m.message.extendedTextMessage.contextInfo.mentionedJid
-          // Prioritas 3: parse manual "@628xxx" dari body/args (fallback terakhir)
+          
           const atMatches = [...(body || '').matchAll(/@(\d{6,15})/g)]
           if (atMatches.length > 0) return atMatches.map(v => v[1] + '@s.whatsapp.net')
           return []
         })()
         const mentionByReply = type == 'extendedTextMessage' && m.message?.extendedTextMessage?.contextInfo != null ? m.message.extendedTextMessage.contextInfo.participant || '' : ''
-        // ✅ FIX: numberQuery — strip "@" dan karakter tidak valid sebelum tambah @s.whatsapp.net
+        
         const numberQuery = q.replace(/@/g, '').replace(new RegExp('[()\\-+/ ]', 'gi'), '').trim() + '@s.whatsapp.net'
         const usernya = mentionByReply ? mentionByReply : mentionByTag[0]
         const Input = mentionByTag[0] ? mentionByTag[0] : mentionByReply ? mentionByReply : q ? numberQuery : false
 
-        /**
-         * ✅ resolveTarget(ctx) — helper universal deteksi target user dari:
-         *   1. @mention tag (@628xxx)
-         *   2. Reply ke pesan user lain
-         *   3. Nomor/JID di args manual ("628xxx" atau "628xxx@s.whatsapp.net")
-         * Dipakai plugin via: const target = resolveTarget(ctx)
-         * Return: JID string ("628xxx@s.whatsapp.net") atau null
-         */
+         
         const resolveTarget = (ctxObj) => {
           const _m   = ctxObj?.m || m
           const _q   = ctxObj?.q ?? q
           const _args = ctxObj?.args ?? args
-          // 1. @mention (paling prioritas)
+          
           if (_m.mentionedJid && _m.mentionedJid.length > 0) return _m.mentionedJid[0]
-          // 2. Reply ke pesan user
+          
           if (_m.quoted?.sender) return _m.quoted.sender
-          // 3. Parse "@628xxx" dari args[0]
+          
           const arg0 = (_args[0] || '').trim()
           const atMatch = arg0.match(/^@?(\d{6,15})$/)
           if (atMatch) return atMatch[1] + '@s.whatsapp.net'
-          // 4. JID langsung
+          
           if (arg0.endsWith('@s.whatsapp.net')) return arg0
-          // 5. Parse dari q (full teks setelah command)
+          
           const qMatch = (_q || '').match(/@?(\d{6,15})/)
           if (qMatch) return qMatch[1] + '@s.whatsapp.net'
           return null
         }
     	const isEval = body.startsWith('=>')
-      // ✅ FIX: baca dari global.openaigc (disinkronkan real-time oleh
-      // plugin autoaigc.js saat .autoaigc on/off), bukan closure variable
-      // `openaigc` yang hanya di-load sekali saat boot. Pola sama dengan
-      // _alisagcCurrent di bawah, supaya toggle langsung efektif tanpa restart.
+      
+      
+      
+      
       const _openaigcCurrent = Array.isArray(global.openaigc) ? global.openaigc : openaigc
-      const isAutoAiGc = m.isGroup ? _openaigcCurrent.includes(m.chat) : true   // autoaigc → openaigc.json
-      // ✅ AI Interaktif (.alisa) pakai database TERPISAH: alisa_gc.json
-      // Sync dari global.alisagc yang di-update plugin alisa.js secara real-time
+      const isAutoAiGc = m.isGroup ? _openaigcCurrent.includes(m.chat) : true   
+      
+      
       const _alisagcCurrent = Array.isArray(global.alisagc) ? global.alisagc : alisagc
-      const isAutoAiGcAlisa = m.isGroup ? _alisagcCurrent.includes(m.chat) : true  // .alisa → alisa_gc.json
+      const isAutoAiGcAlisa = m.isGroup ? _alisagcCurrent.includes(m.chat) : true  
       const isAlyaChat = m.isGroup ? ChatAlya.includes(m.chat) : true
       const shouldExit = true
       const automati = false
       const cekpesan = true
-      // ✅ FIX: sama seperti isAutoAiGc — baca dari global.siminya real-time
+      
       const _siminyaCurrent = Array.isArray(global.siminya) ? global.siminya : siminya
-      const isAutosimi = m.isGroup ? _siminyaCurrent.includes(m.chat) : true    // autosimi → simi.json
+      const isAutosimi = m.isGroup ? _siminyaCurrent.includes(m.chat) : true    
         const AntiNsfw = m.isGroup ? ntnsfw.includes(from) : false
         const isAutoSticker = m.isGroup ? autosticker.includes(from) : false
         const antiVirtex = m.isGroup ? ntvirtex.includes(from) : false
@@ -1095,10 +1084,10 @@ Semoga kita selamat sampai kode berubah jadi *KODE HIJAU: DIA OFFLINE* 🫡💀`
         const reactpsn = false
         const AntiLinkYoutubeVid = m.isGroup ? ntilinkytvid.includes(from) : false
         const AntiLinkYoutubeChannel = m.isGroup ? ntilinkytch.includes(from) : false
-        // ✅ FIX: Dulu baca dari `mute` (var module-level, di-load 1x saat startup)
-        //   → toggle .onlyadmin on/off TIDAK berefek sampai bot di-restart.
-        //   Sekarang baca fresh dari file dengan cache TTL singkat (mirip pola
-        //   mute_users.json) agar toggle langsung berefek tanpa restart.
+        
+        
+        
+        
         const isMute = (() => {
             if (!m.isGroup) return false;
             const _now = Date.now();
@@ -1123,12 +1112,12 @@ Semoga kita selamat sampai kode berubah jadi *KODE HIJAU: DIA OFFLINE* 🫡💀`
         const antiWame = m.isGroup ? ntwame.includes(from) : false
 const isWelcome = _welcome.includes(m.chat) ? true : false
 const isLeft = _left.includes(m.chat) ? true : false
-const isSimi = _siminyaCurrent.includes(m.chat) ? true : false  // ✅ FIX: konsisten baca global.siminya (lihat isAutosimi)
+const isSimi = _siminyaCurrent.includes(m.chat) ? true : false  
 const isXeonMedia = m.mtype
 const rungo = true
-// ✅ PERF-FIX: alyaFitur() dulu baca 251KB alya.js dari disk SETIAP dipanggil
-//   → ganti ke static count yang di-cache sekali saat module load.
-//   Fungsi tetap kompatibel (return number) tapi 0ms overhead.
+
+
+
 let _alyaFiturCache = null;
 const alyaFitur = () => {
     if (_alyaFiturCache !== null) return _alyaFiturCache;
@@ -1136,7 +1125,7 @@ const alyaFitur = () => {
         var mytext = fs.readFileSync('./alya.js').toString();
         _alyaFiturCache = (mytext.match(/case '/g) || []).length;
     } catch {
-        _alyaFiturCache = 800; // fallback aman
+        _alyaFiturCache = 800; 
     }
     return _alyaFiturCache;
 }
@@ -1440,14 +1429,14 @@ const setting = db.settings[botNumber]
         if (!('alyaai_global' in setting)) setting.alyaai_global = true
         if (!('autoblockbot' in setting)) setting.autoblockbot = false
         if (!('public' in setting)) setting.public = true
-        // ✅ Sync global.autoblockbot dari db.settings agar persist lintas restart
+        
         global.autoblockbot = setting.autoblockbot === true;
-        // ✅ FIX v2: Sync alya.public dari db.settings (prioritas) atau global.db.settings (fallback)
-        // Ini memastikan .self dan .public bekerja lintas restart maupun antar session
+        
+        
         {
           const _pubSetting = setting.public;
           const _pubGlobal  = global.db?.settings?.[botNumber]?.public;
-          // Jika salah satu false → mode self
+          
           if (_pubSetting === false || (_pubSetting === undefined && _pubGlobal === false)) {
             alya.public = false;
           } else {
@@ -1473,12 +1462,12 @@ const setting = db.settings[botNumber]
 	    }
 
 } catch (err) {
-// FIX: selalu log — error di sini bisa membuat pesan berikutnya diproses
-// dengan db.data tidak lengkap, ujungnya command hening tanpa jejak di log.
+
+
 console.error('[DB Init Error]', err?.message || err)
 }
 
-// ── Group Context Log — catat setiap pesan grup untuk AI ────────────────────
+
 if (m.isGroup && !m.key.fromMe && budy) {
   try {
     groupCtx.logGroupMessage({
@@ -1487,30 +1476,30 @@ if (m.isGroup && !m.key.fromMe && budy) {
       pushname: pushname,
       text:     budy,
     });
-  } catch (_gcErr) { /* non-fatal */ }
+  } catch (_gcErr) {   }
 }
-// ─────────────────────────────────────────────────────────────────────────────
 
-// OnlyAdmin mode — enforcement awal (non-command guard)
-// Hanya blokir jika ini command (isCmd). Chat biasa tetap lolos.
-// Enforcement utama ada tepat sebelum plugin runner (lebih presisi).
+
+
+
+
 if (m.isGroup && isMute && isCmd) {
     if (!isAdmins && !Ryuu) return
 }
 
-// ── MUTE USER — auto-delete pesan dari member yang di-mute ───────────────────
-// mute.js akan set global._muteDB saat pertama kali diload.
-// Fallback: baca langsung dari file jika plugin belum pernah diload.
+
+
+
 if (m.isGroup && !m.key.fromMe && !Ryuu) {
     try {
-        // Cek apakah helper sudah tersedia dari plugin mute.js
+        
         let _isMuted;
         if (global._muteDB?.isMutedUser) {
             _isMuted = global._muteDB.isMutedUser(m.chat, m.sender);
         } else {
-            // ✅ PERF-FIX: Cache mute_users.json in-memory (10 detik TTL)
-            //   Dulu: readFileSync setiap pesan → blocking I/O
-            //   Sekarang: baca 1x tiap 10 detik, sisanya pakai cache
+            
+            
+            
             const _muteDBPath = './database/mute_users.json';
             const _now = Date.now();
             if (!global._muteUsersCache || (_now - global._muteUsersCache.ts) > 10000) {
@@ -1532,9 +1521,9 @@ if (m.isGroup && !m.key.fromMe && !Ryuu) {
         }
 
         if (_isMuted) {
-            // Admin grup dan owner bot kebal dari mute
+            
             if (!isAdmins && !Ryuu) {
-                // Bot harus jadi admin untuk bisa hapus pesan
+                
                 if (isBotAdmins) {
                     try {
                         await alya.sendMessage(m.chat, { delete: m.key });
@@ -1543,7 +1532,7 @@ if (m.isGroup && !m.key.fromMe && !Ryuu) {
                             console.warn('[Mute] Gagal hapus pesan:', e.message);
                     }
                 }
-                return; // Hentikan pemrosesan (block command meski bot bukan admin)
+                return; 
             }
         }
     } catch (e) {
@@ -1551,19 +1540,19 @@ if (m.isGroup && !m.key.fromMe && !Ryuu) {
             console.error('[Mute Handler Error]', e.message);
     }
 }
-// ─────────────────────────────────────────────────────────────────────────────
 
-// ✅ FIX KRITIS: blok mode SELF ini SEBELUMNYA sudah punya syarat `!Ryuu` (owner lolos),
-// tapi karena `Ryuu` sendiri dihitung dari `owner` yang dulu load-once (lihat fix di atas),
-// pada kondisi tertentu (mis. proses lama belum sempat re-require) Ryuu bisa telat update.
-// Sekarang `owner`/`Ryuu` sudah live, jadi blok ini otomatis akurat. Owner (Ryuu===true)
-// SELALU lolos dari mode SELF, kapan pun, termasuk di chat pribadi.
+
+
+
+
+
+
 if (!alya.public && !Ryuu && !m.key.fromMe) {
-    // ✅ FIX NESTING: onlygrub SEBELUMNYA nested di dalam blok `!alya.public`, jadi fitur
-    // "Group Only" hanya aktif kalau bot juga sedang mode SELF — padahal onlygrub harusnya
-    // jadi aturan independen (bot tetap PUBLIC, tapi private chat ditolak). Dipindah keluar
-    // jadi blok sendiri di bawah supaya berlaku terlepas dari alya.public.
-    // ✅ FIX: Notif ke user kalau bot sedang self mode (hanya untuk command, bukan setiap pesan)
+    
+    
+    
+    
+    
     if (isCmd) {
         return alya.sendMessage(m.chat, {
             text: `⚙️ Bot sedang dalam *mode SELF*.\nHanya owner yang dapat menggunakan bot.`,
@@ -1574,9 +1563,9 @@ if (!alya.public && !Ryuu && !m.key.fromMe) {
     return;
 }
 
-// ✅ FIX: onlygrub sekarang independen dari mode public/self, dan tetap mengecualikan owner.
-// Sebelumnya nested di dalam `if (!alya.public...)` sehingga tidak pernah ke-trigger saat
-// bot dalam mode PUBLIC (kondisi paling umum) — fitur "Group Only" jadi seolah tidak bekerja.
+
+
+
 if (!Ryuu && !m.key.fromMe && !m.isGroup && db.settings[botNumber]?.onlygrub) {
     return alya.sendMessage(m.chat, {
         text: `Bots sedang dalam Group Only\nSilahkan Bergabung\nhttps://chat.whatsapp.com/LqCKICVcCgiJcrxttSRci3`,
@@ -1586,7 +1575,7 @@ if (!Ryuu && !m.key.fromMe && !m.isGroup && db.settings[botNumber]?.onlygrub) {
 if (db.settings[botNumber].autoread) {
             alya.readMessages([m.key])
 }
-// ✅ PERF-FIX: Chat log HANYA di dev mode — chalk+emoji I/O blocking di production
+
 if (process.env.NODE_ENV !== 'production') {
     if (m.message && m.isGroup) {
         console.log(`
@@ -1607,9 +1596,9 @@ if (process.env.NODE_ENV !== 'production') {
     `);
     }
 }
-// 🔧 FIX: struktur db V20 adalah global.db.settings langsung (bukan global.db.data.settings
-// seperti di V11) — pakai namespace yang sama dengan plugin autoreactsw.js dan setting lain
-// (autoread, dll) agar toggle .autoreactsw on/off benar-benar tersimpan & terbaca di sini.
+
+
+
 if (!global.db.settings) global.db.settings = {}
 if (botNumber && !global.db.settings[botNumber]) {
     global.db.settings[botNumber] = {
@@ -1697,7 +1686,7 @@ for (let jid of mentionUser) {
     }
 }
 
-//math
+
 if (kuismath.hasOwnProperty(m.sender.split('@')[0]) && isCmd) {
 
             kuis = true
@@ -1715,7 +1704,7 @@ delete kuismath[m.sender.split('@')[0]]
         }
 
 
-//TicTacToe\\
+
 	    this.game = this.game ? this.game : {}
 	    let room13 = Object.values(this.game).find(room13 => room13.id && room13.game && room13.state && room13.id.startsWith('tictactoe') && [room13.game.playerX, room13.game.playerO].includes(m.sender) && room13.state == 'PLAYING')
 	    if (room13) {
@@ -1723,7 +1712,7 @@ delete kuismath[m.sender.split('@')[0]]
 	    let isWin = !1
 	    let isTie = !1
 	    let isSurrender = !1
-	    //reply(`[DEBUG]\n${parseInt(m.text)}`)
+	    
 	    if (!/^([1-9]|(me)?give up|surr?ender|off|skip)$/i.test(m.text)) return
 	    isSurrender = !/^[1-9]$/.test(m.text)
 	    if (m.sender !== room13.game.currentTurn) { 
@@ -1781,9 +1770,9 @@ Ketik *surrender* untuk menyerah dan mengaku kalah`
 	    }
 
 
-        // =============================================
-        // ♟️ CATUR MOVE HANDLER
-        // =============================================
+        
+        
+        
         this.caturGame = this.caturGame || {};
         const caturSession = Object.values(this.caturGame).find(g =>
           g.state === 'PLAYING' && (g.playerW === m.sender || g.playerB === m.sender)
@@ -1806,10 +1795,10 @@ Ketik *surrender* untuk menyerah dan mengaku kalah`
             return true;
           }
 
-          if (!myTurn) return true; // bukan giliran, abaikan
+          if (!myTurn) return true; 
 
           const move = parseMove(m.text.trim());
-          if (!move) return true; // bukan format langkah, abaikan pesan ini
+          if (!move) return true; 
 
           const valid = isValidBasicMove(caturSession.board, move, myColor);
           if (!valid.ok) {
@@ -1847,7 +1836,7 @@ Ketik *surrender* untuk menyerah dan mengaku kalah`
           return true;
         }
 
-        //Suit PvP
+        
 	    this.suit = this.suit ? this.suit : {}
 	    let roof = Object.values(this.suit).find(roof => roof.id && roof.status && [roof.p, roof.p2].includes(m.sender))
 	    if (roof) {
@@ -1862,7 +1851,7 @@ Ketik *surrender* untuk menyerah dan mengaku kalah`
 	    roof.status = 'play'
 	    roof.asal = m.chat
 	    clearTimeout(roof.waktu)
-	    //delete roof[roof.id].waktu
+	    
 	    alya.sendText(m.chat, `Jas telah dikirim ke obrolan
 
 @${roof.p.split`@`[0]} and 
@@ -1918,12 +1907,12 @@ click https://wa.me/${botNumber.split`@`[0]}`, m, { mentions: [roof.p, roof.p2] 
 `.trim(), m, { mentions: [roof.p, roof.p2] })
 	    delete this.suit[roof.id]
 	    }
-	    } //end
+	    } 
 function clockString(ms) {
   let h = Math.floor(ms / 3600000)
   let m = Math.floor(ms / 60000) % 60
   let s = Math.floor(ms / 1000) % 60
-  // ✅ PERF-FIX: debug log dihapus — fungsi dipanggil setiap pesan (AFK check)
+  
   return [h, m, s].map(v => v.toString().padStart(2, 0) ).join(':')
 }
 if (db.users[m.sender].afkTime > -1) {
@@ -1944,7 +1933,7 @@ if (db.users[m.sender].afkTime > -1) {
     user.afkReason = ''
 }
 
-		// auto set bio
+		
 	if (db.settings[botNumber].autobio) {
 	    let setting = global.db.settings[botNumber]
 	    if (new Date() * 1 - setting.status > 1000) {
@@ -1954,66 +1943,34 @@ if (db.users[m.sender].afkTime > -1) {
 	    }
 	}
 
-//autoblock 212
+
 if (global.autoblockmorroco) {
 if (m.sender.startsWith('212')) return alya.updateBlockStatus(m.sender, 'block')
 }
 
-//autokick 212
+
 if (global.autokickmorroco) {
 if (m.isGroup && m.sender.startsWith('212')) return 
 }
 
-// ============================================================
-// ⛔ DINONAKTIFKAN (bukan dihapus) — 2026-07-05
-// Handler AUTOBLOCKBOT lama ini digantikan sepenuhnya oleh listener baru
-// yang didaftarkan dari plugins/cmd/_anticall-autoblock-core.js (dipasang
-// otomatis begitu plugin autoblockbot.js dijalankan pertama kali).
-// Dibiarkan sebagai komentar untuk referensi/rollback saja — JANGAN
-// diaktifkan lagi bersamaan dengan listener baru, akan menyebabkan
-// warning + block dobel untuk pengirim yang sama.
-//
-// CATATAN PERILAKU: implementasi lama ini hanya aktif saat mode SELF
-// (alya.public === false) dan mengecualikan owner/alya/prem. Implementasi
-// baru (dari file yang di-merge) aktif untuk SEMUA DM pribadi selama
-// toggle .autoblockbot ON — dan mengecualikan owner + whitelist saja
-// (tidak otomatis mengecualikan prem/alya, dan tidak bergantung pada
-// mode public/self). Sesuaikan whitelist via plugin jika prem/alya
-// perlu tetap bisa DM saat fitur ini aktif.
-// ============================================================
-/*
-// ── AUTOBLOCKBOT — block siapapun yang DM bot HANYA saat mode SELF ──────
-// FIX v2: autoblockbot hanya aktif jika bot dalam mode SELF (alya.public===false).
-//   Jika bot PUBLIC, DM dari siapa pun harus direspon → jangan diblokir.
-//   Jika bot SELF, hanya owner/prem/alya yang boleh DM — sisanya diblokir.
-if (global.autoblockbot && alya.public === false) {
-  if (!m.isGroup && !m.key.fromMe) {
-    const isOwnerSender = global.owner.includes(m.sender.split('@')[0]);
-    const isAlyaSender  = isAly || isAlya;
-    const isPremSender  = isPrem;
-    // Jangan blokir owner, alya, atau premium
-    if (!isOwnerSender && !isAlyaSender && !isPremSender) {
-      try {
-        await alya.sendMessage(m.sender, {
-          text:
-            `🔒 *Halo!*\n\n` +
-            `Bot ini sedang dalam *mode SELF*.\n` +
-            `Nomormu akan *diblokir* secara otomatis.\n\n` +
-            `_Hubungi owner jika butuh bantuan._`,
-        });
-      } catch {}
-      await new Promise(r => setTimeout(r, 1500));
-      try {
-        await alya.updateBlockStatus(m.sender, 'block');
-        if (process.env.NODE_ENV !== 'production') console.log(`[AutoBlockBot] ✅ ${m.sender.split('@')[0]} diblokir (DM ke bot - mode SELF).`);
-      } catch (e) {
-        console.error('[AutoBlockBot] Gagal blokir:', e.message);
-      }
-      return;
-    }
-  }
-}
-*/
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+ 
 async function groupStatus(jid, content) {
   const { backgroundColor } = content;
   delete content.backgroundColor;
@@ -2049,21 +2006,21 @@ async function sendalyaMessage(chatId, message, options = {}){
     return await alya.relayMessage(chatId, generate.message, { messageId: generate.key.id })
 }
 
-// ───────────────────────────────────────────────────────────────────────────
-// REPLY FUNCTIONS — Style V10 (thumbnailUrl, no ad preview)
-//
-// Cara custom thumbnail:
-//   Ubah global.alyaThumbUrl di settings.js
-//   Contoh: global.alyaThumbUrl = 'https://i.ibb.co/xxxx/foto-alya.jpg'
-//
-//   Untuk replytolak gunakan: global.alyaThumbTolakUrl
-//   Contoh: global.alyaThumbTolakUrl = 'https://i.ibb.co/xxxx/tolak.jpg'
-// ───────────────────────────────────────────────────────────────────────────
 
-// ── replyalya & replytolak — v20.6 ───────────────────────────────────────
-// Card body: metacard.js (resolveCardThumb) → document + jpegThumbnail
-//            Header WhatsApp ✔ (buildOurinSenderCtx) direkonstruksi ulang
-//            di dalam metacard.js setelah metaai.js dihapus dari proyek.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 const _fsMeta   = require('fs')
 const _pathMeta = require('path')
@@ -2080,7 +2037,7 @@ const replyalya = async (teks) => {
   const txt      = typeof teks === 'string' ? teks : String(teks)
   const botLabel = global.botname || 'Alya Bot'
 
-  // Card body thumbnail (metacard.js — fallback ke foto waktu WIB)
+  
   const cardThumb = resolveCardThumb(null, null)
 
   if (cardThumb) {
@@ -2092,8 +2049,8 @@ const replyalya = async (teks) => {
       jpegThumbnail: cardThumb,
       caption:       txt,
       mentions:      [m?.sender].filter(Boolean),
-      contextInfo:   buildOurinSenderCtx(botLabel), // ← header WhatsApp ✔ via metacard.js
-    }, { quoted: m })   // ← reply ke pesan user asli
+      contextInfo:   buildOurinSenderCtx(botLabel), 
+    }, { quoted: m })   
   } else {
     await alya.sendMessage(m.chat, { text: txt }, { quoted: m })
   }
@@ -2117,7 +2074,7 @@ const replytolak = async (teks) => {
       jpegThumbnail: cardThumb,
       caption:       txt,
       mentions:      [m?.sender].filter(Boolean),
-      contextInfo:   buildOurinSenderCtx(botLabel), // ← header WhatsApp ✔ via metacard.js
+      contextInfo:   buildOurinSenderCtx(botLabel), 
     }, { quoted: m })
   } else {
     await alya.sendMessage(m.chat, { text: txt }, { quoted: m })
@@ -2154,7 +2111,7 @@ async function getGcName(groupID) {
                 return '-'
             }
         }
-//bug functions
+
 async function alyaytdl(link) {
     try {
         const response = await axios.get('https://y2ts.us.kg/token');
@@ -2187,7 +2144,7 @@ const videoResponse = await axios.get(url, { headers });
     }
 }
 const waifuList = [
-    // COMMON
+    
     { name: "Aira Shiratori", anime: "Dandadan", rarity: "COMMON" },
     { name: "Utena Hiiragi", anime: "Mahou Shoujo ni Akogarete", rarity: "COMMON" },
     { name: "Kana Ichinose", anime: "Makeine: Too Many Losing Heroines!", rarity: "COMMON" },
@@ -2208,7 +2165,7 @@ const waifuList = [
     { name: "Fiona Frost", anime: "Spy x Family Season 2", rarity: "COMMON" },
     { name: "Lycoris", anime: "Lycoris Recoil", rarity: "COMMON" },
     { name: "Vermeil", anime: "Kinsou no Vermeil", rarity: "COMMON" },
-    // EPIC
+    
     { name: "Anna Yamada", anime: "Boku no Kokoro no Yabai Yatsu S2", rarity: "EPIC" },
     { name: "Marcille Donato", anime: "Dungeon Meshi", rarity: "EPIC" },
     { name: "Falin Touden", anime: "Dungeon Meshi", rarity: "EPIC" },
@@ -2229,7 +2186,7 @@ const waifuList = [
     { name: "Momo Ayase", anime: "Dandadan", rarity: "EPIC" },
     { name: "Arima Kana", anime: "Oshi no Ko S2", rarity: "EPIC" },
     { name: "Ruby Hoshino", anime: "Oshi no Ko S2", rarity: "EPIC" },
-    // LEGENDARY
+    
     { name: "Nobara Kugisaki", anime: "Jujutsu Kaisen S2", rarity: "LEGENDARY" },
     { name: "Maki Zenin", anime: "Jujutsu Kaisen S2", rarity: "LEGENDARY" },
     { name: "Shoko Ieiri", anime: "Jujutsu Kaisen S2", rarity: "LEGENDARY" },
@@ -2255,7 +2212,7 @@ const waifuList = [
     { name: "Echidna", anime: "Re:Zero", rarity: "LEGENDARY" },
     { name: "Beatrice", anime: "Re:Zero", rarity: "LEGENDARY" },
     { name: "Violet Evergarden", anime: "Violet Evergarden Movie", rarity: "LEGENDARY" },
-    // MITOS 💀
+    
     { name: "Mahiru Shiina", anime: "Otonari no Tenshi-sama", rarity: "MITOS" },
     { name: "Yuki Suou", anime: "Roshidere", rarity: "MITOS" },
     { name: "Alisa Mikhailovna Kujou", anime: "Roshidere", rarity: "MITOS" },
@@ -2282,7 +2239,7 @@ const waifuList = [
     { name: "Historia Reiss", anime: "Shingeki no Kyojin Final Season", rarity: "MITOS" }
 ]
 const husbuList = [
-    // COMMON
+    
     { name: "Kageyama Tobio", anime: "Haikyuu!!", rarity: "COMMON" },
     { name: "Kurosaki Ichigo", anime: "Bleach", rarity: "COMMON" },
     { name: "Natsu Dragneel", anime: "Fairy Tail", rarity: "COMMON" },
@@ -2303,7 +2260,7 @@ const husbuList = [
     { name: "Obi", anime: "Akagami no Shirayuki-hime", rarity: "COMMON" },
     { name: "Haru Yoshida", anime: "Tonari no Kaibutsu-kun", rarity: "COMMON" },
     { name: "Takeo Gouda", anime: "Ore Monogatari!!", rarity: "COMMON" },
-    // EPIC
+    
     { name: "Tomioka Giyu", anime: "Kimetsu no Yaiba", rarity: "EPIC" },
     { name: "Zoro Roronoa", anime: "One Piece", rarity: "EPIC" },
     { name: "Bakugo Katsuki", anime: "Boku no Hero Academia", rarity: "EPIC" },
@@ -2334,7 +2291,7 @@ const husbuList = [
     { name: "Uzui Tengen", anime: "Kimetsu no Yaiba", rarity: "EPIC" },
     { name: "Sanemi Shinazugawa", anime: "Kimetsu no Yaiba", rarity: "EPIC" },
     { name: "Sabito", anime: "Kimetsu no Yaiba", rarity: "EPIC" },
-    // LEGENDARY
+    
     { name: "Levi Ackerman", anime: "Shingeki no Kyojin", rarity: "LEGENDARY" },
     { name: "Gojo Satoru", anime: "Jujutsu Kaisen", rarity: "LEGENDARY" },
     { name: "Kakashi Hatake", anime: "Naruto", rarity: "LEGENDARY" },
@@ -2364,7 +2321,7 @@ const husbuList = [
     { name: "Spike Spiegel", anime: "Cowboy Bebop", rarity: "LEGENDARY" },
     { name: "Guts", anime: "Berserk", rarity: "LEGENDARY" },
     { name: "Griffith", anime: "Berserk", rarity: "LEGENDARY" },
-    // MITOS 💀
+    
     { name: "Sasuke Uchiha", anime: "Naruto", rarity: "MITOS" },
     { name: "Uchiha Madara", anime: "Naruto", rarity: "MITOS" },
     { name: "Vegeta", anime: "Dragon Ball Z", rarity: "MITOS" },
@@ -2472,21 +2429,21 @@ async function AlyaTTDL(videoUrl) {
   }
 }
 async function listbut2(chat, teks, listnye, jm) {
-// ── Ourin-style: single_select FIRST (dropdown nav) + cta_url + quick_reply ──
-// Button order mirrors Ourin case 2: dropdown utama di posisi 1
+
+
 const moment = require('moment-timezone')
 const greetHour = moment.tz('Asia/Jakarta').hours()
 const greetText = greetHour < 12 ? 'Selamat Pagi ☀️' : greetHour < 15 ? 'Selamat Siang 🌤️' : greetHour < 18 ? 'Selamat Sore 🌅' : 'Selamat Malam 🌙'
 
-// ── Ourin order: single_select (dropdown) → cta_url → quick_reply ────────
+
 const menuButtons = [
   {
-    // Posisi 1 (inline): dropdown navigasi menu — sama seperti Ourin case 2
+    
     name: "single_select",
     buttonParamsJson: JSON.stringify(listnye)
   },
   {
-    // Posisi 2 (inline): langsung ke owner — sama seperti Ourin "Owner Kami"
+    
     name: "cta_url",
     buttonParamsJson: JSON.stringify({
       display_text: "📲 Hubungi Owner",
@@ -2495,21 +2452,21 @@ const menuButtons = [
     })
   },
   {
-    // Posisi 3 (bottom sheet): semua fitur
+    
     name: "quick_reply",
     buttonParamsJson: JSON.stringify({ display_text: "📦 Semua Fitur", id: `${prefix}allmenu` })
   },
   {
-    // Posisi 4 (bottom sheet): info premium
+    
     name: "quick_reply",
     buttonParamsJson: JSON.stringify({ display_text: "💎 Info Premium", id: `${prefix}infoprem` })
   }
 ]
 
-// ── HEADER: coba VIDEO dulu (Andika minta video lokal tampil di .menu), fallback image, fallback teks ─
+
 let mediaHeader
 try {
-  // Priority 1: video header — cari dari daftar path lokal
+  
   const videoPaths = [
     './media/menu.mp4', './media/video/menu.mp4', './media/video/alya.mp4',
     './data/assets/menu.mp4', './data/video/menu.mp4', './data/assets/video/menu.mp4'
@@ -2522,7 +2479,7 @@ try {
   }
   if (!vidBuf) throw new Error('no video, try image')
   if (!global._menuMp4Buffer) global._menuMp4Buffer = vidBuf
-  // gifPlayback: false → video bisa di-play (bukan loop gif) — sama seperti tombol play normal
+  
   mediaHeader = proto.Message.InteractiveMessage.Header.create({
     title: '',
     gifPlayback: false,
@@ -2534,7 +2491,7 @@ try {
   })
 } catch {
   try {
-    // Priority 2: image header (sama seperti Ourin case 2)
+    
     const imgPaths = ['./data/image/menu.jpg', './media/alya.jpg', './media/alya/alya1.jpg']
     let imgBuf = null
     for (const p of imgPaths) {
@@ -2551,7 +2508,7 @@ try {
       ))
     })
   } catch {
-    // Priority 3: text header fallback
+    
     mediaHeader = proto.Message.InteractiveMessage.Header.create({
       title: `🌸 ${global.botname || 'Alya Bot'}`,
       hasMediaAttachment: false
@@ -2559,7 +2516,7 @@ try {
   }
 }
 
-// ── Contact-vcard quote (Ourin style: bukan pesan biasa) ─────────────────
+
 const fkontak = {
   key: { participant: '0@s.whatsapp.net', remoteJid: 'status@broadcast' },
   message: {
@@ -2630,23 +2587,23 @@ await alya.relayMessage(msg.key.remoteJid, msg.message, {
 })
 }
 
-// ── listbut3: Ourin-style untuk submenu pages ─────────────────────────────
-// Digunakan oleh semua submenu (gamemenu, aimenu, dll)
-// Menampilkan: Image header + teks konten + quick_reply back buttons + single_select nav
+
+
+
 async function listbut3(chat, teks, listnye, jm, opts = {}) {
   const moment = require('moment-timezone')
   const greetHour = moment.tz('Asia/Jakarta').hours()
   const greetText = greetHour < 12 ? 'Selamat Pagi ☀️' : greetHour < 15 ? 'Selamat Siang 🌤️' : greetHour < 18 ? 'Selamat Sore 🌅' : 'Selamat Malam 🌙'
   
-  // ── Ourin order untuk submenu: single_select (nav) → cta_url → quick_reply ─
+  
   const subBackButtons = [
     {
-      // Posisi 1 (inline): dropdown navigasi ke semua kategori
+      
       name: "single_select",
       buttonParamsJson: JSON.stringify(listnye)
     },
     {
-      // Posisi 2 (inline): hubungi owner
+      
       name: "cta_url",
       buttonParamsJson: JSON.stringify({
         display_text: "📲 Hubungi Owner",
@@ -2655,18 +2612,18 @@ async function listbut3(chat, teks, listnye, jm, opts = {}) {
       })
     },
     {
-      // Posisi 3 (bottom sheet): kembali ke menu utama
+      
       name: "quick_reply",
       buttonParamsJson: JSON.stringify({ display_text: "🏠 Menu Utama", id: `${prefix}menu` })
     },
     {
-      // Posisi 4 (bottom sheet): semua fitur
+      
       name: "quick_reply",
       buttonParamsJson: JSON.stringify({ display_text: "📦 Semua Fitur", id: `${prefix}allmenu` })
     }
   ]
 
-  // ── HEADER: coba VIDEO dulu (konsisten dgn listbut2 / .menu), fallback image, fallback teks ─
+  
   let mediaHeader
   try {
     const videoPaths = [
@@ -2681,7 +2638,7 @@ async function listbut3(chat, teks, listnye, jm, opts = {}) {
     }
     if (!vidBuf) throw new Error('no video, try image')
     if (!global._menuMp4Buffer) global._menuMp4Buffer = vidBuf
-    // gifPlayback: false → video bisa di-play dengan tombol play (bukan loop gif)
+    
     mediaHeader = proto.Message.InteractiveMessage.Header.create({
       title: ``,
       gifPlayback: false,
@@ -2788,7 +2745,7 @@ const path = require("path");
         const form = new FormData();
         form.append("files[]", fs.createReadStream(filePath), {
             contentType,
-            filename: fileName, // Paksa nama file tetap JPG
+            filename: fileName, 
         });
         const response = await axios.post("https://qu.ax/upload.php", form, {
             headers: {
@@ -2796,7 +2753,7 @@ const path = require("path");
             },
         });
 
-        // Cek hasil
+        
         if (!response.data.success || !response.data.files?.length) throw new Error("Upload gagal");
         
         return response.data.files[0].url;
@@ -2888,12 +2845,12 @@ async function generateAndSendCertificate(recipientName, achievementText) {
     { quoted: m }
   );
 }
-// ============================================================
-// AlyaAI V11 - Powered by Bell AI System (api.termai.cc)
-// Auto-reply: panggil nama, reply, mention, grup, PC
-// ============================================================
+
+
+
+
 async function AlyaAI(pushname, text, m_obj, from_obj, sender_obj, alya_obj) {
-  // Wrapper legacy - gunakan Bell AI engine
+  
   try {
     await runAIInteractive({
       body: text,
@@ -3260,13 +3217,13 @@ alya.sendImageAsSticker = async (jid, media, m, options = {}) => {
             return `${Math.floor(Math.random() * 10000)}${ext}`
         }
     let jancok = new Sticker(media, {
-        pack: global.packname, // The pack name
-        author: global.author, // The author name
-        type: StickerTypes.FULL, // The sticker type
-        categories: ['🤩', '🎉'], // The sticker category
-        id: '12345', // The sticker id
-        quality: 50, // The quality of the output file
-        background: '#FFFFFF00' // The sticker background color (only for full stickers)
+        pack: global.packname, 
+        author: global.author, 
+        type: StickerTypes.FULL, 
+        categories: ['🤩', '🎉'], 
+        id: '12345', 
+        quality: 50, 
+        background: '#FFFFFF00' 
     })
     let stok = getRandom(".webp")
     let nono = await jancok.toFile(stok)
@@ -3403,18 +3360,18 @@ return waMessage
 }
 
 
-// ── Fake-quoted message templates — v20.3 ────────────────────────────────
-// Sebelumnya semua const di bawah ini mereferensikan variabel undefined
-// (thumb, botname, defaultpp, wm, ownername, ownernumber, tele, socialm,
-// location, owner) sehingga selalu throw ReferenceError dan membuat
-// SELURUH handler pesan crash sebelum sempat menjalankan plugin apapun.
-// Sekarang semua variabel sumber sudah didefinisikan dengan aman dari
-// global.* / metacard.js, sehingga 12 template di bawah
-// (lep, ftext, ftroli, fvn, fgif, fgclink, fvideo, floc, fkontak,
-// fakestatus, list, repPy) bisa langsung dipakai sebagai { quoted: ... }
-// oleh plugin manapun.
 
-// ── Variabel sumber (semua aman, ada fallback) ───────────────────────────
+
+
+
+
+
+
+
+
+
+
+
 const botname     = global.botname     || 'Alya Assistant'
 const ownername   = global.ownername   || 'Owner'
 const ownernumber = global.ownernumber || '6285602845943'
@@ -3423,14 +3380,14 @@ const socialm     = global.socialm     || 'GitHub: -'
 const location    = global.location    || 'Indonesia'
 const wm          = global.watermark   || botname
 
-// thumb  : thumbnail real-time (foto greeting sesuai jam WIB / fallback) — utk reply card
-// defaultpp : foto profil default (global.thumb dari settings.js, atau data/image/thumb.jpg)
+
+
 const thumb     = resolveCardThumb(null, null)
 const defaultpp = global.thumb || (() => {
   try { return fs.readFileSync('./data/image/thumb.jpg') } catch { return Buffer.alloc(0) }
 })()
 
-// ── lep — fake imageMessage (foto profil owner) ──────────────────────────
+
 const lep = {
   key: {
     fromMe: true,
@@ -3446,7 +3403,7 @@ const lep = {
   }
 }
 
-// ── ftext — fake extendedTextMessage dengan thumbnail ────────────────────
+
 const ftext = {
   key: {
     fromMe: false,
@@ -3459,36 +3416,36 @@ const ftext = {
   title: `${m.pushName}`,
   jpegThumbnail: defaultpp } } }
 
-//Fake
-// ── ftroli — fake orderMessage (notifikasi keranjang/troli) ──────────────
+
+
 const ftroli = {key: {fromMe: false,"participant":"0@s.whatsapp.net", "remoteJid": "status@broadcast"}, "message": {orderMessage: {itemCount: 2022,status: 200, thumbnail: thumb, surface: 200, message: botname, orderTitle: ownername, sellerJid: '0@s.whatsapp.net'}}, contextInfo: {"forwardingScore":999,"isForwarded":true},sendEphemeral: true}
 
-// ── fdoc dihapus — sebelumnya memanggil buildOurinSenderCtx() dari
-// metaai.js (modul tersebut sudah dihapus dari proyek dan tidak dipakai
-// di tempat lain selain definisi ini, sehingga aman dihilangkan).
 
-// ── fvn — fake audioMessage (voice note) ──────────────────────────────────
+
+
+
+
 const fvn = {key: {participant: `0@s.whatsapp.net`, ...(m.chat ? { remoteJid: "status@broadcast" } : {})},message: { "audioMessage": {"mimetype":"audio/ogg; codecs=opus","seconds":359996400,"ptt": "true"}} }
 
-// ── fgif — fake videoMessage dengan gifPlayback ───────────────────────────
+
 const fgif = {key: {participant: `0@s.whatsapp.net`, ...(m.chat ? { remoteJid: "status@broadcast" } : {})},message: {"videoMessage": { "title":botname, "h": wm,'seconds': '359996400', 'gifPlayback': 'true', 'caption': ownername, 'jpegThumbnail': thumb}}}
 
-// ── fgclink — fake groupInviteMessage ──────────────────────────────────────
+
 const fgclink = {key: {participant: "0@s.whatsapp.net","remoteJid": "0@s.whatsapp.net"},"message": {"groupInviteMessage": {"groupJid": "120363421179070899@g.us","inviteCode": "m","groupName": wm, "caption": `${pushname}`, 'jpegThumbnail': thumb}}}
 
-// ── fvideo — fake videoMessage biasa ───────────────────────────────────────
+
 const fvideo = {key: { fromMe: false,participant: `0@s.whatsapp.net`, ...(m.chat ? { remoteJid: "status@broadcast" } : {}) },message: { "videoMessage": { "title":botname, "h": wm,'seconds': '359996400', 'caption': `${pushname}`, 'jpegThumbnail': thumb}}}
 
-// ── floc — fake locationMessage ─────────────────────────────────────────────
+
 const floc = {key : {participant : '0@s.whatsapp.net', ...(m.chat ? { remoteJid: `status@broadcast` } : {}) },message: {locationMessage: {name: wm,jpegThumbnail: thumb}}}
 
-// ── fkontak — fake contactMessage (vCard) ────────────────────────────────────
+
 const fkontak = { key: {participant: `0@s.whatsapp.net`, ...(m.chat ? { remoteJid: `status@broadcast` } : {}) }, message: { 'contactMessage': { 'displayName': ownername, 'vcard': `BEGIN:VCARD\nVERSION:3.0\nN:XL;${ownername},;;;\nFN:${ownername}\nitem1.TEL;waid=${ownernumber}:${ownernumber}\nitem1.X-ABLabel:Mobile\nEND:VCARD`, 'jpegThumbnail': thumb, thumbnail: thumb,sendEphemeral: true}}}
 
-// ── fakestatus — fake imageMessage status (pakai thumb lokal, bukan URL CDN expired) ─
+
 const fakestatus = {key: {fromMe: false,participant: `0@s.whatsapp.net`, ...(m.chat ? { remoteJid: "status@broadcast" } : {})},message: { "imageMessage": {"mimetype": "image/jpeg","caption": wm,"jpegThumbnail": defaultpp}}}
 
-// ── list — array vCard semua owner (global.owner) ──────────────────────────
+
 let list = []
 for (let i of global.owner) {
   const _ownerName = (await alya.getName(i)) || ownername
@@ -3498,7 +3455,7 @@ for (let i of global.owner) {
   })
 }
 
-// ── repPy — fake requestPaymentMessage ───────────────────────────────────────
+
 const repPy = {
   key: {
     remoteJid: '0@s.whatsapp.net',
@@ -3526,8 +3483,8 @@ const repPy = {
   }
 }
 
-//let xeonrecordin = ['recording','composing']
-//let xeonrecordinfinal = xeonrecordin[Math.floor(Math.random() * xeonrecordin.length)]
+
+
 
 if (!m.key.fromMe && db.settings[botNumber].autoread){
 const readkey = {
@@ -3603,62 +3560,66 @@ fs.unlinkSync(mp3File)
 reply(`${err}`)
 }
 }
-// Sync local sewa array dengan global.sewa (dikelola interval di index.js)
+
 if (global.sewa) sewa = global.sewa
 
 
-// ============================================================
-// ALYA V19 AI INTERACTIVE - Bell System
-// Trigger: panggil nama, reply, mention, grup .ai on, private chat
-// ============================================================
+
+
+
+
 if (!m.key.fromMe && !m.isBaileys) {
-  // 🛡️ ALISA KILL-SWITCH GLOBAL: cek apakah AI dimatikan total oleh owner
-  // global.alisaDisabled di-set oleh plugin alisa.js via .alisa off-all
+  
+  
   if (global.alisaDisabled === true) {
-    // AI benar-benar mati — tidak ada respons sama sekali
-    // mention, reply, panggil nama, auto-reply — semuanya diabaikan
+    
+    
   } else {
   try {
-    // ✅ FIX: decodeJid adalah sync function — bukan async, tidak perlu await
-    // ✅ FIX: guard alya.user — bisa null saat bot baru reconnect/startup
+    
+    
     if (!alya.user?.id) return;
     const _botNumber = alya.decodeJid(alya.user.id);
 
-    // ✅ FIX: Cek apakah bot di-tag/mention oleh user
+    
     const _isBotMentioned = !!(m.mentionedJid?.some(j =>
       j === _botNumber || j.split('@')[0] === _botNumber.split('@')[0]
     ));
 
-    // ✅ FIX: Bersihkan teks dari @mention agar AI baca pertanyaan aslinya
-    // Contoh: "@628xxx halo kamu siapa" → "halo kamu siapa"
-    let _aiBody = budy;
+    
+    
+    
+    
+    const _prompt = resolveAIPrompt(m);
+    let _aiBody = _prompt.text;
     if (_isBotMentioned && _aiBody) {
       _aiBody = _aiBody.replace(/@\d+/g, '').trim();
     }
 
-    // ✅ FIX: Jika bot di-tag, gunakan teks yang sudah dibersihkan (boleh kosong → sapaan default)
-    // Jika tidak di-tag, gunakan budy asli (harus ada teksnya)
-    const _bodyForAI = _isBotMentioned ? (_aiBody || 'Halo') : budy;
+    
+    
+    const _bodyForAI = _isBotMentioned ? (_aiBody || 'Halo') : _aiBody;
 
     const _shouldAI = isAITriggered({
       body: _bodyForAI,
       m: m,
       botNumber: _botNumber,
-      isAutoAiGc: isAutoAiGcAlisa   // ✅ pakai alisa_gc.json, bukan openaigc.json
+      isAutoAiGc: isAutoAiGcAlisa   
     });
 
-    // ✅ FIX: Saat bot di-tag, lewati cek prefix (tag = intentional AI call)
+    
+    
     const _canRunAI = _shouldAI && (
       _isBotMentioned
-        ? true                                // tag → selalu boleh
-        : (_bodyForAI && !_bodyForAI.startsWith(prefix)) // non-tag → jangan tumpuk command
+        ? true                                  
+        : (_bodyForAI && !isAnyPrefix(_bodyForAI))
     );
 
-    // 🔍 DIAGNOSTIC LOG: supaya kelihatan jelas di kenapa AI tidak jalan
-    // untuk pesan tertentu — misal karena tidak ada trigger eksplisit
-    // (nama/mention/reply), bukan karena bug/crash.
-    if (m.isGroup && _bodyForAI && !_canRunAI) {
-      console.log(`[Alya AI Gate] Diabaikan di grup ${m.chat} — isAutoAiGcAlisa=${isAutoAiGcAlisa}, shouldAI=${_shouldAI}, mentioned=${_isBotMentioned}, body="${_bodyForAI.slice(0, 40)}"`);
+    
+    
+    
+    if (m.isGroup && !_canRunAI) {
+      console.log(`[Alya AI Gate] Diabaikan di grup ${m.chat} — isAutoAiGcAlisa=${isAutoAiGcAlisa}, shouldAI=${_shouldAI}, replyBot=${isReplyToBot(m, _botNumber)}, mentioned=${_isBotMentioned}, source=${_prompt.source || '-'}, body="${(_bodyForAI || '').slice(0, 40)}"`);
     }
 
     if (_canRunAI) {
@@ -3673,9 +3634,9 @@ if (!m.key.fromMe && !m.isBaileys) {
       });
     }
   } catch(e) {
-    // ⚠️ FIX: sebelumnya hanya console.error tanpa kirim apapun ke user
-    // → bisa terlihat seperti "bot diam total" padahal crash di gate ini
-    // (misal decodeJid gagal, mentionedJid undefined, dll).
+    
+    
+    
     console.error('[Alya AI Interactive Error]', e?.stack || e.message);
     try {
       await alya.sendMessage(from, {
@@ -3683,9 +3644,9 @@ if (!m.key.fromMe && !m.isBaileys) {
       }, { quoted: m });
     } catch {}
   }
-  } // end else (alisaDisabled)
+  } 
 }
-//================================================================
+
 if (!global.alisaDisabled && m.isGroup && ChatAlya1.includes(m.chat) && !m.fromMe && !m.isBaileys) {
     if (!m.text && !m.quoted) return;
 
@@ -3726,30 +3687,30 @@ let media = null;
         console.error("Error Alya AutoChat:", err);
     }
 }
-// ─────────────────────────────────────────────────────────────────────────────
-// ✅ FIX KRITIS — sistem duel lama V13 (CLASSES/getBonus/createBar + handler
-// alya.duel[m.chat] inline) DIHAPUS TOTAL dari sini. Sebelumnya kode lama ini
-// jalan DUAN dan REBUTAN dengan plugins/cmd/duel.js (versi baru dengan sistem
-// weapon/shield/dodge) untuk sesi duel & state alya.duel[m.chat] yang SAMA —
-// keduanya sama-sama mendengarkan balasan "serang"/"skill"/"bertahan"/"ulti".
-// Karena kode lama ini dieksekusi lebih dulu (di titik ini, jauh sebelum
-// dispatcher plugin), dialah yang selalu menangkap balasan giliran duel —
-// bukan plugins/cmd/duel.js yang sudah lengkap. Versi lama ini juga tidak
-// mengenali struktur data weapon/shield/dodge dari versi baru (bisa
-// menghasilkan NaN/undefined di tengah battle), dan tidak mendukung "nyerah"
-// sama sekali — makanya `.duel` terlihat "tidak merespons" aksi giliran.
-// Sekarang plugins/cmd/duel.js adalah SATU-SATUNYA sistem duel, dipanggil
-// langsung untuk pesan non-command lewat blok "Duel Handler" di dekat
-// dispatcher plugin (cari komentar "FIX KRITIS — .duel tidak merespons").
-// ─────────────────────────────────────────────────────────────────────────────
-// 🛡️ ALISA KILL-SWITCH: blok autosimi & autoaigc HARUS cek global.alisaDisabled
-// Bug sebelumnya: kedua blok ini TIDAK punya guard, sehingga bypass .alisa off-all
-// Akibatnya: ketika .alisa on-all diaktifkan, AI auto-reply jalan TRIPLE via:
-//   isAutosimi → AlyaAI(), isAutoAiGc → AlyaAI(), isAlyaChat → AlyaAI()
-// Fix: semua blok AlyaAI() legacy wajib diproteksi kill-switch yang sama
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 if (!global.alisaDisabled && m.isGroup && !m.key.fromMe && isAutosimi) {
   const AlyaChaty = `${budy}`
-  // Guard prefix: jangan trigger jika ini command bot (menghindari double-response)
+  
   if (AlyaChaty && !isAnyPrefix(AlyaChaty)) {
     const _isAlyaAiGlobal = global.db?.settings?.[botNumber]?.alyaai_global !== false
     if (_isAlyaAiGlobal) AlyaAI(pushname, AlyaChaty)
@@ -3757,7 +3718,7 @@ if (!global.alisaDisabled && m.isGroup && !m.key.fromMe && isAutosimi) {
 }
 if (!global.alisaDisabled && m.isGroup && isAutoAiGc && !m.key.fromMe) {
   const AlyaChaty = `${budy}`
-  // Guard prefix: jangan trigger jika ini command bot
+  
   if (AlyaChaty && !isAnyPrefix(AlyaChaty)) {
     const _isAlyaAiGlobal2 = global.db?.settings?.[botNumber]?.alyaai_global !== false
     if (_isAlyaAiGlobal2) AlyaAI(pushname, AlyaChaty)
@@ -3773,31 +3734,31 @@ if (automati && !global._automaticCronRegistered) {
 
 if (!global.alisaDisabled && !m.key.fromMe && m.isGroup && isAlyaChat) {
 const AlyaChaty = `${budy}`
-// Guard prefix: jangan trigger jika ini command bot
+
 if (AlyaChaty && !isAnyPrefix(AlyaChaty)) {
 const _isAlyaAiGlobal3 = global.db?.settings?.[botNumber]?.alyaai_global !== false
 if (_isAlyaAiGlobal3) AlyaAI(pushname,AlyaChaty)
 }
 }
-//=================================================================
+
 if (!m.isGroup && !Ryuu && db.settings[botNumber].onlygrub ) {
         	if (command){
             return;
             }
         }
-//=================================================================
+
 async function makeSticker(media,Sticker, StickerTypes){
   const getRandom = (ext) => {
             return `${Math.floor(Math.random() * 10000)}${ext}`
         }
 let jancok = new Sticker(media, {
-pack: global.packname, // The pack name
-author: global.author, // The author name
-type: StickerTypes.FULL, // The sticker type
-categories: ['🤩', '🎉'], // The sticker category
-id: '12345', // The sticker id
-quality: 70, // The quality of the output file
-background: '#FFFFFF00' // The sticker background color (only for full stickers)
+pack: global.packname, 
+author: global.author, 
+type: StickerTypes.FULL, 
+categories: ['🤩', '🎉'], 
+id: '12345', 
+quality: 70, 
+background: '#FFFFFF00' 
 })
 let stok = getRandom('.webp')
 let nono = await jancok.toFile(stok)
@@ -3881,8 +3842,8 @@ quotes: $(h).find('div.quote').text().trim()
 }
 
 
-// 🔧 FIX KRITIS: addCountCmdUser dulunya 3x writeFileSync per command → event loop freeze
-// Sekarang: update in-memory saja, tulis ke disk max 1x per 5 detik
+
+
 async function addCountCmdUser(nama, sender, u) {
 var posi = null
 var pos = null
@@ -3893,7 +3854,7 @@ posi = i
 })
 if (posi === null) {
 u.push({jid: m.sender, db: [{nama: nama, count: 0}]})
-// (tidak tulis disk di sini — tunggu debounce di bawah)
+
 Object.keys(u).forEach((i) => {
 if (u[i].jid === m.sender) {
 posi = i
@@ -3912,7 +3873,7 @@ u[posi].db.push({nama: nama, count: 1})
 u[posi].db[pos].count += 1
 }
 }
-// Satu debounced write menggantikan 3x writeFileSync blocking
+
 debouncedWrite('./database/commandUser.json', () => _cmdUser, 5000)
 }
 
@@ -3924,8 +3885,8 @@ if (id in alya.autoshalat) {
 }
 function loadGroupList() {
     try {
-        // ✅ PERF-FIX: gunakan in-memory pler (sudah di-load saat startup)
-        //   Dulu: readFileSync setiap kali fungsi dipanggil
+        
+        
         return pler || [];
     } catch {
         return [];
@@ -3952,7 +3913,7 @@ cron.schedule('0 5 * * *', async () => {
     }
 }, { timezone: "Asia/Jakarta" });
 
-// === CRON CLOSE GC === //
+
 cron.schedule('0 1 * * *', async () => {
     const groupList = loadGroupList();
     try {
@@ -3975,10 +3936,10 @@ posi = i
 })
 if (posi === null) {
 _db.push({nama: nama, count: 1})
-debouncedWrite('./database/command.json', () => _db, 5000) // 🔧 FIX
+debouncedWrite('./database/command.json', () => _db, 5000) 
 } else {
 _db[posi].count += 1
-debouncedWrite('./database/command.json', () => _db, 5000) // 🔧 FIX
+debouncedWrite('./database/command.json', () => _db, 5000) 
 }
 }
 
@@ -4046,28 +4007,28 @@ const getBuffer = async (url) => {
         method: "GET",
         url,
         responseType: "arraybuffer",
-        // ✅ FIX: tanpa ini, axios throw untuk status non-2xx (sudah benar),
-        // TAPI banyak API Indo balas status 200 dengan BODY JSON ERROR kalau
-        // parameter salah — itu tidak ketangkep validateStatus, makanya perlu
-        // deteksi konten di bawah juga.
+        
+        
+        
+        
         validateStatus: (status) => status < 500
     });
 
-    // ✅ FIX UTAMA: deteksi kalau API ternyata balas JSON (bukan gambar/file
-    // biner asli), walau di-request dengan responseType arraybuffer (axios
-    // tetap kasih raw bytes, tidak auto-parse). Banyak API screenshot/gambar
-    // Indo balas {status, result: "url"} atau {status:false, message:"..."}
-    // saat parameter salah/gagal — kalau buffer "palsu" ini diteruskan ke
-    // alya.sendMessage sebagai image, Baileys gagal dengan error generik yang
-    // membingungkan ("Cannot read properties of undefined (reading 'toString')")
-    // jauh di dalam logic encoding-nya sendiri, bukan di titik yang jelas.
-    // Sekarang dicek di sini dan throw error yang JELAS supaya plugin pemanggil
-    // bisa catch dan kasih pesan yang masuk akal ke user.
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
     const buf = Buffer.from(res.data);
-    const looksLikeJson = buf.length > 0 && (buf[0] === 0x7b || buf[0] === 0x5b); // '{' atau '['
+    const looksLikeJson = buf.length > 0 && (buf[0] === 0x7b || buf[0] === 0x5b); 
     if (looksLikeJson) {
         let parsed = null;
-        try { parsed = JSON.parse(buf.toString('utf-8')); } catch { /* bukan JSON valid, lanjut sebagai buffer biasa */ }
+        try { parsed = JSON.parse(buf.toString('utf-8')); } catch {   }
         if (parsed && typeof parsed === 'object') {
             const err = new Error(
                 `API mengembalikan JSON, bukan file biner. ` +
@@ -4242,7 +4203,7 @@ async function replyall(teks) {
 async function replyadminp(teks) {
     reply(`Fitur ini untuk pengguna Admin Panel, hubungi pemilik untuk menjadi pengguna Admin Panel`)
 }
-        // Autosticker gc
+        
         if (isAutoSticker) {
             if (/image/.test(mime) && !/webp/.test(mime)) {
 let mediac = await quoted.download()
@@ -4254,8 +4215,8 @@ let mediac = await quoted.download()
 await alya.sendVideoAsSticker(from, mediac, m, { packname: global.packname, author: global.author })
             }
         }
-//=========================================\\
-// Auto download tiktok
+
+
 if (
   budy.startsWith('https://vt.tiktok.com/') || 
   budy.startsWith('https://www.tiktok.com/') || 
@@ -4437,11 +4398,11 @@ if (
     replyalya('Hmph! Gagal... Jangan salahin aku ya, salahin tuh internet kamu atau link-nya yang aneh! 😤')
   }
 }
-//=========================================\\
-//Auto Download Video Instagram
 
-//=========================================\\
-//Auto Download Video Facebook
+
+
+
+
 if(budy.includes('https://www.facebook.com/')){
 const fg = require('api-dylux')
   const urlRegex = /^(?:https?:\/\/)?(?:www\.)?(?:facebook\.com|fb\.watch)\b([-a-zA-Z0-9@:%_\+.~#?&//=]*)/i;
@@ -4462,7 +4423,7 @@ ${themeemoji} Title: ${result.title}`;
   }
 
 }
-//=========================================\\
+
 if (m.isGroup && isAlreadyResponList(m.chat, body.toLowerCase(), db_respon_list)) {
 var get_data_respon = getDataResponList(m.chat, body.toLowerCase(), db_respon_list)
 if (get_data_respon.isImage === false) {
@@ -4478,14 +4439,14 @@ alya.sendMessage(m.chat, {
 })
 }
 }
-//=========================================\\
-        // Grup Only
+
+        
         if (!m.isGroup && !Ryuu && db.settings[botNumber].onlygrub ) {
         	if (isCmd){
             return;
             }
         }
-        // Private Only
+        
         if (!Ryuu && db.settings[botNumber].onlypc && m.isGroup) {
         	if (isCmd){
 	         return;
@@ -4511,13 +4472,13 @@ if (reactpsn) {
             }
         })
 }
-// ─── WHITELIST (WL) ─────────────────────────────────────
-// ✅ FIX: dulu blok private chat non-owner (!m.isGroup && !Ryuu) berlaku
-//   TANPA SYARAT, bahkan saat bot mode PUBLIC (alya.public===true) — jadi
-//   whitelistMode tanpa sadar meng-hening-kan SEMUA DM non-owner walau
-//   bot sedang publik. Sekarang blok private-chat cuma berlaku kalau bot
-//   memang mode SELF (alya.public===false); kalau PUBLIC, DM non-owner
-//   tetap direspon normal (whitelist cuma ngatur GRUP mana yang boleh).
+
+
+
+
+
+
+
 if (db.settings[botNumber].whitelistMode) {
     if (m.isGroup && !whitelist.includes(m.chat) && !Ryuu) {
         return
@@ -4526,7 +4487,7 @@ if (db.settings[botNumber].whitelistMode) {
         return
     }
 }
-// ─── ANTITAG STATUS (SW) ─────────────────────────────────────
+
 if (
   antitagsw.includes(m.chat) &&
   (m.mtype === 'groupStatusMentionMessage' || m.mtype === 'groupStatusMessageV2') &&
@@ -4564,7 +4525,7 @@ if (
     });
   }
 }
-// ================= ANTI PROMOSI =================
+
 if (
     db?.data?.chats[m.chat]?.antipromosi?.status &&
     m.isGroup &&
@@ -4594,9 +4555,9 @@ if (
         })
     }
 }
-// --- SISTEM ANTI-SPAM ---
-// 🔧 FIX KRITIS: saveSpamData dipanggil setiap pesan → harus debounced!
-// Dulunya writeFileSync blocking tiap pesan → event loop freeze saat ramai
+
+
+
 const saveSpamData = () => debouncedWrite(dbSpamCounter, () => spamData, 5000)
 const isAntiSpam = antiSpamGroups.includes(m.chat)
 const isUserProtected = isAdmins || m.sender === Ryuu
@@ -4623,7 +4584,7 @@ if (isAntiSpam && !isUserProtected && m.body) {
     if (user.count >= 5 || (user.count >= 3 && isSameText)) {
         
         spamWarnings[m.sender] = (spamWarnings[m.sender] || 0) + 1
-        debouncedWrite(dbSpamWarn, () => spamWarnings, 5000) // 🔧 FIX: debounced
+        debouncedWrite(dbSpamWarn, () => spamWarnings, 5000) 
 
         user.count = 0 
         saveSpamData()
@@ -4633,7 +4594,7 @@ if (isAntiSpam && !isUserProtected && m.body) {
             
             delete spamWarnings[m.sender]
             delete spamData[m.sender]
-            debouncedWrite(dbSpamWarn, () => spamWarnings, 5000) // 🔧 FIX: debounced
+            debouncedWrite(dbSpamWarn, () => spamWarnings, 5000) 
             saveSpamData()
             return await alya.groupParticipantsUpdate(m.chat, [m.sender], 'remove')
         } else {
@@ -4646,7 +4607,7 @@ if (isAntiSpam && !isUserProtected && m.body) {
         }
     }
 }
-// ─── ANTIBOT SYSTEM ──────────────────────────────
+
 if (m.isGroup && antibot[m.chat] === true) {
   if (!isAdmins && !Ryuu && !m.key.fromMe) {
 
@@ -4715,7 +4676,7 @@ ${reasons.map(r => `> • ${r}`).join('\n')}
     }
   }
 }
-// ─── ANTILINK GRUP ─────────────────────────────────────────
+
 if (isAntilinkgc2) {
   const regex = /https:\/\/chat\.whatsapp\.com\/([0-9A-Za-z]{20,24})/i;
   const match = budy.match(regex);
@@ -4791,15 +4752,15 @@ if (isAntilinkgc2) {
           });
         }
       }
-      debouncedWrite('./database/antilinkgc2-db.json', () => antilinkgc2_db, 5000) // 🔧 FIX
+      debouncedWrite('./database/antilinkgc2-db.json', () => antilinkgc2_db, 5000) 
 
     } catch (err) {
       console.error(err)
     }
   }
 }
-// ✅ PERF-FIX: antilinkgc.json cache in-memory (5 detik TTL)
-//   Dulu: readFileSync setiap pesan masuk → blocking I/O di hot path
+
+
 const _antilinkNow = Date.now();
 if (!global._antilinkDbCache || (_antilinkNow - global._antilinkDbCache.ts) > 5000) {
     try {
@@ -4815,7 +4776,7 @@ let antilinkDb = global._antilinkDbCache.data;
 const antilinkData = m.isGroup ? antilinkDb[m.chat] : false;
 
 if (antilinkData) {
-    // Regex dioptimalkan agar mendeteksi dengan/tanpa https://
+    
     const regex = /chat\.whatsapp\.com\/([0-9A-Za-z]{20,24})/i;
     const isGroupLink = regex.test(budy);
 
@@ -4823,24 +4784,24 @@ if (antilinkData) {
         const groupCodeFromLink = budy.match(regex)[1];
 
         try {
-            // Urutan pengecekan admin: Bot harus admin DULU sebelum ngecek hal lain
+            
             if (!isBotAdmins) return; 
             if (isAdmins || Ryuu || m.fromMe) return;
 
             const thisGroupCode = await alya.groupInviteCode(m.chat);
             const isInternalLink = groupCodeFromLink === thisGroupCode;
 
-            // Kalau itu link grup ini sendiri, biarkan
+            
             if (isInternalLink) return;
 
-            // Hapus pesan link (Sintaks Baileys lebih ringkas)
+            
             await alya.sendMessage(m.chat, { delete: m.key });
 
             const currentMode = antilinkData.mode;
 
             if (currentMode === 'warning') {
                 const warningsFile = './database/antilinkgc-warning.json';
-                // ✅ PERF-FIX: cache in-memory (5 detik TTL) — dulu readFileSync setiap link masuk
+                
                 if (!global._antilinkWarnCache || (Date.now() - global._antilinkWarnCache.ts) > 5000) {
                     global._antilinkWarnCache = {
                         data: fs.existsSync(warningsFile) ? JSON.parse(fs.readFileSync(warningsFile)) : {},
@@ -4856,26 +4817,26 @@ if (antilinkData) {
                 const warnCount = warningDb[m.chat][m.sender];
 
                 if (warnCount >= 3) {
-                    global._antilinkWarnCache = null; // invalidate cache setelah kick
-                    // Kick member
+                    global._antilinkWarnCache = null; 
+                    
                     await alya.groupParticipantsUpdate(m.chat, [m.sender], 'remove');
                     await alya.sendMessage(m.chat, {
                         text: `🚫 *KICK MODE*\n\n@${m.sender.split("@")[0]} telah mencapai batas 3x peringatan karena mengirim link grup lain.`,
                         mentions: [m.sender]
                     });
                     
-                    // Reset warning setelah di-kick
+                    
                     warningDb[m.chat][m.sender] = 0; 
                 } else {
-                    // Kirim Peringatan
+                    
                     await alya.sendMessage(m.chat, {
                         text: `⚠️ *LINK TERDETEKSI*\n\n@${m.sender.split("@")[0]}, dilarang mengirim link grup lain!\nPeringatan: *${warnCount}/3*.\n\n_Pesan telah dihapus otomatis._`,
                         mentions: [m.sender]
                     });
                 }
                 
-                // Save database warning
-                debouncedWrite(warningsFile, () => warningDb, 5000); // 🔧 FIX
+                
+                debouncedWrite(warningsFile, () => warningDb, 5000); 
 
             } else if (currentMode === 'delete') {
                 await alya.sendMessage(m.chat, { 
@@ -4925,9 +4886,9 @@ if (!global._autoCloseIntervalRegistered) {
             console.error(`❗ Gagal update grup ${groupId}: ${e.message}`);
         }
     }
-  }, 60 * 1000); // per menit
+  }, 60 * 1000); 
 }
-//Antichlink
+
 if (Antilinkch && budy.match(/whatsapp\.com\/channel/gi)) {
     if (!isBotAdmins) return replytolak('🚫 *Bot harus menjadi admin untuk menindak pelanggaran link!*');
 
@@ -5020,7 +4981,7 @@ if (antiWame && budy.match(/wa\.me/gi)) {
         }, { quoted: m });
     }
 }
-// ==================== ANTI NSFW ====================
+
 if (m.isGroup && antiNSFWGroups.includes(m.chat)) {
   if (m.mtype === 'stickerMessage') {
     try {
@@ -5057,7 +5018,7 @@ if (m.isGroup && antiNSFWGroups.includes(m.chat)) {
 
         if (!nsfwWarnings[m.sender]) nsfwWarnings[m.sender] = 0;
         nsfwWarnings[m.sender]++;
-        debouncedWrite(dbWarnFile, () => nsfwWarnings, 5000); // 🔧 FIX
+        debouncedWrite(dbWarnFile, () => nsfwWarnings, 5000); 
 
         const maxWarnings = 5;
         const warningCount = nsfwWarnings[m.sender];
@@ -5069,7 +5030,7 @@ if (m.isGroup && antiNSFWGroups.includes(m.chat)) {
             mentions: [m.sender]
           });
           nsfwWarnings[m.sender] = 0;
-          debouncedWrite(dbWarnFile, () => nsfwWarnings, 5000); // 🔧 FIX
+          debouncedWrite(dbWarnFile, () => nsfwWarnings, 5000); 
         } else {
           await alya.sendMessage(m.chat, {
             text: `⚠️ ${tagUser}, stiker Haram terdeteksi!\nWarning: ${warningCount}/${maxWarnings}`,
@@ -5084,7 +5045,7 @@ if (m.isGroup && antiNSFWGroups.includes(m.chat)) {
   }
 }
 
-// ==================== ANTI TOXIC ====================
+
 if (m.isGroup && nttoxic.includes(m.chat)) {
     let body = (m.text || "").toLowerCase().trim();
 
@@ -5113,14 +5074,14 @@ if (m.isGroup && nttoxic.includes(m.chat)) {
         let tagUser = `@${m.sender.split('@')[0]}`;
 
         let isAdmin = Array.isArray(groupAdmins) && groupAdmins.includes(m.sender);
-        let isOwner = m.sender === '6283166570663@s.whatsapp.net'; // pastikan Ryuu = '628123456789@s.whatsapp.net'
+        let isOwner = m.sender === '6283166570663@s.whatsapp.net'; 
 
         if (isAdmin || Ryuu) {
             await alya.sendMessage(m.chat, {
                 text: `⚠️ ${tagUser}, kamu admin/owner, jadi tidak diwarn atau di-kick, tapi tolong jangan toxic ya!`,
                 mentions: [m.sender]
             });
-            return; // stop di sini
+            return; 
         }
 
         try {
@@ -5177,7 +5138,7 @@ if (m.isGroup && nttoxic.includes(m.chat)) {
   }
 if (AntiLinkYoutubeVid && (budy.includes("https://youtu.be/") || budy.includes("https://www.youtube.com/watch") || budy.includes("https://youtube.com/watch"))) {
   if (!isBotAdmins) {
-    // bot bukan admin, skip
+    
   } else if (isAdmins || Ryuu || m.key.fromMe) {
     alya.sendMessage(from, { text: `🛡️ *「 YouTube Video Link Terdeteksi 」*\n\n👮 Admin/Owner diperbolehkan kirim link ini.` }, { quoted: m });
   } else {
@@ -5186,10 +5147,10 @@ if (AntiLinkYoutubeVid && (budy.includes("https://youtu.be/") || budy.includes("
     alya.sendMessage(from, { text: `⚠️ *「 YouTube Video Link Terdeteksi 」*\n\n@${m.sender.split('@')[0]} telah dikeluarkan karena mengirim link terlarang.`, contextInfo: { mentionedJid: [m.sender] } }, { quoted: m });
   }
 }
-//antilink youtube channel
+
 if (AntiLinkYoutubeChannel && (budy.includes("https://youtube.com/@") || budy.includes("https://www.youtube.com/@") || budy.includes("https://youtube.com/channel/") || budy.includes("https://www.youtube.com/channel/"))) {
   if (!isBotAdmins) {
-    // bot bukan admin, skip
+    
   } else if (isAdmins || Ryuu || m.key.fromMe) {
     alya.sendMessage(from, { text: `🛡️ *「 YouTube Channel Link Terdeteksi 」*\n\n👮 Admin/Owner diperbolehkan kirim link ini.` }, { quoted: m });
   } else {
@@ -5198,10 +5159,10 @@ if (AntiLinkYoutubeChannel && (budy.includes("https://youtube.com/@") || budy.in
     alya.sendMessage(from, { text: `⚠️ *「 YouTube Channel Link Terdeteksi 」*\n\n@${m.sender.split('@')[0]} telah dikeluarkan karena mengirim link terlarang.`, contextInfo: { mentionedJid: [m.sender] } }, { quoted: m });
   }
 }
-//antilink instagram
+
 if (AntiLinkInstagram && (budy.includes("https://www.instagram.com/") || budy.includes("https://instagram.com/") || budy.includes("https://instagr.am/"))) {
   if (!isBotAdmins) {
-    // bot bukan admin, skip
+    
   } else if (isAdmins || Ryuu || m.key.fromMe) {
     alya.sendMessage(from, { text: `🛡️ *「 Instagram Link Terdeteksi 」*\n\n👮 Admin/Owner diperbolehkan kirim link ini.` }, { quoted: m });
   } else {
@@ -5210,10 +5171,10 @@ if (AntiLinkInstagram && (budy.includes("https://www.instagram.com/") || budy.in
     alya.sendMessage(from, { text: `⚠️ *「 Instagram Link Terdeteksi 」*\n\n@${m.sender.split('@')[0]} telah dikeluarkan karena mengirim link terlarang.`, contextInfo: { mentionedJid: [m.sender] } }, { quoted: m });
   }
 }
-//antilink facebook
+
 if (AntiLinkFacebook && (budy.includes("https://facebook.com/") || budy.includes("https://www.facebook.com/") || budy.includes("https://fb.me/") || budy.includes("https://fb.com/"))) {
   if (!isBotAdmins) {
-    // bot bukan admin, skip
+    
   } else if (isAdmins || Ryuu || m.key.fromMe) {
     alya.sendMessage(from, { text: `🛡️ *「 Facebook Link Terdeteksi 」*\n\n👮 Admin/Owner diperbolehkan kirim link ini.` }, { quoted: m });
   } else {
@@ -5222,10 +5183,10 @@ if (AntiLinkFacebook && (budy.includes("https://facebook.com/") || budy.includes
     alya.sendMessage(from, { text: `⚠️ *「 Facebook Link Terdeteksi 」*\n\n@${m.sender.split('@')[0]} telah dikeluarkan karena mengirim link terlarang.`, contextInfo: { mentionedJid: [m.sender] } }, { quoted: m });
   }
 }
-//antilink telegram
+
 if (AntiLinkTelegram && (budy.includes("https://t.me/") || budy.includes("t.me/"))) {
   if (!isBotAdmins) {
-    // bot bukan admin, skip
+    
   } else if (isAdmins || Ryuu || m.key.fromMe) {
     alya.sendMessage(from, { text: `🛡️ *「 Telegram Link Terdeteksi 」*\n\n👮 Admin/Owner diperbolehkan kirim link ini.` }, { quoted: m });
   } else {
@@ -5236,7 +5197,7 @@ if (AntiLinkTelegram && (budy.includes("https://t.me/") || budy.includes("t.me/"
 }
 if (AntiLinkTiktok && (budy.includes("https://www.tiktok.com/") || budy.includes("https://vt.tiktok.com/") || budy.includes("https://vm.tiktok.com/"))) {
   if (!isBotAdmins) {
-    // bot bukan admin, skip
+    
   } else if (isAdmins || Ryuu || m.key.fromMe) {
     alya.sendMessage(from, { text: `🛡️ *「 TikTok Link Terdeteksi 」*\n\n👮 Admin/Owner diperbolehkan kirim link ini.` }, { quoted: m });
   } else {
@@ -5245,10 +5206,10 @@ if (AntiLinkTiktok && (budy.includes("https://www.tiktok.com/") || budy.includes
     alya.sendMessage(from, { text: `⚠️ *「 TikTok Link Terdeteksi 」*\n\n@${m.sender.split('@')[0]} telah dikeluarkan karena mengirim link terlarang.`, contextInfo: { mentionedJid: [m.sender] } }, { quoted: m });
   }
 }
-//antilink twitter
+
 if (AntiLinkTwitter && (budy.includes("https://twitter.com/") || budy.includes("https://x.com/") || budy.includes("https://t.co/"))) {
   if (!isBotAdmins) {
-    // bot bukan admin, skip
+    
   } else if (isAdmins || Ryuu || m.key.fromMe) {
     alya.sendMessage(from, { text: `🛡️ *「 Twitter/X Link Terdeteksi 」*\n\n👮 Admin/Owner diperbolehkan kirim link ini.` }, { quoted: m });
   } else {
@@ -5261,7 +5222,7 @@ if (AntiLinkTwitter && (budy.includes("https://twitter.com/") || budy.includes("
 alya.family100 = alya.family100 ? alya.family100 : {};
 if (from in alya.family100 && !m.key.fromMe ) {
     let similarity = require('similarity');
-    let threshold = 0.72; // semakin tinggi nilai, semakin mirip
+    let threshold = 0.72; 
     let id = m.chat;
     let users = global.db.users[m.sender];
     let room = alya.family100[id];
@@ -5310,10 +5271,10 @@ ${isSurrender ? '' : `+${room.winScore} Money tiap jawaban benar`}
         delete alya.family100[id];
     }
 }
-// ===== TEBAK LAGU ANSWER HANDLER =====
+
 alya.tebaklagu = alya.tebaklagu || {}
 if (alya.tebaklagu && alya.tebaklagu[m.chat] && !m.key.fromMe) {
-  // FIX: plugin saves [sentMsg, json, timer] → index 0=sentMsg, 1=json, 2=timer
+  
   let sentMsg = alya.tebaklagu[m.chat][0]
   let json    = alya.tebaklagu[m.chat][1]
   let timer   = alya.tebaklagu[m.chat][2]
@@ -5337,45 +5298,45 @@ if (alya.tebaklagu && alya.tebaklagu[m.chat] && !m.key.fromMe) {
     }
   }
 }
-//=============================================================
+
     alya.tebaklogo = alya.tebaklogo ? alya.tebaklogo : {}
     if (id in alya.tebaklogo && !m.key.fromMe) {
         let json = alya.tebaklogo[id][1]
     let id = m.chat;
     let users = global.db.users[m.sender];
-        // Jika jawaban benar
+        
         if (budy.toLowerCase() === json.jawaban.toLowerCase().trim()) {
-            users.exp += 500 // Hadiah 500 XP
+            users.exp += 500 
             reply(`✅ *Benar!*\n+500 XP`)
-            clearTimeout(alya.tebaklogo[id][2]) // Hentikan timer
-            delete alya.tebaklogo[id] // Hapus sesi game
+            clearTimeout(alya.tebaklogo[id][2]) 
+            delete alya.tebaklogo[id] 
         } 
-        // Jika pemain menyerah
+        
         else if (/nyerah|surrender/i.test(m.text)) {
             reply(`💢 Menyerah! Jawabannya: ${json.jawaban}`)
-            clearTimeout(alya.tebaklogo[id][2]) // Hentikan timer
-            delete alya.tebaklogo[id] // Hapus sesi game
+            clearTimeout(alya.tebaklogo[id][2]) 
+            delete alya.tebaklogo[id] 
         } 
-        // Jika jawaban salah
+        
         else {
             reply('❌ Jawaban salah!')
         }
         return
     }
-//=============================================================
+
 alya.tebaksurah = alya.tebaksurah ? alya.tebaksurah : {}
             if (id in alya.tebaksurah && !m.key.fromMe) {
     let id = m.chat
     let users = global.db.users[m.sender]
                 let json = alya.tebaksurah[id][1]
                 
-                // Cek jawaban
+                
                 if (budy.toLowerCase() === json.surah.englishName.toLowerCase().trim()) {
-                    users.exp += 4999 // Hadiah 4999 XP
+                    users.exp += 4999 
                     reply(`✅ *Benar!*\n+4999 XP`, alya.tebaksurah[id][0])
                     clearTimeout(alya.tebaksurah[id][2])
                     delete alya.tebaksurah[id]
-                } else if (/nyerah|surrender/i.test(m.text)) { // Jika menyerah
+                } else if (/nyerah|surrender/i.test(m.text)) { 
                     reply(`💢 Menyerah!\nSurah: *${json.surah.englishName}*`, alya.tebaksurah[id][0])
                     clearTimeout(alya.tebaksurah[id][2])
                     delete alya.tebaksurah[id]
@@ -5384,18 +5345,18 @@ alya.tebaksurah = alya.tebaksurah ? alya.tebaksurah : {}
                 }
                 return
             }
-//=============================================================
+
     alya.lengkapikalimat = alya.lengkapikalimat ? alya.lengkapikalimat : {}
     if (id in alya.lengkapikalimat && !m.key.fromMe) {
     let id = m.chat
     let users = global.db.users[m.sender]
         let json = alya.lengkapikalimat[id][1]
         if (budy.toLowerCase() === json.jawaban.toLowerCase().trim()) {
-            users.exp += 5000 // Hadiah 5000 XP
+            users.exp += 5000 
             reply(`✅ *Benar!*\n+5000 XP`)
             clearTimeout(alya.lengkapikalimat[id][2])
             delete alya.lengkapikalimat[id]
-        } else if (/nyerah|surrender/i.test(m.text)) { // Jika menyerah
+        } else if (/nyerah|surrender/i.test(m.text)) { 
             reply(`💢 Menyerah! Jawabannya: ${json.jawaban}`)
             clearTimeout(alya.lengkapikalimat[id][2])
             delete alya.lengkapikalimat[id]
@@ -5404,8 +5365,8 @@ alya.tebaksurah = alya.tebaksurah ? alya.tebaksurah : {}
         }
         return
     }
-//=============================================================
-// TEBAKGAME handler
+
+
 {
     alya.game = alya.game ? alya.game : {}
     const _tgId = 'tebakgame-' + m.chat
@@ -5424,8 +5385,8 @@ alya.tebaksurah = alya.tebaksurah ? alya.tebaksurah : {}
         }
     }
 }
-//=============================================================
-// TEBAKANML handler
+
+
 {
     alya.game = alya.game ? alya.game : {}
     const _tmlId = 'tebakanml-' + m.chat
@@ -5444,7 +5405,7 @@ alya.tebaksurah = alya.tebaksurah ? alya.tebaksurah : {}
         }
     }
 }
-//=============================================================
+
 alya.tebakkata = alya.tebakkata ? alya.tebakkata : {}  
 if (from in alya.tebakkata) {
 let id = m.chat
@@ -5531,7 +5492,7 @@ delete tebakkimia[m.sender.split('@')[0]]
             } else console.log('*Jawaban Salah!*')
         }
         
-//=========================================\\
+
 alya.tekateki = alya.tekateki ? alya.tekateki : {}  
 if(from in alya.tekateki){
 let users = global.db.users[m.sender]
@@ -5552,7 +5513,7 @@ users.money += alya.tekateki[id][2]
  delete alya.tekateki[id]
  } else if(similarity(budy.toLowerCase(), json.jawaban.toLowerCase().trim()) >= threshold) replyalya(`*Dikit Lagi!*`)
 }
-//=========================================\\
+
 alya.tebakasahotak = alya.tebakasahotak ? alya.tebakasahotak : {};
 if (tebakasahotak.hasOwnProperty(m.sender.split('@')[0]) && isCmd) {
             kuis = true
@@ -5565,7 +5526,7 @@ await alya.sendText(m.chat, `🎮 Asah Otak 🎮\n\nJawaban Benar 🎉`, m)
 delete tebakasahotak[m.sender.split('@')[0]]
             } else console.log('*Jawaban Salah!*')
         }
-//=========================================\\
+
         alya.siapaaku = alya.siapaaku ? alya.siapaaku : {}
 if(from in alya.siapaaku){
 const similarity = require('similarity')
@@ -5585,9 +5546,9 @@ var teks = `*GAME SIAPAKAH AKU*\n\nJawaban Kamu Benar!\n Hadiah : +${alya.siapaa
  clearTimeout(alya.siapaaku[id][3])
  delete alya.siapaaku[id]
  } else if(similarity(budy.toLowerCase(), json.jawaban.toLowerCase().trim()) >= threshold) replyalya(`*Dikit Lagi!*`)
-// else reply(`*Salah!*`) 
+
 }
-//=========================================\\
+
         alya.susunkata = alya.susunkata ? alya.susunkata : {}  
 if(from in alya.susunkata){
 const similarity = require('similarity')
@@ -5607,10 +5568,10 @@ replyalya(`${teks}`)
  clearTimeout(alya.susunkata[id][3])
  delete alya.susunkata[id]
  } else if(similarity(budy.toLowerCase(), json.jawaban.toLowerCase().trim()) >= threshold) replyalya(`*Dikit Lagi!*`)
-// else reply(`*Salah!*`)
+
  
 }
-//=========================================\\
+
 alya.caklontong = alya.caklontong ? alya.caklontong : {};
 if (caklontong.hasOwnProperty(m.sender.split('@')[0]) && isCmd) {
 kuis = true
@@ -5645,7 +5606,7 @@ if (alya.tebakkalimat && alya.tebakkalimat[m.chat]) {
   }
 }
 
-//=========================================//
+
 if (!global.stickerSession) global.stickerSession = {};
 global.stickerSession = global.stickerSession || {}
 global.packLibrary = global.packLibrary || {}
@@ -5654,7 +5615,7 @@ global.toFigureProcess = global.toFigureProcess || {}
 alya.openBalapan = alya.openBalapan || null
 alya.balapanPvP = alya.balapanPvP || {}
 alya.tebaklirik = alya.tebaklirik || {}
-// ===== HANDLER TEBAK LIRIK =====
+
 if (m.chat in alya.tebaklirik) {
   const similarity = require('similarity')
   const threshold = 0.72
@@ -5686,9 +5647,9 @@ if (m.chat in alya.tebaklirik) {
     replyalya('🔥 *Dikit lagi!*')
   }
 }
-// ===== MISSING GAME ANSWER HANDLERS (V20 FIX) =====
 
-// ── TEBAK FILM ──────────────────────────────────────────────
+
+
 alya.tebakfilm = alya.tebakfilm || {}
 if (m.chat in alya.tebakfilm && !m.key.fromMe) {
   const session = alya.tebakfilm[m.chat]
@@ -5711,7 +5672,7 @@ if (m.chat in alya.tebakfilm && !m.key.fromMe) {
   }
 }
 
-// ── TEBAK HEWAN ─────────────────────────────────────────────
+
 alya.tebakhewan = alya.tebakhewan || {}
 if (m.chat in alya.tebakhewan && !m.key.fromMe) {
   const session = alya.tebakhewan[m.chat]
@@ -5734,7 +5695,7 @@ if (m.chat in alya.tebakhewan && !m.key.fromMe) {
   }
 }
 
-// ── TEBAK DRAKOR ────────────────────────────────────────────
+
 alya.tebakdrakor = alya.tebakdrakor || {}
 if (m.chat in alya.tebakdrakor && !m.key.fromMe) {
   const session = alya.tebakdrakor[m.chat]
@@ -5757,7 +5718,7 @@ if (m.chat in alya.tebakdrakor && !m.key.fromMe) {
   }
 }
 
-// ── TEBAK JKT48 ─────────────────────────────────────────────
+
 alya.tebakjkt48 = alya.tebakjkt48 || {}
 if (m.chat in alya.tebakjkt48 && !m.key.fromMe) {
   const session = alya.tebakjkt48[m.chat]
@@ -5780,7 +5741,7 @@ if (m.chat in alya.tebakjkt48 && !m.key.fromMe) {
   }
 }
 
-// ── TEBAK MAKANAN ───────────────────────────────────────────
+
 alya.tebakmakanan = alya.tebakmakanan || {}
 if (m.chat in alya.tebakmakanan && !m.key.fromMe) {
   const session = alya.tebakmakanan[m.chat]
@@ -5803,7 +5764,7 @@ if (m.chat in alya.tebakmakanan && !m.key.fromMe) {
   }
 }
 
-// ── TEBAK NEGARA ────────────────────────────────────────────
+
 alya.tebaknegara = alya.tebaknegara || {}
 if (m.chat in alya.tebaknegara && !m.key.fromMe) {
   const session = alya.tebaknegara[m.chat]
@@ -5826,7 +5787,7 @@ if (m.chat in alya.tebaknegara && !m.key.fromMe) {
   }
 }
 
-// ── TEBAK PROFESI ───────────────────────────────────────────
+
 alya.tebakprofesi = alya.tebakprofesi || {}
 if (m.chat in alya.tebakprofesi && !m.key.fromMe) {
   const session = alya.tebakprofesi[m.chat]
@@ -5849,7 +5810,7 @@ if (m.chat in alya.tebakprofesi && !m.key.fromMe) {
   }
 }
 
-// ── TEBAK EPEP (Free Fire) ──────────────────────────────────
+
 alya.tebakepep = alya.tebakepep || {}
 if (m.chat in alya.tebakepep && !m.key.fromMe) {
   const session = alya.tebakepep[m.chat]
@@ -5872,7 +5833,7 @@ if (m.chat in alya.tebakepep && !m.key.fromMe) {
   }
 }
 
-// ── TEBAK LIRIK: tambah nyerah handler ──────────────────────
+
 if (m.chat in (alya.tebaklirik || {}) && !m.key.fromMe && m.text) {
   if (/^(nyerah|surrender)$/i.test(m.text.toLowerCase().trim())) {
     const sesi = alya.tebaklirik[m.chat]
@@ -5885,9 +5846,9 @@ if (m.chat in (alya.tebaklirik || {}) && !m.key.fromMe && m.text) {
   }
 }
 
-// ===== END MISSING GAME ANSWER HANDLERS =====
 
-//=========================================\
+
+
 alya.tebaktebakan = alya.tebaktebakan ? alya.tebaktebakan : {};
 if (tebaktebakan.hasOwnProperty(m.sender.split('@')[0]) && isCmd) {
 kuis = true
@@ -5897,16 +5858,16 @@ if (budy.toLowerCase() == jawaban) {
  delete tebaktebakan[m.sender.split('@')[0]]
 } else console.log('*Jawaban Salah!*')
 }
-//menu thingy
+
 const timestamp = speed()
 const latensi = speed() - timestamp
 const mark = "0@s.whatsapp.net"
 
-//menu image randomizer
+
 let picaks = [flaming,fluming,flarun,flasmurf]
 let picak = picaks[Math.floor(Math.random() * picaks.length)]
 
-//emote
+
 const emote = (satu, dua) => {
 try{	    
 const { EmojiAPI } = require("emoji-api")
@@ -5920,7 +5881,7 @@ replyalya("Emoji error, please enter another emoji\nNOTE : Just enter 1 emoji")
 }
 }
 
-// Respon Cmd with media
+
 if (isMedia && m.msg.fileSha256 && (m.msg.fileSha256.toString('base64') in global.db.sticker)) {
 let hash = global.db.sticker[m.msg.fileSha256.toString('base64')]
 let { text, mentionedJid } = hash
@@ -5943,16 +5904,16 @@ if (!global.statusBot) {
     global.statusBot = [];
 }
 
-// ✅ FIX MaxListeners: Status WA handler dipindah ke dalam main handler (cek di bawah)
-// alya.ev.on("messages.upsert") DIHAPUS dari sini — sudah di-handle di main handler index.js
-// agar tidak terjadi multiple listener setiap kali alya.js di-reload
-// ===== CEK REGISTRASI & VERIFIKASI (UNTUK SEMUA CASE) =====
-// FIX: dulu baca `registeredUsers` module-level yang di-load SEKALI saat
-// startup dari registered.json. User yang baru daftar tidak pernah terlihat
-// oleh gate ini sampai bot di-restart (karena array module-level tidak
-// pernah di-refresh). Sekarang baca langsung dari global.db.users setiap
-// kali gate ini jalan -> selalu up-to-date, sinkron dengan mode case & plugin.
-// ✅ MULTI-PREFIX: budy bisa diawali prefix manapun yang terdaftar
+
+
+
+
+
+
+
+
+
+
 const _regMatchedPrefix = matchPrefix(budy)
 if (!m.key.fromMe && _regMatchedPrefix !== null) {
     const command = budy.slice(_regMatchedPrefix.length).trim().split(/ +/).shift().toLowerCase()
@@ -5971,10 +5932,10 @@ if (!m.key.fromMe && _regMatchedPrefix !== null) {
         }, { quoted: m })
     }
 }
-// ── AIO Auto-Detect Downloader ────────────────────────────────────────────
-// Kalau diaktifkan via .aio on, bot otomatis download link (TikTok/IG/FB/YT/dll)
-// yang dikirim tanpa command. Hanya jalan untuk pesan non-command agar tidak
-// bertabrakan dengan command .aio / .tiktok / dll yang sudah eksplisit.
+
+
+
+
 if (!isCmd && !m.key.fromMe && budy && budy.trim()) {
     try {
         const aioLib = require('./lib/aioDownloader.js');
@@ -6001,9 +5962,9 @@ if (!isCmd && !m.key.fromMe && budy && budy.trim()) {
         console.error('[aio-autodetect] hook error:', e.message);
     }
 }
-// ── End AIO Auto-Detect ────────────────────────────────────────────────────
 
-// Tebakan ML
+
+
 if (global.tebakanml[m.sender]) {
     let jawaban = global.tebakanml[m.sender].jawaban
     let poin = global.tebakanml[m.sender].poin
@@ -6022,7 +5983,7 @@ let createCanvas, loadImage, registerFont;
 try {
     ({ createCanvas, loadImage, registerFont } = require('canvas'));
     registerFont('./data/assets/Indie-Flower.ttf', { family: 'Indie' });
-} catch { /* canvas tidak tersedia, fitur generateTextImage nonaktif */ }
+} catch {   }
 
 async function generateTextImage(templatePath, outputPath, text, options = {}) {
     const image = await loadImage(templatePath);
@@ -6065,7 +6026,7 @@ async function generateTextImage(templatePath, outputPath, text, options = {}) {
     return buffer;
 }
 const cooldownPath = './database/xpcooldown.json'
-// ✅ PERF-FIX: cooldown in-memory cache (30 detik TTL) — dulu readFileSync setiap pesan
+
 if (!global._cooldownCache || (Date.now() - global._cooldownCache.ts) > 30000) {
     try {
         global._cooldownCache = {
@@ -6075,9 +6036,9 @@ if (!global._cooldownCache || (Date.now() - global._cooldownCache.ts) > 30000) {
     } catch { global._cooldownCache = { data: {}, ts: Date.now() }; }
 }
 const cooldown = global._cooldownCache.data;
-// =============================
-//        LEVELING SYSTEM
-// =============================
+
+
+
 async function uploadCatbox(buffer) {
   const form = new FormData()
   form.append("reqtype", "fileupload")
@@ -6144,7 +6105,7 @@ async function addXP(m) {
   user.money += rewardMoney
   user.limit += rewardLimit
 
-  // ── Selalu kirim notifikasi level up: card canvas lokal, fallback teks ──
+  
   const _lvupCaption = [
     `🎉 *LEVEL UP — XP SYSTEM!*`,
     ``,
@@ -6183,7 +6144,7 @@ async function addXP(m) {
     console.log('[LEVELUP CARD] Canvas error:', cardErr.message)
   }
 
-  // Fallback: teks biasa — notifikasi HARUS selalu sampai
+  
   if (!_lvCardSent) {
     try {
       await alya.sendMessage(m.chat, {
@@ -6194,7 +6155,7 @@ async function addXP(m) {
       console.error('[LEVELUP TEXT] Gagal kirim notif:', txtErr.message)
     }
   }
-  // ────────────────────────────────────────────────────────────────────────
+  
 }
 
 if (!global.xpCooldown) global.xpCooldown = {}
@@ -6227,17 +6188,17 @@ function generateKodeReg(length = 8) {
 }
 
 async function generateAnimeCard(user) {
-    // Canvas 1080x608 sesuai dimensi bg image
+    
     const W = 1080, H = 608;
     const canvas = createCanvas(W, H);
     const ctx = canvas.getContext('2d');
 
-    // ── 1. Background ─────────────────────────────────────────────
+    
     try {
         const bg = await loadImage('./media/idcard_bg.png');
         ctx.drawImage(bg, 0, 0, W, H);
     } catch (e) {
-        // Fallback gradient purple-biru
+        
         const grad = ctx.createLinearGradient(0, 0, W, H);
         grad.addColorStop(0, '#1a1040');
         grad.addColorStop(1, '#2d1b6b');
@@ -6245,8 +6206,8 @@ async function generateAnimeCard(user) {
         ctx.fillRect(0, 0, W, H);
     }
 
-    // ── 2. Area kiri: glassmorphism panel ──────────────────────────
-    // Panel utama (kiri abu-abu → transparan ke kanan)
+    
+    
     const panelW = 460;
     const panelGrad = ctx.createLinearGradient(0, 0, panelW, 0);
     panelGrad.addColorStop(0,   'rgba(20, 14, 50, 0.82)');
@@ -6255,16 +6216,16 @@ async function generateAnimeCard(user) {
     ctx.fillStyle = panelGrad;
     ctx.fillRect(0, 0, panelW + 60, H);
 
-    // ── 3. Header strip "MEMBER CARD" ──────────────────────────────
+    
     const headerH = 52;
     const headerGrad = ctx.createLinearGradient(0, 0, panelW, 0);
-    headerGrad.addColorStop(0,   'rgba(139, 92, 246, 0.90)');  // violet
-    headerGrad.addColorStop(0.6, 'rgba(99,  102, 241, 0.75)'); // indigo
+    headerGrad.addColorStop(0,   'rgba(139, 92, 246, 0.90)');  
+    headerGrad.addColorStop(0.6, 'rgba(99,  102, 241, 0.75)'); 
     headerGrad.addColorStop(1,   'rgba(99,  102, 241, 0.00)');
     ctx.fillStyle = headerGrad;
     ctx.fillRect(0, 0, panelW + 60, headerH);
 
-    // Accent line bawah header
+    
     const accentGrad = ctx.createLinearGradient(0, 0, panelW, 0);
     accentGrad.addColorStop(0,   'rgba(216, 180, 254, 1)');
     accentGrad.addColorStop(0.5, 'rgba(167, 139, 250, 0.6)');
@@ -6272,7 +6233,7 @@ async function generateAnimeCard(user) {
     ctx.fillStyle = accentGrad;
     ctx.fillRect(0, headerH, panelW + 60, 2);
 
-    // Teks header
+    
     ctx.shadowColor = 'rgba(139, 92, 246, 0.8)';
     ctx.shadowBlur  = 12;
     ctx.font        = 'bold 19px "SF Bold"';
@@ -6281,7 +6242,7 @@ async function generateAnimeCard(user) {
     ctx.fillText('✦  MEMBER CARD  ✦', 24, headerH / 2);
     ctx.shadowBlur = 0;
 
-    // ── 4. Bintang-bintang dekorasi kecil ──────────────────────────
+    
     const stars = [
         { x: 380, y: 80,  r: 3 },
         { x: 420, y: 140, r: 2 },
@@ -6298,10 +6259,10 @@ async function generateAnimeCard(user) {
         ctx.fill();
     });
 
-    // ── 5. Foto profil (circle) ─────────────────────────────────────
+    
     const ppX = 50, ppY = 72, ppR = 68;
     ctx.save();
-    // Ring luar glowing
+    
     ctx.beginPath();
     ctx.arc(ppX + ppR, ppY + ppR, ppR + 5, 0, Math.PI * 2);
     const ringGrad = ctx.createRadialGradient(
@@ -6313,7 +6274,7 @@ async function generateAnimeCard(user) {
     ringGrad.addColorStop(1,   'rgba(139, 92,  246, 0)');
     ctx.fillStyle = ringGrad;
     ctx.fill();
-    // Clip circle foto
+    
     ctx.beginPath();
     ctx.arc(ppX + ppR, ppY + ppR, ppR, 0, Math.PI * 2);
     ctx.clip();
@@ -6327,24 +6288,24 @@ async function generateAnimeCard(user) {
         ctx.fill();
     }
     ctx.restore();
-    // Border putih tipis
+    
     ctx.beginPath();
     ctx.arc(ppX + ppR, ppY + ppR, ppR, 0, Math.PI * 2);
     ctx.lineWidth   = 2.5;
     ctx.strokeStyle = 'rgba(255,255,255,0.85)';
     ctx.stroke();
 
-    // ── 6. Helper: drawField(label, value, y) ─────────────────────
+    
     const fieldX = 50;
     function drawField(label, value, y) {
-        // Label kecil
+        
         ctx.font      = '13px "SF Bold"';
         ctx.fillStyle = 'rgba(196, 181, 253, 0.85)';
         ctx.textBaseline = 'top';
         ctx.shadowBlur = 0;
         ctx.fillText(label.toUpperCase(), fieldX, y);
 
-        // Nilai utama
+        
         ctx.font      = 'bold 18px "SF Bold"';
         ctx.fillStyle = '#ffffff';
         ctx.shadowColor = 'rgba(139, 92, 246, 0.6)';
@@ -6352,7 +6313,7 @@ async function generateAnimeCard(user) {
         ctx.fillText(value, fieldX, y + 17);
         ctx.shadowBlur = 0;
 
-        // Garis bawah
+        
         const lineGrad = ctx.createLinearGradient(fieldX, 0, fieldX + 340, 0);
         lineGrad.addColorStop(0,   'rgba(139, 92, 246, 0.7)');
         lineGrad.addColorStop(0.6, 'rgba(99, 102, 241, 0.3)');
@@ -6361,7 +6322,7 @@ async function generateAnimeCard(user) {
         ctx.fillRect(fieldX, y + 41, 340, 1.5);
     }
 
-    // ── 7. Nama (besar, di sebelah foto) ─────────────────────────
+    
     const nameX = ppX + ppR * 2 + 18;
     const nameY = ppY + 8;
     ctx.font      = 'bold 22px "SF Bold"';
@@ -6372,14 +6333,14 @@ async function generateAnimeCard(user) {
     ctx.fillText(user.nama || 'Unknown', nameX, nameY);
     ctx.shadowBlur = 0;
 
-    // Sub-teks status di bawah nama
+    
     const status = user.status || 'Free';
     const statusColors = { 'Free': '#a78bfa', 'Premium': '#f59e0b', 'VIP': '#ec4899' };
     ctx.font      = '14px "SF Bold"';
     ctx.fillStyle = statusColors[status] || '#a78bfa';
     ctx.fillText(`✦ ${status} User`, nameX, nameY + 28);
 
-    // ── 8. Field-field info ───────────────────────────────────────
+    
     const startY = 220;
     const gap    = 58;
 
@@ -6388,7 +6349,7 @@ async function generateAnimeCard(user) {
     drawField('Status Akun',     `${status}  ·  Verified ✓`, startY + gap * 2);
     drawField('Bonus Diterima',  '💳 +30 Limit   💰 +50.000 Coin', startY + gap * 3);
 
-    // ── 9. Badge "VERIFIED" pojok kanan panel ──────────────────────
+    
     const badgeX = 320, badgeY = 74;
     ctx.beginPath();
     ctx.roundRect(badgeX, badgeY, 100, 26, 13);
@@ -6404,13 +6365,13 @@ async function generateAnimeCard(user) {
     ctx.fillText('✔ VERIFIED', badgeX + 50, badgeY + 13);
     ctx.textAlign = 'left';
 
-    // ── 10. Footer kecil ──────────────────────────────────────────
+    
     ctx.font      = '11px "SF Bold"';
     ctx.fillStyle = 'rgba(196, 181, 253, 0.5)';
     ctx.textBaseline = 'bottom';
     ctx.fillText('Alyachan Bot  ·  Powered by Socketon', 24, H - 10);
 
-    // ── 11. Garis vertikal aksen kiri ────────────────────────────
+    
     const vGrad = ctx.createLinearGradient(0, headerH + 4, 0, H - 20);
     vGrad.addColorStop(0,   'rgba(139, 92, 246, 0.9)');
     vGrad.addColorStop(0.5, 'rgba(99, 102, 241, 0.5)');
@@ -6424,8 +6385,8 @@ const blacklistFile = './database/blacklist.json';
 if (!fs.existsSync(blacklistFile)) 
     fs.writeFileSync(blacklistFile, JSON.stringify([], null, 2));
 
-// ✅ PERF-FIX: blacklist in-memory cache — dulu baca file setiap pengecekan sender
-//   isBlacklisted(sender) dipanggil di hot path (tiap pesan) → blocking I/O
+
+
 let _blacklistCache = null;
 try { _blacklistCache = JSON.parse(fs.readFileSync(blacklistFile)); } catch { _blacklistCache = []; }
 
@@ -6434,7 +6395,7 @@ function getBlacklist() {
 }
 
 function saveBlacklist(list) {
-    _blacklistCache = list; // update cache sekaligus
+    _blacklistCache = list; 
     debouncedWrite(blacklistFile, () => list, 3000);
 }
 
@@ -6448,7 +6409,7 @@ function getBlacklistReason(sender) {
 }
 
 function addBlacklist(sender, reason = "Tidak ada alasan.") {
-    let list = getBlacklist().slice(); // copy agar tidak mutate cache langsung
+    let list = getBlacklist().slice(); 
     if (!list.some(entry => entry.jid === sender)) {
         list.push({ jid: sender, reason });
         saveBlacklist(list);
@@ -6527,16 +6488,16 @@ function addExp(user, amount) {
 if (isCmd) {
  await processXP(m)
 }
-// ── CHAT LEVEL COUNT (setiap pesan, bukan hanya cmd) ──────────────
+
 try {
   const _chatLevelPlugin = require('./plugins/cmd/levelup_chatcount');
   if (typeof _chatLevelPlugin.processChat === 'function') {
     await _chatLevelPlugin.processChat(alya, m);
   }
 } catch (_chatLvErr) {
-  // Silent fail agar tidak ganggu flow utama
+  
 }
-// ─────────────────────────────────────────────────────────────────
+
 async function getWeather(city = 'Jakarta') {
     try {
         const geoRes = await axios.get(`https://geocoding-api.open-meteo.com/v1/search?name=${city}&count=1&language=id&format=json`);
@@ -6577,22 +6538,22 @@ function parseWMO(code) {
     };
     return codes[code] || 'Berawan';
 }
-// ══════════════════════════════════════════════════════════════════════════════
-// ANTI-BAN GUARD v2.0 — Cooldown & Rate Limiter
-// Menggantikan sistem cooldown lama yang memiliki celah:
-//   ❌ Lama: Lockdown silently skip (% 5000 < 1000) → user bisa lolos tiap 5s
-//   ❌ Lama: Hanya 1 tier lockdown (1 menit) → tidak ada eskalasi
-//   ❌ Lama: Tidak ada per-command cooldown → tagall bisa dipicu terus-menerus
-//   ❌ Lama: global.cooldown/lockdown hilang saat restart
-//   ✅ Baru: Sistem 3-tier lockdown (1 / 5 / 15 menit) dengan eskalasi
-//   ✅ Baru: Per-command cooldown (tagall, AI image, media convert, dll)
-//   ✅ Baru: Tidak ada celah silent skip
-//   ✅ Baru: Owner & premium bypass total
-// ══════════════════════════════════════════════════════════════════════════════
-// 🔧 FIX: pakai struktur db V20 yang benar (global.db.settings[botNumber],
-// sama seperti namespace autoreactsw di atas), bukan global.db.data.settings
-// yang tidak pernah diinisialisasi — ini penyebab bot crash di setiap pesan
-// masuk ("Cannot read properties of undefined (reading 'antispam')").
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 if (!global.db.settings) global.db.settings = {}
 if (botNumber && !global.db.settings[botNumber]) {
     global.db.settings[botNumber] = {}
@@ -6608,7 +6569,7 @@ if (isAntiSpamActive && budy && isAnyPrefix(budy) && !m.isOwner && !Ryuu) {
     if (!cdResult.allowed) {
         const senderNum = m.sender.split('@')[0];
         const cdMsg = buildCooldownMessage(cdResult, senderNum);
-        // Silent drop saat lockdown aktif (tidak reply = tidak spam balik ke WA)
+        
         if (cdResult.reason === 'lockdown') return;
         return m.reply(cdMsg, m, { mentions: [m.sender] });
     }
@@ -6639,10 +6600,10 @@ if (user && user.banned) {
     }
 }
 
-// ══════════════════════════════════════════════════════════════
-// ULTRAMAN GAME - Helper Data & Functions (moved to global scope)
-// ══════════════════════════════════════════════════════════════
-// ── Data Kaiju ──────────────────────────────────────────────────
+
+
+
+
 const KAIJU_LIST = [
   { name: 'Baltan Seijin',    emoji: '🦞', power: 'Sinar Laser Alien',       reward: 45000  },
   { name: 'Red King',         emoji: '🔴', power: 'Serangan Brutal',           reward: 38000  },
@@ -6699,9 +6660,9 @@ const KAIJU_LIST = [
   { name: 'Greeza',         emoji: '🕳️', power: 'Void Consumption',           reward: 99000  }
 ];
 
-// ── Ultraman Character Image URLs ───────────────────────────────
+
 const ULTRAMAN_IMAGES = {
-  // ─── HEROES ───
+  
   'Ultraman':         'https://upload.wikimedia.org/wikipedia/en/0/0b/Ultraman_Series_Character_Ultraman.jpg',
   'Ultraseven':       'https://static.wikia.nocookie.net/ultraman/images/4/47/Seven2.png',
   'Ultraman Ace':     'https://static.wikia.nocookie.net/ultraman/images/5/5e/AceProfiler.png',
@@ -6720,7 +6681,7 @@ const ULTRAMAN_IMAGES = {
   'Ultraman Z':       'https://static.wikia.nocookie.net/ultraman/images/f/f2/ZedProfile.png',
   'Ultraman Trigger': 'https://static.wikia.nocookie.net/ultraman/images/d/de/TriggerProfile.png',
   'Ultraman Decker':  'https://static.wikia.nocookie.net/ultraman/images/e/e8/DeckerProfile.png',
-  // ─── VILLAINS ───
+  
   'Ultraman Belial':      'https://static.wikia.nocookie.net/ultraman/images/0/07/BelialProfile.png',
   'Ultraman Tregear':     'https://static.wikia.nocookie.net/ultraman/images/0/07/TregearProfile.png',
   'Ultraman Noa (Dark)':  'https://static.wikia.nocookie.net/ultraman/images/4/4e/NoahProfile.png',
@@ -6735,16 +6696,16 @@ const ULTRAMAN_IMAGES = {
   'Grimdo':               'https://static.wikia.nocookie.net/ultraman/images/4/44/GrimdoProfile.png',
   'Reibatos':             'https://static.wikia.nocookie.net/ultraman/images/0/0b/ReibatoProfile.png',
   'Ultra Dark Killer':    'https://static.wikia.nocookie.net/ultraman/images/f/f1/UltraDarkKillerProfile.png',
-  // Default / fallback — dark Ultraman figure (foto dari user)
+  
   '_default': 'https://i.pinimg.com/736x/e2/f6/1c/e2f61cd1b00c88266cfa7a64dac92c52.jpg'
 };
 
-// Helper: dapatkan URL gambar berdasarkan nama form karakter
+
 function getUltraImg(form) {
   return ULTRAMAN_IMAGES[form] || ULTRAMAN_IMAGES['_default'];
 }
 
-// Helper: kirim pesan bergambar untuk game Ultraman (dengan caption)
+
 async function replyUltraImg(imgUrl, caption) {
   try {
     await alya.sendMessage(m.chat, {
@@ -6762,12 +6723,12 @@ async function replyUltraImg(imgUrl, caption) {
       }
     }, { quoted: m });
   } catch(e) {
-    // Fallback ke text jika gagal load gambar
+    
     replyalya(caption);
   }
 }
 
-// ── Data Ultraman Types ─────────────────────────────────────────
+
 const ULTRAMAN_TYPES = {
   hero: {
     label: '✨ HERO',
@@ -6787,7 +6748,7 @@ const ULTRAMAN_TYPES = {
   }
 };
 
-// ── DB Helpers ──────────────────────────────────────────────────
+
 const ULTRAMAN_DB_PATH = './database/ultraman.json';
 function loadUltramanDB() {
   try {
@@ -6825,11 +6786,11 @@ function formatHPBar(hp, max = 100) {
 }
 
 
-// ============================================================
-// ANSWER HANDLER — KURSUS BAHASA JEPANG (PREMIUM, TERSTRUKTUR)
-// ============================================================
+
+
+
 {
-  // Cek apakah ada sesi soal kursus aktif untuk sender ini
+  
   const _kursusUser = _kursusGetUser ? _kursusGetUser(m.sender) : null
   if (
     _kursusUser &&
@@ -6845,10 +6806,10 @@ function formatHPBar(hp, max = 100) {
   }
 }
 
-// ============================================================
-// ANSWER HANDLER - BELAJAR BAHASA JEPANG
-// ============================================================
-// --- Tebak Hiragana ---
+
+
+
+
 alya.tebakhiragana = alya.tebakhiragana ? alya.tebakhiragana : {}
 if (id in alya.tebakhiragana && !m.key.fromMe) {
   let users = global.db.users[m.sender]
@@ -6874,7 +6835,7 @@ if (id in alya.tebakhiragana && !m.key.fromMe) {
   }
 }
 
-// --- Tebak Katakana ---
+
 alya.tebakkatakana = alya.tebakkatakana ? alya.tebakkatakana : {}
 if (id in alya.tebakkatakana && !m.key.fromMe) {
   let users = global.db.users[m.sender]
@@ -6900,7 +6861,7 @@ if (id in alya.tebakkatakana && !m.key.fromMe) {
   }
 }
 
-// --- Tebak Kanji ---
+
 alya.tebakkanji = alya.tebakkanji ? alya.tebakkanji : {}
 if (id in alya.tebakkanji && !m.key.fromMe) {
   let users = global.db.users[m.sender]
@@ -6930,7 +6891,7 @@ if (id in alya.tebakkanji && !m.key.fromMe) {
   }
 }
 
-// --- Soal Bahasa Jepang ---
+
 alya.soalbahasajepang = alya.soalbahasajepang ? alya.soalbahasajepang : {}
 if (id in alya.soalbahasajepang && !m.key.fromMe) {
   let users = global.db.users[m.sender]
@@ -6961,33 +6922,33 @@ if (id in alya.soalbahasajepang && !m.key.fromMe) {
     }
   }
 }
-// ============================================================
 
-// ─────────────────────────────────────────────────────────────────────────────
-// ✅ FIX KRITIS (v2) — .duel tidak merespons terima/tolak/serang/skill/bertahan/
-// ulti/nyerah:
-// Percobaan fix sebelumnya menaruh handler ini SETELAH baris `if (!isCmd) return`
-// di bawah — akibatnya tetap tidak pernah tereksekusi, karena SEMUA balasan giliran
-// duel ("serang", "terima", dst) diketik TANPA prefix (isCmd = false), jadi fungsi
-// sudah keburu `return` sebelum sampai ke situ. Sekarang dipindah ke SINI — sebelum
-// guard isCmd, persis seperti pola alya.family100 (lihat atas) yang sudah lebih dulu
-// terbukti jalan di posisi ini.
-//
-// CATATAN: `ctx` besar (baris ~7050) BELUM terbentuk di titik ini, jadi handler ini
-// membangun objek ctx MINIMAL sendiri berisi hanya field yang benar-benar dipakai
-// plugins/cmd/duel.js (command, args, text, prefix, reply, replyalya, replytolak,
-// sender, pushname, isGroup, Ryuu, resolveTarget) — semuanya sudah live sebagai
-// variabel individual di scope ini.
-// ─────────────────────────────────────────────────────────────────────────────
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 if (m.isGroup && alya.duel && alya.duel[m.chat]) {
   const _duelSession = alya.duel[m.chat];
   const _isDuelParticipant = m.sender === _duelSession.p1 || m.sender === _duelSession.p2;
 
-  // Hanya proses & short-circuit kalau: (a) pengirim benar2 peserta duel ini,
-  // DAN (b) pesannya BUKAN command lain (biar peserta duel tetap bisa pakai
-  // command prefix lain seperti .mining/.cek di tengah duel tanpa terblokir).
-  // Kalau bukan peserta (member lain ngobrol biasa di grup yang sama), biarkan
-  // lewat normal ke pipeline lain — JANGAN blokir seluruh grup.
+  
+  
+  
+  
+  
   if (_isDuelParticipant && !isCmd) {
     try {
       const _duelPlugin = require('./plugins/cmd/duel.js');
@@ -7001,8 +6962,8 @@ if (m.isGroup && alya.duel && alya.duel[m.chat]) {
         await _duelPlugin.run(alya, m, _duelCtx);
       }
     } catch (e) {
-      // ⚠️ Sebelumnya hanya console.error tanpa kirim apapun ke user →
-      // giliran duel terlihat "diam total" padahal crash di tengah proses.
+      
+      
       console.error('[Duel Handler Error]', e?.stack || e?.message || e);
       try {
         await alya.sendMessage(m.chat, {
@@ -7016,21 +6977,21 @@ if (m.isGroup && alya.duel && alya.duel[m.chat]) {
 
 if (!isCmd) return
 
-// ============================================================
-// ── SEWA ENFORCEMENT SYSTEM ─────────────────────────────────
-// Grup yang tidak terdaftar sewa → bot tidak respon command
-// Grup sewastore → hanya command store/group yang aktif
-// Owner & private chat dikecualikan dari semua pembatasan
-// ============================================================
+
+
+
+
+
+
 if (m.isGroup && !Ryuu) {
-  // ── 1. Reload sewa dari global (live update) ──────────────
+  
   if (global.sewa) sewa = global.sewa;
 
   const _isSewa = checkSewaGroup(m.chat, sewa);
 
-  // ── 2. Grup tidak terdaftar sewa sama sekali ──────────────
+  
   if (!_isSewa) {
-    // Kirim notifikasi sekali (rate-limit: 1 pesan per chat per 5 menit)
+    
     if (!global._sewaWarnCooldown) global._sewaWarnCooldown = new Map();
     const _warnKey  = m.chat;
     const _warnLast = global._sewaWarnCooldown.get(_warnKey) || 0;
@@ -7059,27 +7020,27 @@ if (m.isGroup && !Ryuu) {
           `┗━━━━━━━━━━━━━━━━━━⬣`,
       }, { quoted: m });
     }
-    return; // Tidak proses command apapun
+    return; 
   }
 
-  // ── 3. Grup terdaftar sebagai SewaStore ───────────────────
-  // Muat helper sewastore (lazy load, aman jika plugin belum load)
-  // ✅ PERF-FIX: _sewaStore sudah di-preload di startup (lihat bawah modul exports)
-  //   Cukup gunakan global._sewaStore langsung — tidak perlu readFileSync per pesan
+  
+  
+  
+  
   let _isSewaStore = false;
   try {
-    if (!global._sewaStore) global._sewaStore = []; // fallback jika belum init
+    if (!global._sewaStore) global._sewaStore = []; 
     _isSewaStore = global._sewaStore.includes(m.chat);
   } catch {}
 
   if (_isSewaStore) {
-    // Tags yang diperbolehkan di mode SewaStore
+    
     const _STORE_ALLOWED_TAGS = new Set([
       'owner', 'admin', 'group', 'info', 'store', 'general'
     ]);
 
-    // Cek tag command yang sedang dijalankan
-    // Baca dari plugin langsung (gunakan registry)
+    
+    
     let _commandTag = null;
     try {
       const _reg  = global._cmdRegistry || require('./plugins/cmd_registry.json');
@@ -7100,7 +7061,7 @@ if (m.isGroup && !Ryuu) {
       }
     } catch {}
 
-    // Whitelist command eksplisit (selain tag) untuk kebutuhan store
+    
     const _STORE_EXPLICIT_WHITELIST = new Set([
       'menu', 'openlist', 'addopenlist', 'delopenlist', 'liststore',
       'addlist', 'dellist', 'list', 'ceksewa', 'sewabot', 'sewa',
@@ -7112,34 +7073,34 @@ if (m.isGroup && !Ryuu) {
       (_commandTag && _STORE_ALLOWED_TAGS.has(_commandTag));
 
     if (!_isAllowed) {
-      // Silent ignore — tidak ada respon untuk command yang tidak diperbolehkan
+      
       return;
     }
   }
 }
-// ── End Sewa Enforcement ──────────────────────────────────────────────────────
-
-// ============================================================
-
-// ============================================================
-// Pure Plugin Architecture — semua command ada di plugins/cmd/
-// Switch/case lama sudah dihapus, alya.js = infrastruktur saja
-// ============================================================
 
 
-// ============================================================
 
-// ============================================================
-// PLUGIN LOADER - Opsi B: Plugin per Command
-// Setiap command ada di plugins/cmd/<command>.js
-// ============================================================
 
-// Flag debug diagnostik — default OFF, diatur lewat command .debugdiag (owner only)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 if (typeof global.DEBUG_DIAG === 'undefined') {
   global.DEBUG_DIAG = false;
 }
 
-// Load registry & plugin cache (sekali saja)
+
 if (!global._cmdRegistry) {
   global._cmdRegistry = require('./plugins/cmd_registry.json');
 }
@@ -7147,13 +7108,13 @@ if (!global._cmdPluginCache) {
   global._cmdPluginCache = {};
 }
 
-// ============================================================
-// MODE SWITCH — Case-based (V13-style) vs Plugin (V20 default)
-// ============================================================
-// global.db.others.cmdMode: 'plugin' (default) | 'case'
-// Diatur lewat command .switchcase / .switchplugin / .switch (lihat
-// blok ONLYADMIN ENFORCEMENT di bawah untuk command togglenya sendiri).
-// Alya.js di-lazy-load sekali saja dan di-cache, sama seperti plugin.
+
+
+
+
+
+
+
 if (!global._alyaCaseHandler) {
   try {
     global._alyaCaseHandler = require('./Alya.js');
@@ -7168,49 +7129,49 @@ function _getCmdMode() {
 
 if (global.DEBUG_DIAG) console.log('[DIAG] alya.js dispatcher tercapai. body=', JSON.stringify(body), 'isCmd=', isCmd, 'command=', command, 'matchedPrefix=', matchedPrefix)
 
-// Build ctx - semua variabel yang dibutuhkan plugin
+
 const ctx = {
-  // Message info
-  m, // ✅ message object lengkap
+  
+  m, 
   command, args, text, q, prefix, body, budy, bady,
-  cleanArgs, cleanQ, // ✅ FIX: args/q tanpa "@" — aman untuk build JID
+  cleanArgs, cleanQ, 
   sender, from, pushname, botNumber,
-  // Message types
+  
   isCmd, isGroup, isMedia, isImage, isVideo, isAudio, isSticker,
   isQuotedImage, isQuotedVideo, isQuotedSticker, isQuotedAudio,
   isQuotedDocument, isQuotedViewOnce, isQuotedLocation, isQuotedContact,
-  // Group info
+  
   groupMetadata, groupName, groupMembers, groupAdmins, groupOwner,
   isBotAdmins, isGroupAdmins, isAdmins, isAdminOrOwner,
-  // Permissions
+  
   Ryuu, isPrem, isAly, isAlya, isSewa, jangan,
-  // Quoted
+  
   quoted, mime, qmsg, content, type,
-  // Extra context
+  
   chatUpdate, store,
-  // Reply functions
+  
   reply, replyalya, replytolak, replyprem,
-  // Extra vars
+  
   senderNumber, chath, pes, messagesC,
-  // Data
+  
   waifuList, husbuList, pler,
-  prem, // ✅ array premium (untuk addprem/delprem langsung aktif)
-  owner, // ✅ array owner (untuk addowner/delowner langsung aktif)
+  prem, 
+  owner, 
   setting: global.db.settings?.[botNumber] || {},
   user: global.db.users?.[sender] || {},
   mess: global.mess,
-  db: global.db, // ✅ FIX: plugin { db } = ctx tidak undefined
-  // ✅ Daftar system
+  db: global.db, 
+  
   registeredUsers,
   registeredFile,
   generateKodeReg,
   generateAnimeCard,
   fs,
-  // ✅ Bell Voice Model functions (untuk setvoice plugin)
+  
   setVoiceModel,
   getVoiceModel,
   getVoiceList,
-  // ✅ Bell AI Role functions (untuk setrole / setroleuser plugin)
+  
   getEffectiveRole,
   getRoleOf,
   getRoleByCount,
@@ -7218,16 +7179,16 @@ const ctx = {
   ROLE_NAMES,
   handleSetRole,
   handleClearRole,
-  // ✅ Bell Chat Count functions
+  
   getChatCount,
   incrementChatCount,
   setChatCount,
-  // ✅ Bell AI misc
+  
   formatStatusCard,
   clearUserHistory,
   isAITriggered,
   runAIInteractive,
-  // ✅ AI Daily Limit (untuk ailimit plugin)
+  
   getDailyInfo,
   incrementDaily,
   resetDailyLimit,
@@ -7235,7 +7196,7 @@ const ctx = {
   DAILY_LIMIT_FREE,
   isPremiumUser,
   generateVoice,
-  // ✅ FIX: Tambahan untuk menu & permission plugin
+  
   listbut2,
   listbut3,
   getWeather,
@@ -7245,30 +7206,30 @@ const ctx = {
   isReseller,
   alyaFitur,
   runtime,
-  // ✅ FIX: Tambahan untuk FUNMENU plugins (mentionByTag, mentionByReply, participants, Input, usernya)
+  
   mentionByTag,
   mentionByReply,
   participants,
   Input,
   usernya,
-  resolveTarget,   // ✅ helper universal: resolveTarget(ctx) → JID target atau null
-  // ✅ Bell AI Switch (.alisa on/off plugin)
+  resolveTarget,   
+  
   isAutoAiGc,
   openaigc,
-  // ✅ Alisa AI Interaktif — switch TERPISAH dari autoaigc
-  isAutoAiGcAlisa,   // pakai alisa_gc.json
-  alisagc,           // array grup yang .alisa on
-  // ✅ AntiBot (plugin perlu akses & mutasi state global)
+  
+  isAutoAiGcAlisa,   
+  alisagc,           
+  
   antibot,
   antibotSettings,
   saveAntibot,
   saveAntibotSettings,
-  // ✅ AntiToxic (plugin perlu akses & mutasi state global)
+  
   nttoxic,
   badwords,
   saveAntiToxic,
   userWarnings,
-  // ✅ FIX: List Message system (untuk addlist, dellist, openlist, liststore)
+  
   db_respon_list,
   addResponList,
   delResponList,
@@ -7278,61 +7239,61 @@ const ctx = {
   sendResponList,
   getDataResponList,
   uploadwidipe,
-  // ✅ FIX: AI functions (untuk plugin prodia, bingimg, dalle, gptimg, dll)
+  
   BingAlya,
   AlyaAI,
-  // ✅ FIX: Upload functions (untuk plugin ocr, stickmeme, prodia, dll)
+  
   UploadFileUgu: global.UploadFileUgu,
   TelegraPh: global.TelegraPh,
-  // ✅ FIX: mess (untuk 314+ plugin yang pakai mess.only.owner, mess.wait, dll)
+  
   mess: global.mess,
-  // ✅ FIX: saveDB exposed ke plugin agar perubahan settings bisa di-persist ke disk
+  
   saveDB,
 };
 
-// ─────────────────────────────────────────────────────────────────────────────
-// Dispatch ke plugin
+
+
 const _pluginPath = global._cmdRegistry[command];
 if (isCmd && global.DEBUG_DIAG) console.log('[DIAG] alya.js: mencari plugin untuk command=', command, '-> _pluginPath=', _pluginPath, '| mode=', _getCmdMode())
 
-// ── Kursus Bahasa Jepang (fitur premium, inline handler) ─────────────────
+
 const _kursusCommands = ['kursusjepang','belajarjepangkursus','lanjutbelajar','lanjutjepang','soaljepang','soalsekarang','progreskuliah','progresJepang','statusbelajar','resetbelajar','resetkursus']
 if (isCmd && _kursusCommands.includes(command)) {
   const _kPluginList = Array.isArray(_kursusJepangPlugins) ? _kursusJepangPlugins : [_kursusJepangPlugins]
   for (const _kp of _kPluginList) {
     if (typeof _kp.run !== 'function') continue
     if (Array.isArray(_kp.command) && _kp.command.length > 0 && !_kp.command.includes(command)) continue
-    if (!Array.isArray(_kp.command)) continue // skip listener
+    if (!Array.isArray(_kp.command)) continue 
     try { await _kp.run(alya, m, ctx) } catch(e) { console.error('[KursusJepang Error]', e?.message || e) }
     break
   }
 }
-// ─────────────────────────────────────────────────────────────────────────────
-// ✅ ONLYADMIN ENFORCEMENT — layer final sebelum plugin runner
-// Ini yang memastikan .onlyadmin on benar-benar memblokir SEMUA command
-// member biasa, terlepas dari alur kode di atasnya.
-// Pengecualian:
-//   - Owner bot (Ryuu)        → selalu lolos
-//   - Admin grup (isAdmins)   → selalu lolos
-//   - Command onlyadmin itu   → lolos agar admin bisa .onlyadmin off
-//   - Private chat            → tidak terpengaruh (isMute hanya untuk grup)
-// ─────────────────────────────────────────────────────────────────────────────
+
+
+
+
+
+
+
+
+
+
 if (m.isGroup && isMute && isCmd && !isAdmins && !Ryuu) {
     const _ONLYADMIN_BYPASS = ['onlyadmin', 'blackbox'];
     if (!_ONLYADMIN_BYPASS.includes(command)) {
         return;
     }
 }
-// ─────────────────────────────────────────────────────────────────────────────
-// (Auto replycard greeting dulu dikirim terpisah di sini SEBELUM plugin jalan,
-// jadi tiap command selalu 2 pesan: 1 greeting + 1 balasan command. Sekarang
-// dihapus — greeting card (foto sesuai jam WIB) sudah otomatis menyatu di
-// SETIAP balasan lewat replyalya()/replytolak() via resolveCardThumb(), jadi
-// command hanya kirim 1 pesan.)
-// ─────────────────────────────────────────────────────────────────────────────
-// ✅ COMMAND MODE TOGGLE — .switch / .switchcase / .switchplugin
-// Hanya owner bot yang boleh mengubah mode global ini.
-// ─────────────────────────────────────────────────────────────────────────────
+
+
+
+
+
+
+
+
+
+
 if (isCmd && ['switch', 'switchcase', 'switchplugin', 'switchmode'].includes(command)) {
   if (!Ryuu) {
     return replytolak(mess.only.owner);
@@ -7344,7 +7305,7 @@ if (isCmd && ['switch', 'switchcase', 'switchplugin', 'switchmode'].includes(com
   } else if (command === 'switchplugin') {
     _targetMode = 'plugin';
   } else {
-    // .switch atau .switchmode — toggle otomatis, atau baca argumen
+    
     const _arg = (args[0] || '').toLowerCase();
     if (_arg === 'case' || _arg === 'plugin') {
       _targetMode = _arg;
@@ -7368,12 +7329,12 @@ if (isCmd && ['switch', 'switchcase', 'switchplugin', 'switchmode'].includes(com
   );
   return;
 }
-// ─────────────────────────────────────────────────────────────────────────────
-// ✅ COMMAND .debugdiag — toggle cepat log [DIAG*] tanpa perlu edit environment
-// variable di panel. Hanya owner bot yang boleh. Tidak persist ke saveDB (flag
-// runtime saja) — akan kembali ke default OFF setiap kali bot restart, supaya
-// panel tidak keburu penuh log kalau lupa dimatikan lagi.
-// ─────────────────────────────────────────────────────────────────────────────
+
+
+
+
+
+
 if (isCmd && command === 'debugdiag') {
   if (!Ryuu) {
     return replytolak(mess.only.owner);
@@ -7395,16 +7356,16 @@ if (isCmd && command === 'debugdiag') {
   );
   return;
 }
-// ─────────────────────────────────────────────────────────────────────────────
-// ─────────────────────────────────────────────────────────────────────────────
-// MODE CASE ↔ PLUGIN SALING MENDUPLIKAT
-//   • Command yang punya entry di cmd_registry.json → selalu dijalankan lewat
-//     plugin, baik saat mode CASE maupun PLUGIN. Isinya sama persis.
-//   • Command yang hanya punya case di Alya.js → dijalankan lewat case handler,
-//     juga saat mode PLUGIN. Jadi tidak ada command yang hilang di salah satu mode.
-// Mode tetap tersimpan (kompatibel .switch/.switchcase/.switchplugin) tetapi tidak
-// lagi membedakan daftar perintah yang tersedia.
-// ─────────────────────────────────────────────────────────────────────────────
+
+
+
+
+
+
+
+
+
+
 if (isCmd && !_pluginPath && global._alyaCaseHandler) {
   try {
     await global._alyaCaseHandler(alya, m, ctx);
@@ -7413,9 +7374,9 @@ if (isCmd && !_pluginPath && global._alyaCaseHandler) {
   }
   return;
 }
-// ── MODE PLUGIN / plugin-first (berlaku di kedua mode) ────────────────────
+
 if (_pluginPath) {
-  // Load plugin (cached)
+  
   if (!global._cmdPluginCache[_pluginPath]) {
     try {
       global._cmdPluginCache[_pluginPath] = require('./' + _pluginPath);
@@ -7424,13 +7385,13 @@ if (_pluginPath) {
     }
   }
   const plug = global._cmdPluginCache[_pluginPath];
-  // Support 3 export formats:
-  //   1. module.exports = { command, run }          → {run} object
-  //   2. module.exports = [{ command, run }, ...]   → array of objects
-  //   3. module.exports = handler (async function)  → old-style (nanobanana, ssweb, dll)
-  //      where handler.command = [...] is set as property
+  
+  
+  
+  
+  
   if (typeof plug === 'function' && plug.command) {
-    // Old-style function export — inject conn alias so plugin tidak crash
+    
     const _ctxWithConn = { ...ctx, conn: alya };
     try {
       await plug(_ctxWithConn);
@@ -7446,28 +7407,28 @@ if (_pluginPath) {
   const plugList = Array.isArray(plug) ? plug : (plug ? [plug] : []);
   for (const p of plugList) {
     if (typeof p.run !== 'function') continue;
-    // For array exports, only run the handler whose command list matches
+    
     if (Array.isArray(p.command) && !p.command.includes(command)) continue;
     try {
       await p.run(alya, m, ctx);
     } catch(e) {
-      // Selalu log error terlepas dari NODE_ENV
+      
       console.error('[Plugin Run Error]', _pluginPath, e?.message || e);
-      // Kirim pesan error ke user agar tidak diam total
+      
       try {
         await alya.sendMessage(m.chat, {
           text: `❌ *Terjadi kesalahan saat menjalankan perintah* \`.${command}\`\n\n\`${e?.message || String(e)}\``
         }, { quoted: m });
       } catch {}
     }
-    break; // Only run the first matching handler
+    break; 
   }
-  } // end else (plugList dispatch)
-} // end if (_pluginPath)
+  } 
+} 
 
 
 
-// ─── TYPO SUGGESTION — V19 (threshold 50%) ──────────────────────────────────
+
 if (isCmd && !global._cmdRegistry[command]) {
   try {
     const { findSuggestions } = require('./lib/typo_suggest');
@@ -7484,9 +7445,9 @@ if (isCmd && !global._cmdRegistry[command]) {
         `_Ketik *${prefix}allmenu* untuk lihat semua command_`
       );
     }
-  } catch (e) { /* silent */ }
+  } catch (e) {   }
 }
-// ─────────────────────────────────────────────────────────────────────────────
+
 
 if (budy.startsWith('<')) {
 if (!Ryuu) return
@@ -7561,18 +7522,18 @@ alya.copyNForward(m.chat, msgs[budy.toLowerCase()], true)
 }
 
 } catch (err) {
-// Error handler utama - bot tidak mati, cukup log
-// FIX: dulu di-gate oleh NODE_ENV, jadi di Pterodactyl (yang lazim set
-// NODE_ENV=production) SEMUA error di sepanjang dispatcher (termasuk yang
-// terjadi sebelum plugin sempat jalan) ditelan tanpa jejak apapun di log,
-// sehingga bot terlihat "hening" walau sebenarnya command sedang error.
-// Sekarang selalu log, sama seperti perilaku V13 & seperti plugin runner
-// di bawah (yang sudah benar).
+
+
+
+
+
+
+
 console.error('[Alya Handler Error]', 'command=', typeof command !== 'undefined' ? command : '?', err?.message || util.format(err))
 if (err?.stack) console.error(err.stack)
 let e = String(err)
-// FIX: beri tahu user kalau ini memang command (bukan pesan biasa), supaya
-// bot tidak terlihat hening total saat terjadi error di luar plugin.
+
+
 try {
   if (typeof isCmd !== 'undefined' && isCmd && typeof m !== 'undefined' && m?.chat) {
     alya.sendMessage(m.chat, {
@@ -7586,8 +7547,8 @@ try {
 if (!global._uncaughtExceptionHandlerAlya) {
   global._uncaughtExceptionHandlerAlya = true
   process.on('uncaughtException', function (err) {
-    // FIX: selalu log — sebelumnya di-gate NODE_ENV, jadi crash tak
-    // tertangani pun tidak meninggalkan jejak apapun di panel produksi.
+    
+    
     console.error('[uncaughtException alya.js]', err?.message || err)
     if (err?.stack) console.error(err.stack)
   })
@@ -7653,10 +7614,10 @@ if (!global._autoClearBackupStarted) {
   autoClearBackup();
 }
 
-// ══════════════════════════════════════════════════════════════════════════
-// AUTO-LEAVE SEWA EXPIRED — bot otomatis keluar dari grup sewa habis
-// Cron: cek setiap 5 menit
-// ══════════════════════════════════════════════════════════════════════════
+
+
+
+
 if (!global._sewaExpiredCronRegistered) {
   global._sewaExpiredCronRegistered = true;
 
@@ -7664,7 +7625,7 @@ if (!global._sewaExpiredCronRegistered) {
 
   async function checkAndLeaveExpiredSewa() {
     try {
-      // ── Baca data sewa terkini ─────────────────────────────────────────
+      
       let sewaData = [];
       try {
         if (!require('fs').existsSync(_sewaPath)) return;
@@ -7685,25 +7646,25 @@ if (!global._sewaExpiredCronRegistered) {
         }
       }
 
-      if (expired.length === 0) return; // tidak ada yang expired
+      if (expired.length === 0) return; 
 
-      // ── Update sewa.json — hapus yang expired ─────────────────────────
+      
       require('fs').writeFileSync(_sewaPath, JSON.stringify(aktif, null, 2), 'utf-8');
       global.sewa = aktif;
       console.log(`[SewaExpired] 🕐 ${expired.length} grup sewa expired, bot akan keluar...`);
 
-      // ── Loop: leave grup + notif owner ────────────────────────────────
+      
       for (const entry of expired) {
         const groupId = entry.id;
         let   gcName  = groupId;
 
-        // Coba baca nama grup sebelum leave
+        
         try {
           const meta = await global.alya?.groupMetadata(groupId) || await alya.groupMetadata(groupId);
           gcName = meta?.subject || groupId;
         } catch (_) {}
 
-        // Kirim pesan pamit ke grup sebelum leave
+        
         try {
           await alya.sendMessage(groupId, {
             text:
@@ -7718,10 +7679,10 @@ if (!global._sewaExpiredCronRegistered) {
               `┃ ✨ Terima kasih sudah menggunakan Alya!\n` +
               `┗━━━━━━━━━━━━━━━━━━━━━━━━━⬣`
           });
-          await new Promise(r => setTimeout(r, 2000)); // tunggu pesan terkirim
+          await new Promise(r => setTimeout(r, 2000)); 
         } catch (_) {}
 
-        // Leave grup
+        
         try {
           await alya.groupLeave(groupId);
           console.log(`[SewaExpired] ✅ Bot keluar dari grup: ${gcName} (${groupId})`);
@@ -7729,7 +7690,7 @@ if (!global._sewaExpiredCronRegistered) {
           console.error(`[SewaExpired] ❌ Gagal keluar dari ${groupId}:`, leaveErr?.message);
         }
 
-        // Kirim notifikasi ke owner
+        
         try {
           const ownerJid = (global.ownernomer || global.owner?.[0] || '').replace(/[^0-9]/g, '') + '@s.whatsapp.net';
           if (ownerJid && ownerJid !== '@s.whatsapp.net') {
@@ -7750,7 +7711,7 @@ if (!global._sewaExpiredCronRegistered) {
           }
         } catch (_) {}
 
-        // Jeda antar grup agar tidak rate-limit
+        
         await new Promise(r => setTimeout(r, 3000));
       }
 
@@ -7759,10 +7720,10 @@ if (!global._sewaExpiredCronRegistered) {
     }
   }
 
-  // Jalankan setiap 5 menit
+  
   nodecron.schedule('*/5 * * * *', checkAndLeaveExpiredSewa);
   console.log('[SewaExpired] ⏰ Auto-leave sewa expired aktif — cek setiap 5 menit');
 
-  // Cek sekali saat startup (delay 15 detik agar bot siap)
+  
   setTimeout(checkAndLeaveExpiredSewa, 15000);
 }

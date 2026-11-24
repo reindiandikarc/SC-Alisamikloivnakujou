@@ -36,6 +36,7 @@
 
 const fs   = require('fs')
 const path = require('path')
+const { isVpsStatusQuery, getVpsStatus, formatVpsStatus, shortUptime } = require('../../lib/vps-status')
 
 // ── Path storage ───────────────────────────────────────────────────────────────
 // ✅ PENTING: alisa_gc.json KHUSUS untuk .alisa on/off
@@ -115,6 +116,7 @@ function buildStatusBar(isGlobalOff, isGroupOff, prefix) {
     `║ ${prefix}alisa on-all   → Aktif global 🌐\n` +
     `║ ${prefix}alisa off-all  → Mati global 🌑\n` +
     `║ ${prefix}alisa status   → Info lengkap\n` +
+    `║ ${prefix}alisa vps      → Status VPS bot\n` +
     `║ ${prefix}alisa reset    → Reset history\n` +
     `╚════════════════════════╝`
   )
@@ -138,6 +140,14 @@ module.exports = {
 
     const sub = (args[0] || '').toLowerCase().trim()
 
+    // .alisa juga "mengenali" pertanyaan status VPS bot dalam bahasa natural.
+    // Contoh: `.alisa VPS kamu masih hidup?` → jawaban status lokal.
+    if (!['on', 'off', 'on-all', 'off-all', 'status', 'reset', 'vps'].includes(sub) &&
+        isVpsStatusQuery(text)) {
+      console.log('[VPS] .alisa natural query -> jawaban lokal');
+      return replyalya(formatVpsStatus(getVpsStatus({ socket: alya }), { prefix }))
+    }
+
     // Load state
     const gcList      = loadAlisaGc()          // ← ALISA_GC, bukan openaigc!
     const alisaSt     = loadAlisaStatus()
@@ -145,7 +155,7 @@ module.exports = {
     const isGroupActive = isGroup ? gcList.includes(from) : true
 
     // ─── Private chat: on/off tidak berlaku di PM ─────────────────────────
-    if (!isGroup && !['status', 'reset', 'on-all', 'off-all'].includes(sub)) {
+    if (!isGroup && !['vps', 'status', 'reset', 'on-all', 'off-all'].includes(sub)) {
       return replyalya(
         `🎀 *Di chat pribadi, Alisa selalu aktif!*\n\n` +
         `Kamu bisa langsung ngobrol sama aku kapan saja~\n` +
@@ -156,6 +166,14 @@ module.exports = {
     }
 
     switch (sub) {
+
+      // ══════════════════════════════════════════════════════════════════════
+      // .alisa vps — status VPS/server bot (lokal, tanpa API)
+      // ══════════════════════════════════════════════════════════════════════
+      case 'vps': {
+        console.log('[VPS] .alisa vps -> jawaban lokal');
+        return replyalya(formatVpsStatus(getVpsStatus({ socket: alya }), { prefix }))
+      }
 
       // ══════════════════════════════════════════════════════════════════════
       // .alisa on — aktifkan AI Interaktif di grup ini
@@ -417,6 +435,11 @@ module.exports = {
           autosimiStatus = simiArr.includes(from) ? '🟢 Aktif' : '🔴 Nonaktif'
         } catch {}
 
+        // Status VPS bot dibaca lokal — tidak tergantung API AI.
+        const vpsNow = getVpsStatus({ socket: alya })
+        const vpsService = vpsNow.service === 'active' ? '🟢 Aktif' : '🔴 ' + vpsNow.service
+        const vpsConn = vpsNow.connected === true ? '🟢 Terhubung' : '🔴 Putus'
+
         const statusGrup   = isGroup
           ? (isGroupActive ? '🟢 Aktif' : '🔴 Nonaktif')
           : '🟢 Selalu aktif (PM)'
@@ -437,6 +460,8 @@ module.exports = {
           `║ 💬 autosimi : ${autosimiStatus}\n` +
           `╠═══════════════════════════════╣\n` +
           `║ 🎙️ Voice     : \`${voiceModel}\`\n` +
+          `║ 🖥️ VPS       : ${vpsService} | ${vpsConn}\n` +
+          `║ ⏱️ Uptime VPS: ${shortUptime(vpsNow.systemUptimeSec)} | RAM ${vpsNow.memory.percent}%\n` +
           `║ 💬 Chat-mu   : ${String(chatCount)} pesan\n` +
           `║ 🎭 Hubungan  : ${(roleData.role || 'User').slice(0, 14)}\n` +
           `╠═══════════════════════════════╣\n` +
@@ -500,6 +525,7 @@ module.exports = {
           `│ ${prefix}alisa on-all     — Aktifkan di semua chat 🌐\n` +
           `│ ${prefix}alisa off-all    — Matikan di semua chat 🌑\n` +
           `│ ${prefix}alisa status     — Status & info lengkap\n` +
+          `│ ${prefix}alisa vps        — Status VPS/server bot\n` +
           `│ ${prefix}alisa reset      — Reset history chat-mu\n` +
           `│\n` +
           `├─ *🎙️ Voice:*\n` +

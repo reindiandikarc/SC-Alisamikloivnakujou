@@ -78,16 +78,18 @@ const {
 // baru ada di lib/sendDynamicMenu.js (list-message WhatsApp biasa, pola sama
 // seperti lib/swgc.js yang sudah terbukti jalan di project ini).
 const { sendDynamicMenu } = require('./lib/sendDynamicMenu');
+const richui = require('./lib/rich/richui.cjs');
 
 // ── FIX AIRICH: pakai MessageBuilder bawaan fork ─────────────────────────────
 // Payload hardcoded lama cuma mengirim SATU stanza botForwardedMessage.
 // Klien Android butuh DUA stanza: pesan utama + protocolMessage type 14 yang
 // juga dibungkus botForwardedMessage. Field data unifiedResponse juga harus
 // di-escape Unicode-nya, dan contextInfo butuh botMessageSharingInfo.
-// AIRich.send() dari fork sudah melakukan semuanya dengan benar.
+// Kedua stanza juga wajib membawa <biz> native_flow v9 mixed; tanpa itu kartu
+// hanya render saat edit live dan hilang saat chat dibuka ulang dari history.
 async function sendAlyaAIRich(alya, jid, responseId, title, html) {
   const AIRich = MessageBuilder.AIRich;
-  const rich = new AIRich(alya, { dynamic: false });
+  const rich = new AIRich(richui.withRichBizClient(alya), { dynamic: false });
   rich.setResponseId(responseId);
   rich.setBotResponseId(responseId);
   rich.addSection(
@@ -32538,56 +32540,41 @@ break;
 case '🐦':
 case 'readvo':
 case 'rvo':
-case 'readviewonce': {
-    if (!quoted) return replyalya('Reply pesan sekali lihat.');
-    if (!mime) return replyalya(`Kirim foto/video/audio dengan caption *${prefix + command}*`);
-
-    await alya.sendMessage(m.chat, {
-        react: { text: "⏱️", key: m.key }
-    });
-
-    const fs = require("fs");
-
+case 'readviewonce':
+case 'rvome': {
+    // [fix] Satu jalur logika untuk mode CASE maupun PLUGIN. Plugin rvo
+    // memakai wrapper download sentral yang membuka pesan asli view-once
+    // dari store / database/media-cache.json.
     try {
-        let originalCaption = '';
-        if (quoted.msg?.caption) {
-            originalCaption = quoted.msg.caption;
-        } else if (quoted.text) {
-            originalCaption = quoted.text;
-        }
-        const mediaPath = await alya.downloadAndSaveMediaMessage(quoted);
+      const rvo = require('./plugins/cmd/readviewonce')
+      return await rvo.run(alya, m, ctx)
+    } catch (e) {
+      console.error('[RVO case delegate Error]', e?.message || e)
+      return replyalya('❌ Gagal membuka pesan: ' + (e?.message || String(e)))
+    }
+}
+break;
 
-        const finalCaption = '`Pesan :`\n> ' + (originalCaption || 'Tidak ada caption');
-
-        if (/image/.test(mime)) {
-            await alya.sendMessage(m.chat, {
-                image: { url: mediaPath },
-                caption: finalCaption
-            }, { quoted: m });
-        }
-        else if (/video/.test(mime)) {
-            await alya.sendMessage(m.chat, {
-                video: { url: mediaPath },
-                caption: finalCaption
-            }, { quoted: m });
-        }
-        else if (/audio/.test(mime)) {
-            await alya.sendMessage(m.chat, {
-                audio: { url: mediaPath },
-                mimetype: mime 
-            }, { quoted: m });
-        }
-        else {
-            replyalya('Jenis media tidak disupport.');
-        }
-
-        if (fs.existsSync(mediaPath)) {
-            fs.unlinkSync(mediaPath);
-        }
-        
-    } catch (err) {
-        console.error('RVO ERROR:', err);
-        replyalya(`Error: Gagal memproses Read View Once. \nDetail: ${err.message}`);
+//============ CASE DELEGATE (plugin & case satu logika) ============
+case 'agy':
+case 'antigravity': {
+    // Owner check, cooldown, queue, chunking tetap di plugin yang sama.
+    try {
+      const agy = require('./plugins/cmd/antigravity')
+      return await agy.run(alya, m, ctx)
+    } catch (e) {
+      console.error('[AGY case delegate Error]', e?.message || e)
+      return replyalya('❌ Gagal menjalankan antigravity: ' + (e?.message || String(e)))
+    }
+}
+break;
+case 'uimode': {
+    try {
+      const ui = require('./plugins/cmd/uimode')
+      return await ui.run(alya, m, ctx)
+    } catch (e) {
+      console.error('[UIMODE case delegate Error]', e?.message || e)
+      return replyalya('❌ Gagal mengatur ui mode: ' + (e?.message || String(e)))
     }
 }
 break;
@@ -55627,8 +55614,8 @@ case 'toreal': {
 
         let imgUrl = up.data.files[0].url;
 
-        // Kirim ke Stability AI img2img endpoint
-        const apiKey = 'sk-OkBvToiPZQmJNlbrphYF55KQlS1ayrR3ZZJIUOl6rx2sbtjr';
+        const apiKey = process.env.STABILITY_API_KEY;
+        if (!apiKey) return reply('STABILITY_API_KEY belum diset di environment bot.');
 
         let payload = {
             init_image: imgUrl,
