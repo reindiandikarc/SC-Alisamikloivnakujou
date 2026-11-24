@@ -9,6 +9,92 @@ const USE_SANDBOX = process.env.AGY_SANDBOX !== '0'
 const COOLDOWN_MS = 15000
 const lastUse = new Map()
 let queue = Promise.resolve()
+const CHATS_FILE = process.env.AGY_CHATS_FILE || path.join(__dirname, '..', '..', 'database', 'agy-chats.json')
+const ALLOW_RULES = ['read_file(*)', 'command(*)']
+
+function settingsFile() {
+  return path.join(process.env.AGY_HOME || os.homedir(), '.gemini', 'antigravity-cli', 'settings.json')
+}
+
+function ensureAgySettings() {
+  try {
+    const file = settingsFile()
+    let settings = {}
+    try {
+      const raw = fs.readFileSync(file, 'utf8')
+      if (raw.trim()) settings = JSON.parse(raw) || {}
+    } catch {}
+    if (!settings || typeof settings !== 'object' || Array.isArray(settings)) settings = {}
+    if (!settings.permissions || typeof settings.permissions !== 'object' || Array.isArray(settings.permissions)) {
+      settings.permissions = {}
+    }
+    if (!Array.isArray(settings.permissions.allow)) settings.permissions.allow = []
+    let changed = false
+    for (const rule of ALLOW_RULES) {
+      if (!settings.permissions.allow.includes(rule)) {
+        settings.permissions.allow.push(rule)
+        changed = true
+      }
+    }
+    if (changed || !fs.existsSync(file)) {
+      fs.mkdirSync(path.dirname(file), { recursive: true })
+      fs.writeFileSync(file, JSON.stringify(settings, null, 2) + '\n')
+    }
+  } catch {}
+}
+
+function loadAgyChats() {
+  try {
+    const parsed = JSON.parse(fs.readFileSync(CHATS_FILE, 'utf8'))
+    return parsed && typeof parsed === 'object' && !Array.isArray(parsed) ? parsed : {}
+  } catch {
+    return {}
+  }
+}
+
+function saveAgyChat(sender, conversationId) {
+  if (!sender || !conversationId) return
+  try {
+    const chats = loadAgyChats()
+    chats[sender] = conversationId
+    fs.mkdirSync(path.dirname(CHATS_FILE), { recursive: true })
+    fs.writeFileSync(CHATS_FILE, JSON.stringify(chats, null, 2) + '\n')
+  } catch {}
+}
+
+function clearAgyChat(sender) {
+  if (!sender) return
+  try {
+    const chats = loadAgyChats()
+    delete chats[sender]
+    fs.mkdirSync(path.dirname(CHATS_FILE), { recursive: true })
+    fs.writeFileSync(CHATS_FILE, JSON.stringify(chats, null, 2) + '\n')
+  } catch {}
+}
+
+function parseAgyOutput(out) {
+  const text = String(out || '').trim()
+  const start = text.indexOf('{')
+  const end = text.lastIndexOf('}')
+  if (start >= 0 && end > start) {
+    try {
+      const parsed = JSON.parse(text.slice(start, end + 1))
+      const response = typeof parsed.response === 'string' ? parsed.response.trim() : ''
+      const detail = parsed.error || parsed.message || parsed.details || parsed.status || ''
+      return {
+        response,
+        conversationId: typeof parsed.conversation_id === 'string' ? parsed.conversation_id : '',
+        status: typeof parsed.status === 'string' ? parsed.status : '',
+        error: typeof detail === 'string' ? detail : JSON.stringify(detail),
+      }
+    } catch {}
+  }
+  return { response: text, conversationId: '', status: '', error: '' }
+}
+
+function isPermissionProblem(text) {
+  return /permissions\.allow|auto-denied|required the .* permission|jetski/i.test(String(text || ''))
+}
 
 const INSTALL_HINT =
   'Pasang: curl -fsSL https://antigravity.google/cli/install.sh | bash\n' +
@@ -51,7 +137,7 @@ function isExecutableFile(file) {
   }
 }
 
-// Same semantics as `command -v agy`: first executable file on PATH wins.
+
 function findOnPath(name) {
   for (const dir of String(process.env.PATH || '').split(path.delimiter)) {
     if (!dir) continue
@@ -64,14 +150,14 @@ function findOnPath(name) {
 function resolveAgyBinary() {
   const explicit = process.env.AGY_BIN
   if (explicit) {
-    // A bare name (AGY_BIN=agy) is looked up on PATH; a path is used as-is.
+    
     return explicit.includes('/') || explicit.includes(path.sep)
       ? path.resolve(explicit)
       : (findOnPath(explicit) || explicit)
   }
 
   const home = os.homedir()
-  // Official installer writes ~/.local/bin/agy; the rest are common alternatives.
+  
   const candidates = [
     path.join(home, '.local', 'bin', 'agy'),
     path.join(home, '.npm-global', 'bin', 'agy'),
@@ -106,14 +192,15 @@ function preflightAgy(bin) {
   return null
 }
 
-function askAgy(prompt) {
+function askAgy(prompt, conversationId = '') {
   return new Promise((resolve, reject) => {
     const bin = resolveAgyBinary()
     const problem = preflightAgy(bin)
     if (problem) return reject(problem)
+    ensureAgySettings()
 
-    // Official headless syntax: `agy -p "<prompt>" [--sandbox]`.
-    const args = ['-p', prompt]
+    const args = ['-p', prompt, '--output-format', 'json']
+    if (conversationId) args.push('--conversation', conversationId)
     if (USE_SANDBOX) args.push('--sandbox')
     const p = spawn(bin, args, { stdio: ['ignore', 'pipe', 'pipe'] })
     let out = '', err = ''
@@ -133,9 +220,19 @@ function askAgy(prompt) {
     })
     p.on('close', code => {
       clearTimeout(timer)
-      if (out.trim()) return resolve(out.trim())
-      const detail = err.trim() || `agy keluar dengan kode ${code} tanpa output`
-      if (isAuthProblem(detail)) return reject(authError(detail))
+      const parsed = parseAgyOutput(out)
+      if (parsed.response && parsed.status !== 'ERROR') {
+        return resolve({ response: parsed.response, conversationId: parsed.conversationId })
+      }
+      const detail = parsed.error || err.trim() || `agy keluar dengan kode ${code} tanpa output`
+      if (isPermissionProblem(detail) || isPermissionProblem(err)) {
+        ensureAgySettings()
+        return reject(userError(
+          `Izin agy sudah diperbaiki di ${settingsFile()}. ` +
+          `Silakan ulangi perintah ini.\nDetail: ${detail}`
+        ))
+      }
+      if (isAuthProblem(detail) || isAuthProblem(err)) return reject(authError(detail))
       reject(new Error(detail))
     })
   })
@@ -148,9 +245,11 @@ const chunk = (t, n = MAX_CHUNK) => {
 }
 
 module.exports = {
+  ensureAgySettings,
+  loadAgyChats,
   command: ['agy', 'antigravity'],
   tags: ['ai'],
-  // Owner-only: tampil di kategori OWNER pada rich menu & .ownermenu.
+  
   category: 'owner',
   run: async (alya, m, ctx) => {
     const {
@@ -170,15 +269,22 @@ module.exports = {
       if (typeof replytolak === 'function') return replytolak(denial)
       return replyalya(denial)
     }
-    if (!text) return replyalya(`Contoh: ${prefix}${command} apa itu git rebase?`)
+    const rawText = String(text || '').trim()
+    const first = rawText.split(/\s+/)[0].toLowerCase()
+    const fresh = first === 'new' || first === 'reset'
+    if (fresh) clearAgyChat(sender)
+    const prompt = fresh ? rawText.slice(first.length).trim() : rawText
+    if (!prompt) return replyalya(`Contoh: ${prefix}${command} ${fresh ? 'new ' : ''}apa itu git rebase?`)
+    const conversationId = fresh ? '' : (loadAgyChats()[sender] || '')
     const now = Date.now()
     const wait = (lastUse.get(sender) || 0) + COOLDOWN_MS - now
     if (wait > 0) return replyalya(`Tunggu ${Math.ceil(wait / 1000)} detik lagi.`)
     lastUse.set(sender, now)
     const job = queue.then(async () => {
       try {
-        const answer = await askAgy(text)
-        for (const part of chunk(answer)) await replyalya(part)
+        const answer = await askAgy(prompt, conversationId)
+        if (answer?.conversationId) saveAgyChat(sender, answer.conversationId)
+        for (const part of chunk(answer?.response || '')) await replyalya(part)
       } catch (e) {
         await replyalya(e?.userFacing ? e.message : `Error: ${e.message}`)
       }

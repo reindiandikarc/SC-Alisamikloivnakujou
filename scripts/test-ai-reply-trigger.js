@@ -63,4 +63,15 @@ assert.deepStrictEqual(AI.resolveAIPrompt(msg({ body: '', text: '', quoted: qLid
 assert.deepStrictEqual(AI.resolveAIPrompt(msg({ body: 'Hmm', text: 'Hmm', quoted: qLid })),
   { text: 'Hmm', source: 'text' })
 
+
+const runtimeMsg = msg({ body: '', text: '', message: { conversation: 'alisa halo' } })
+const runtimePrompt = AI.resolveAIPrompt(runtimeMsg, 'alisa halo')
+assert.deepStrictEqual(runtimePrompt, { text: 'alisa halo', source: 'budy' })
+assert.strictEqual(AI.isAITriggered({
+  body: runtimePrompt.text,
+  m: runtimeMsg,
+  botNumber: BOT,
+  isAutoAiGc: true,
+}), true)
+
 console.log('AI_REPLY_TRIGGER_OK')

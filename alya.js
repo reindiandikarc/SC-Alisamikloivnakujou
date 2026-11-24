@@ -3590,7 +3590,7 @@ if (!m.key.fromMe && !m.isBaileys) {
     
     
     
-    const _prompt = resolveAIPrompt(m);
+    const _prompt = resolveAIPrompt(m, budy);
     let _aiBody = _prompt.text;
     if (_isBotMentioned && _aiBody) {
       _aiBody = _aiBody.replace(/@\d+/g, '').trim();

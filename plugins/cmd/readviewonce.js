@@ -1,19 +1,19 @@
 'use strict'
-// Plugin: readviewonce — .rvo / .readviewonce
-//
-// Port dari .rvo Hitoshi, disesuaikan dengan signature plugin repo ini:
-//   run: async (alaya, m, ctx)
-//
-// Urutan pengambilan media (dari yang paling bisa dipercaya):
-//   1. global._rvoCache (exact id, lalu same-chat/same-sender) + buffer upsert
-//   2. global._mediaCache[id] -> pesan ASLI lewat objek polos (tanpa method
-//      download(), supaya tidak masuk rekursi ke m.quoted.download())
-//   3. m.getQuotedObj() / store.loadMessage() dengan varian JID LID/PN/newsletter
-//   4. peta quoted itu sendiri (m.quoted / fakeObj.message /
-//      contextInfo.quotedMessage) -> extractor -> downloadContentFromMessage,
-//      baru terakhir quoted.download()
-//
-// Helper murninya ada di lib/rvo-extract.js (diuji offline).
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 const {
   asBuffer,
@@ -35,7 +35,7 @@ const sameJid = (a, b) => !!(a && b && numOnly(a) === numOnly(b))
 const dbg = (msg) => {
   if (process.env.ALYA_BUTTON_DEBUG === '1') console.log('[RVO_DEBUG] ' + msg)
 }
-// Hanya NAMA KEY (rekursif, dangkal) — jangan pernah log nilai mediaKey/hash.
+
 const keyShape = (obj, depth = 0) => {
   if (!obj || typeof obj !== 'object' || depth > 3) return ''
   const skip = /mediaKey|fileEncSha256|fileSha256|hash|token|secret/i
@@ -49,6 +49,7 @@ const keyShape = (obj, depth = 0) => {
 
 function cacheEntryMatches(entry, m, jids, quotedSender, exact) {
   if (!entry || typeof entry !== 'object') return false
+  if (entry.fromMe && !entry.vo) return false
   if (entry.chat && !jids.some(jid => sameJid(jid, entry.chat))) return false
   const when = Number(entry.cachedAt)
   if (when && Date.now() - when > 30 * 60 * 1000) return false
@@ -82,7 +83,7 @@ module.exports = {
       '> ◦ Bisa juga kirim media sekali lihat dengan caption *' + cmd + '*.\n' +
       '> ◦ Media biasanya hilang karena bot baru restart atau sudah dilihat sebelum di-cache.'
 
-    // Contract Agent A: _rvoCache / _rvoCacheMeta adalah Map.
+    
     if (!(global._rvoCache instanceof Map)) global._rvoCache = new Map()
     if (!(global._rvoCacheMeta instanceof Map)) global._rvoCacheMeta = new Map()
     const rvoCache = global._rvoCache
@@ -94,8 +95,8 @@ module.exports = {
       quoted?.id || quoted?.key?.id ||
       m.key?.id || null
     const quotedSender = contextInfo?.participant || quoted?.sender || quoted?.key?.participant || null
-    // WhatsApp mengirim JID @lid di contextInfo sedangkan store/cache sering
-    // mengindeks memakai @s.whatsapp.net. Sertakan group & newsletter apa adanya.
+    
+    
     const jids = candidateJids(
       contextInfo?.remoteJid,
       quoted?.chat,
@@ -111,11 +112,11 @@ module.exports = {
 
     await react('⏱️')
 
-    // ── 0. Relay descriptor asli (metode Experimental-Bell) ─────────────────
-    // Kalau quoted masih membawa mediaKey/directPath, cara paling setia adalah
-    // meneruskan node medianya apa adanya setelah flag viewOnce dibuang.
-    // Tidak ada download/upload ulang, jadi kualitas & isi tidak berubah.
-    // Untuk placeholder (<unavailable>) jalur ini sengaja dilewati.
+    
+    
+    
+    
+    
     const relaySource = contextInfo?.quotedMessage || quoted?.fakeObj?.message
     const relay = relayContentFromQuoted(relaySource)
     if (relay) {
@@ -135,7 +136,11 @@ module.exports = {
       try { lastVo = await global._viewonceBuffer?.latest?.() } catch (_) {}
 
       const ids = [...new Set([
-        stanzaId, quoted?.id, quoted?.key?.id, m.key?.id, lastVo?.id
+        stanzaId,
+        quoted?.id,
+        quoted?.key?.id,
+        (extractMedia(m?.message) || extractMedia(m?.msg)) ? m.key?.id : null,
+        quoted ? null : lastVo?.id
       ].filter(Boolean))]
 
       let senderJid = quotedSender || (quoted ? null : m.sender) || null
@@ -151,7 +156,7 @@ module.exports = {
         ...extra
       })
 
-      // ── 1. Cache view-once milik project ─────────────────────────────────
+      
       let cachedId = null
       let cachedEntry = null
       for (const id of ids) {
@@ -195,10 +200,10 @@ module.exports = {
         }
       }
 
-      // ── 1a-0. Buffer media yang diunduh SAAT pesan asli tiba ─────────────
-      // Ini sumber paling kuat: tidak butuh mediaKey/directPath dari quote.
-      // Sekarang semua media dengan mediaKey di-buffer (lihat index.js),
-      // jadi cari berdasarkan stanzaId sebelum jalur lain.
+      
+      
+      
+      
       if (!found) {
         for (const id of ids) {
           const buffered = asBuffer(global._viewonceBuffer?.get?.(id))
@@ -214,10 +219,10 @@ module.exports = {
         }
       }
 
-      // ── 1a. Pesan ASLI dari backup mentah (metode V13 / antidelete) ──────
-      // Quote view-once tidak punya mediaKey/directPath, jadi turun ke sini
-      // sebelum mencoba downloader pada quote. Backup menyimpan WAMessage
-      // utuh keyed by stanzaId, termasuk questionReplyMessage/V2Extension.
+      
+      
+      
+      
       if (!found && stanzaId) {
         const recovered = await recoverViewOnce({
           id: stanzaId,
@@ -236,7 +241,7 @@ module.exports = {
         }
       }
 
-      // 1b. .rvo biasa: buffer terakhir yang diunduh saat pesan view-once tiba.
+      
       if (!found && !quoted && !extractMedia(m.message) && !extractMedia(m.msg) && lastVo?.buffer?.length) {
         found = fromExtract({
           mediaType: mediaTypeFromMime(lastVo.mime),
@@ -245,14 +250,14 @@ module.exports = {
         }, asBuffer(lastVo.buffer))
       }
 
-      // ── 2. Pesan asli di global._mediaCache ──────────────────────────────
+      
       if (!found && global._mediaCache && typeof global._mediaCache === 'object') {
         for (const id of ids) {
           const cached = global._mediaCache[id]
           if (!cached?.message) continue
           for (const jid of candidateJids(cached.jid, ...jids)) {
-            // Objek polos: jangan bawa method download milik m.quoted, karena
-            // wrapper sentral akan memanggilnya lagi (rekursi).
+            
+            
             const source = { key: { id, remoteJid: jid }, message: cached.message }
             const buffer = asBuffer(await alaya.downloadMediaMessage(source).catch(() => null))
             if (buffer) {
@@ -273,7 +278,7 @@ module.exports = {
         }
       }
 
-      // ── 3. m.getQuotedObj() / store -> pesan asli ────────────────────────
+      
       if (!found && stanzaId) {
         const sources = []
         try {
@@ -283,8 +288,8 @@ module.exports = {
           }
         } catch (e) { dbg('getQuotedObj: ' + (e?.message || e)) }
 
-        // smsg() memanggil store.loadMessage(m.chat, id) — itu bisa miss saat
-        // contextInfo memakai @lid. Coba semua varian JID yang terkumpul.
+        
+        
         if (typeof ctx?.store?.loadMessage === 'function') {
           for (const jid of jids) {
             try {
@@ -299,7 +304,7 @@ module.exports = {
           if (!extract) continue
           let buffer = await downloadFromMediaObj(extract.mediaObj, extract.mediaType).catch(() => null)
           if (!buffer && qObj?.message) {
-            // Lagi: objek polos, tanpa method download() -> tidak rekursi.
+            
             const raw = {
               key: qObj.key || { id: stanzaId, remoteJid: jids[0] || m.chat },
               message: qObj.message
@@ -314,10 +319,10 @@ module.exports = {
         }
       }
 
-      // ── 4. Peta quoted itu sendiri ───────────────────────────────────────
+      
       if (!found) {
-        // getQuotedObj sudah dicoba di tier 3; di sini fokus ke data yang
-        // memang ada pada serialized message.
+        
+        
         const candidates = await findMediaCandidates(m, { includeQuotedObj: false })
         const attempted = new Set()
         for (const cand of candidates) {
@@ -331,13 +336,13 @@ module.exports = {
             break
           }
         }
-        // ── Jalur persis ALYA V20/V13 ─────────────────────────────────────
-        // V20: const mediaBuffer = await alya.downloadMediaMessage(quoted)
-        // index.js V20: msg = quoted.msg || quoted; mtype.replace(/Message/gi,'')
-        // dipakai downloadContentFromMessage(msg, messageType). Kami panggil
-        // LEBIH DULU sebelum quoted.download() supaya helper sentral (store +
-        // cache + backup mentah) ikut kesempatan, bukan hanya download milik
-        // objek quote yang sering kebuang kuncinya.
+        
+        
+        
+        
+        
+        
+        
         if (!found && typeof alaya?.downloadMediaMessage === 'function') {
           const buffer = asBuffer(await alaya.downloadMediaMessage(quoted).catch(() => null))
           if (buffer?.length) {
@@ -386,9 +391,9 @@ module.exports = {
         dbg('shape.quoted=' + keyShape(quoted))
         dbg('shape.quotedMessage=' + keyShape(contextInfo?.quotedMessage))
 
-        // Placeholder view-once: pesan asli tidak pernah sampai (stub=none),
-        // jadi minta resend ke HP. Kalau HP online, Baileys akan memancarkan
-        // messages.upsert berisi media asli yang lalu di-buffer index.js.
+        
+        
+        
         const pending = stanzaId ? global._rvoPending?.get(stanzaId) : null
         if (pending && typeof alaya.requestPlaceholderResend === 'function') {
           const lastAsk = Number(pending.lastAsk) || 0
@@ -413,7 +418,7 @@ module.exports = {
         return fail(actionable())
       }
 
-      // ── Kirim ulang media ────────────────────────────────────────────────
+      
       const mediaType = String(found.mediaType || mediaTypeFromMime(found.mime)).toLowerCase()
       const originalCaption = found.caption || linkCaption || ''
       const infoCaption =

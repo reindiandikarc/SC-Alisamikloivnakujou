@@ -806,7 +806,10 @@ function isReplyToBot(m, botNumber) {
 
 
 
-function resolveAIPrompt(m) {
+function resolveAIPrompt(m, fallbackText = '') {
+  if (typeof fallbackText === 'string' && fallbackText.trim()) {
+    return { text: fallbackText.trim(), source: 'budy' }
+  }
   const direct = typeof m?.body === 'string' ? m.body
     : (typeof m?.text === 'string' ? m.text : '')
   if (direct.trim()) return { text: direct.trim(), source: 'text' }

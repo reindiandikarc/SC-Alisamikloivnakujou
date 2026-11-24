@@ -1,6 +1,6 @@
-// Integrasi offline untuk plugins/cmd/readviewonce.js:
-// reply .rvo pada quote yang sudah dikupas harus memakai backup WAMessage
-// mentah (metode V13) dan mengirim ulang medianya.
+
+
+
 'use strict'
 
 const assert = require('assert')
@@ -12,7 +12,7 @@ const SENDER = '6285602845943@s.whatsapp.net'
 const MEDIA_KEY = JSON.parse(JSON.stringify(Buffer.from(Array.from({ length: 32 }, (_, i) => i + 1))))
 const BYTES = Buffer.from([0xff, 0xd8, 0xff, 0xe0, 0x00, 0x10, 0x4a, 0x46, 0x49, 0x46])
 
-// Stub downloader SEBELUM plugin di-require (plugin destructures saat load).
+
 let nativeCalls = 0
 baileys.downloadMediaMessage = async (raw) => {
   nativeCalls++
@@ -115,7 +115,7 @@ async function main() {
   await test('bentuk log terbaru: .rvo sebagai caption media (ctx.quoted === m)', async () => {
     nativeCalls = 0
     const s = setup({ backup: true })
-    // Tanpa contextInfo → alya.js melakukan fallback `quoted = m`.
+    
     s.m.message = { imageMessage: {
       viewOnce: true, isViewOnce: true, mimetype: 'image/jpeg', caption: '.rvo',
       mediaKey: JSON.parse(JSON.stringify(MEDIA_KEY)), directPath: '/v/rvo.enc',
@@ -130,6 +130,33 @@ async function main() {
     const image = s.sent.find(x => x.content?.image)
     assert.ok(image, 'caption-on-media harus tetap mengirim image: ' + JSON.stringify(s.replied))
     assert.ok(nativeCalls >= 1, 'harus mengunduh dari pesan asli di backup')
+  })
+
+  await test('reply .rvo ke 1× tidak boleh memakai buffer foto bot sendiri', async () => {
+    nativeCalls = 0
+    const BOT_PHOTO = 'BOT-OWN-PHOTO'
+    const s = setup({ backup: false, buffers: { [BOT_PHOTO]: BYTES } })
+    global._viewonceBuffer.latest = async () => ({ id: BOT_PHOTO, buffer: BYTES, mime: 'image/jpeg', vo: false })
+    await plugin.run(s.alaya, s.m, s.ctx)
+    assert.ok(!s.sent.some(x => x.content?.image), 'foto bot sendiri tidak boleh dikirim: ' + JSON.stringify(s.replied))
+  })
+
+  await test('cache media biasa milik bot tidak boleh jadi target .rvo', async () => {
+    nativeCalls = 0
+    const s = setup({ backup: false })
+    global._rvoCache.set('BOT-OWN-CACHE', {
+      type: 'imageMessage',
+      content: {},
+      buffer: BYTES,
+      mimetype: 'image/jpeg',
+      chat: CHAT,
+      sender: '153863378178296@s.whatsapp.net',
+      cachedAt: Date.now(),
+      vo: false,
+      fromMe: true,
+    })
+    await plugin.run(s.alaya, s.m, s.ctx)
+    assert.ok(!s.sent.some(x => x.content?.image), 'cache bot tidak boleh dikirim: ' + JSON.stringify(s.replied))
   })
 
   if (!process.exitCode) console.log('RVO_PLUGIN_TEST_OK')

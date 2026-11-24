@@ -1,7 +1,7 @@
 'use strict'
 
-// Offline regression test for the RVO detector used by index.js and lib/myfunc.js.
-// Run: node scripts/test-rvo-detect.js
+
+
 const assert = require('assert')
 
 const {
@@ -22,11 +22,11 @@ const mkMediaKey = (seed) => Buffer.from(Array.from({ length: 32 }, (_, i) => (s
 const KEY_A = mkMediaKey(1)
 const KEY_B = mkMediaKey(7)
 
-// Real JSON-shaped Buffer after a Baileys message has gone through the store.
+
 const jsonBuffer = (buf) => ({ type: 'Buffer', data: Array.from(buf) })
 
 const imageNode = (key = KEY_A, extra = {}) => ({
-    mimetype: '', // WhatsApp strips mimetype from view-once quotes
+    mimetype: '', 
     mediaKey: jsonBuffer(key),
     fileEncSha256: jsonBuffer(mkMediaKey(31)),
     directPath: '/v/t428412725/u100/xml/media/image',
@@ -40,7 +40,7 @@ const imageNode = (key = KEY_A, extra = {}) => ({
 })
 
 const cases = {
-    // (a) the shape from the live log: questionReplyMessage hides the media.
+    
     'questionReplyMessage > viewOnceMessageV2 > imageMessage': {
         message: {
             questionReplyMessage: {
@@ -50,14 +50,14 @@ const cases = {
             },
         },
     },
-    // (a2) questionReplyMessage carrying the flag on the media itself.
+    
     'questionReplyMessage > imageMessage(viewOnce)': {
         message: {
             questionReplyMessage: { message: { imageMessage: imageNode(KEY_B) } },
         },
     },
-    // (a3) flag carried outside the media node (messageContextInfo.quotedType),
-    //      matching the "only in contextInfo" hypothesis from the runtime log.
+    
+    
     'questionReplyMessage + messageContextInfo.quotedType': {
         message: {
             messageContextInfo: { quotedType: 'viewOnceMessageV2' },
@@ -66,7 +66,7 @@ const cases = {
             },
         },
     },
-    // (b)
+    
     'viewOnceMessageV2Extension > videoMessage': {
         message: {
             viewOnceMessageV2Extension: {
@@ -80,7 +80,7 @@ const cases = {
             },
         },
     },
-    // (c)
+    
     'ephemeralMessage > imageMessage(viewOnce)': {
         message: {
             ephemeralMessage: { message: { imageMessage: imageNode(KEY_A) } },
@@ -93,7 +93,7 @@ const cases = {
             },
         },
     },
-    // forwardedNewsletterMessageInfo-bearing quote must not hide the media
+    
     'forwardedNewsletterMessageInfo sibling': {
         message: {
             forwardedNewsletterMessageInfo: { newsletterJid: '123456789@newsletter' },
@@ -174,6 +174,23 @@ check('cache key = stanzaId, mediaKey coerced, vo flag kept', () => {
     assert.ok(entry.mimetype && entry.mimetype.length, 'mimetype must not be empty')
 })
 
+check('fromMe flag tersimpan supaya media bot sendiri tidak disangka 1×', () => {
+    const cache = new Map()
+    const cacheMeta = new Map()
+    const found = scanForViewOnceMedia(cases['questionReplyMessage > imageMessage(viewOnce)'].message)
+    const entry = cacheRvoMedia({
+        detected: found,
+        id: 'BOT-OWN-1',
+        chat: CHAT,
+        sender: SENDER,
+        fromMe: true,
+        cache,
+        cacheMeta,
+        limit: 300,
+    })
+    assert.strictEqual(entry.fromMe, true)
+})
+
 check('cache cap stays at 300 entries', () => {
     const cache = new Map()
     const cacheMeta = new Map()
@@ -189,7 +206,7 @@ check('cache cap stays at 300 entries', () => {
 
 console.log('\n[3a] parity wrapper ryuuxalya (V13) vs reinka baileys')
 check('WRAPPERS mencakup semua future-proof wrapper ryuu + questionReply', () => {
-    // Diambil verbatim dari ryuuxalya/lib/Utils/messages.js:1694-1717.
+    
     const ryuu = [
         'ephemeralMessage', 'viewOnceMessage', 'documentWithCaptionMessage',
         'viewOnceMessageV2', 'viewOnceMessageV2Extension', 'editedMessage',

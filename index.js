@@ -29,8 +29,8 @@ const {
 } = require("@whiskeysockets/baileys")
 const crypto = require('crypto')
 const viewonce = require('./lib/viewonce')
-// Deteksi view-once dipakai bareng lib/myfunc.js; implementasinya ada di modul
-// murni supaya bisa diuji offline (scripts/test-rvo-detect.js).
+
+
 const rvoDetect = require('./lib/rvo-detect')
 const rvoRecover = require('./lib/rvo-recover')
 const rvoPlaceholder = require('./lib/rvo-placeholder')
@@ -86,8 +86,8 @@ settings: {},
 const pairingCode = !!phoneNumber || process.argv.includes("--pairing-code")
 
 const useMobile = process.argv.includes("--mobile")
-// ✅ FIX: live loader (TTL 3s) — sama seperti di alya.js — supaya edit owner.json
-// via panel/SSH langsung berefek tanpa restart. Dipakai di bawah untuk isOwnerMsg.
+
+
 function getOwnerListIdx() {
     const _now = Date.now();
     if (!global._ownerCache || (_now - global._ownerCache.ts) > 3000) {
@@ -113,7 +113,7 @@ const rl = readline.createInterface({ input: process.stdin, output: process.stdo
 const question = (text) => new Promise((resolve) => rl.question(text, resolve))
 const { createInboundHandler } = require('./lib/inbound')
 const { runBootCheck } = require('./lib/bootcheck')
-// Diagnosa startup: versi Node/@whiskeysockets/baileys/libsignal + status sesi. Non-fatal.
+
 runBootCheck({ sessionDir: global.sessionName || 'Alyachan' })
 require('./alya.js')
 nocache('../alya.js', module => console.log(color('[ CHANGE ]', 'green'), color(`'${module}'`, 'green'), 'Updated'))
@@ -123,15 +123,15 @@ nocache('../index.js', module => console.log(color('[ CHANGE ]', 'green'), color
 async function alyaInd() {
     await delay(5000)
     await checkVersionUpdate();
-    // ✅ FIX — listener menumpuk saat reconnect:
-    // Setiap alyaInd() dipanggil ulang (reconnect), fungsi ini mendaftarkan
-    // listener 'connection.update'/'creds.update' BARU ke socket yang baru
-    // dibuat — tapi socket LAMA (global.alya sebelumnya) tidak pernah
-    // dibersihkan listener-nya maupun ditutup koneksinya. Kalau socket lama
-    // masih sempat menerima event sebelum benar-benar mati, listener lama
-    // & baru bisa jalan bersamaan (event ganda, reconnect dobel, dsb).
-    // Sekarang socket lama dilepas listener-nya dan ditutup dulu (best-effort)
-    // sebelum bikin socket baru.
+    
+    
+    
+    
+    
+    
+    
+    
+    
     try {
         if (global.alya && global.alya.ev && typeof global.alya.ev.removeAllListeners === 'function') {
             global.alya.ev.removeAllListeners();
@@ -142,9 +142,9 @@ async function alyaInd() {
     } catch {}
 	const {  saveCreds, state } = await useMultiFileAuthState(`./${sessionName}`)
 	const msgRetryCounterCache = new NodeCache()
-    // FIX: versi klien WA tidak pernah di-update (fetchLatestBaileysVersion di-import tapi
-    // tidak pernah dipanggil), sehingga bot memakai versi bawaan library yang bisa usang.
-    // Gagal fetch tidak fatal: otomatis pakai versi bawaan library.
+    
+    
+    
     let waVersion
     try {
         const v = await Promise.race([
@@ -159,13 +159,13 @@ async function alyaInd() {
         console.log('[BOOT] fetchLatestBaileysVersion gagal, pakai versi bawaan library:', e?.message || e)
     }
     	const alya = makeWASocket({
-        // FIX: sebelumnya level 'silent' -> semua error internal Baileys (gagal dekripsi,
-        // gagal kirim ack, dll) hilang tanpa jejak. 'error' hanya mencetak masalah nyata.
-        // Ubah lewat env BAILEYS_LOG_LEVEL (mis. 'debug' untuk diagnosa mendalam, 'silent' untuk senyap).
+        
+        
+        
         logger: pino({ level: process.env.BAILEYS_LOG_LEVEL || 'error' }),
         ...(waVersion ? { version: waVersion } : {}),
-        printQRInTerminal: !pairingCode, // popping up QR in terminal log
-      mobile: useMobile, // mobile api (prone to bans)
+        printQRInTerminal: !pairingCode, 
+      mobile: useMobile, 
      auth: {
          creds: state.creds,
          keys: makeCacheableSignalKeyStore(state.keys, Pino({ level: "fatal" }).child({ level: "fatal" })),
@@ -193,23 +193,23 @@ async function alyaInd() {
             return message;
         },
 connectTimeoutMs: 60000,
-defaultQueryTimeoutMs: undefined, // for this issues https://github.com/WhiskeySockets/Baileys/issues/276
+defaultQueryTimeoutMs: undefined, 
 keepAliveIntervalMs: 10000,
 emitOwnEvents: true,
 fireInitQueries: true,
-// ⚡ PERF-FIX: link preview generation menambah latency setiap kirim teks
-// yang mengandung URL (perlu fetch metadata web sebelum pesan terkirim).
-// Bot tidak butuh preview cantik — fastrespon lebih penting.
+
+
+
 generateHighQualityLinkPreview: false,
-// ⚡ PERF-FIX: syncFullHistory menarik SELURUH riwayat chat dari server
-// setiap kali connect/reconnect — ini bikin startup & reconnect jadi lambat
-// (bisa puluhan detik s.d. menit tergantung jumlah chat), dan tidak ada
-// satupun fitur bot yang memakai history ini. Dimatikan → connect jauh lebih cepat.
+
+
+
+
 syncFullHistory: false,
 markOnlineOnConnect: true,
 shouldSyncHistoryMessage: () => false,
-      // FIX: dulu selalu null -> permintaan retry dekripsi dari penerima tidak bisa dijawab
-      // (penerima melihat "Menunggu pesan ini"). Sekarang ambil dari store bila ada.
+      
+      
       getMessage: async (key) => {
             try {
                 const msg = store && typeof store.loadMessage === 'function'
@@ -218,30 +218,30 @@ shouldSyncHistoryMessage: () => false,
                 return msg?.message || undefined
             } catch { return undefined }
         },
-      msgRetryCounterCache, // Resolve waiting messages
+      msgRetryCounterCache, 
    })
-    // ✅ FIX: update global.alya SEGERA setelah socket baru dibuat, bukan
-    // menunggu ~5.5 detik (setelah `await delay(5555)` di akhir fungsi ini).
-    // Sebelumnya, tiap kali reconnect terjadi (alyaInd() dipanggil ulang),
-    // ada window beberapa detik di mana global.alya masih menunjuk ke socket
-    // LAMA yang sudah closed — kalau ownerReport mencoba kirim notifikasi WA
-    // tepat di window itu, sendMessage akan gagal diam-diam karena socketnya
-    // sudah mati. Sekarang di-assign di sini supaya window stale minimal.
+    
+    
+    
+    
+    
+    
+    
     global.alya = alya
     const { randomBytes } = require('crypto')
-    // ✅ ANTI-BAN: Socket-level rate guard — cegah burst pengiriman ke JID yang
-    // sama dalam waktu singkat. Ini adalah lapisan pertama perlindungan dari ban
-    // WA, SEBELUM pesan sampai ke server. createSocketRateGuard membungkus
-    // sendMessage asli dengan tracker per-JID + auto-cooldown saat burst.
+    
+    
+    
+    
     const { createSocketRateGuard } = require('./lib/antibanGuard')
     const _sendMessageRaw = alya.sendMessage
     const _guardedSend    = createSocketRateGuard({ sendMessage: _sendMessageRaw.bind(alya) })
 
-    // ── FIX TOMBOL: node <biz> wajib ikut terkirim supaya WhatsApp merender
-    // tombol/list. Banyak titik di Alya.js & plugin memanggil relayMessage
-    // langsung tanpa node ini, jadi tombolnya dibuang klien. Sisipkan otomatis
-    // di satu tempat untuk semua pemanggil (fork sudah punya auto-biz, tapi
-    // kita pastikan eksplisit agar tidak bergantung pada detail internal).
+    
+    
+    
+    
+    
     const BIZ_INTERACTIVE = {
         tag: 'biz',
         attrs: {},
@@ -284,30 +284,30 @@ shouldSyncHistoryMessage: () => false,
             (content.buttons || content.sections || content.templateButtons)) {
             console.log(`[BUTTON_DEBUG] send jid=${jid} buttons=${content.buttons?.length ?? 0} sections=${content.sections?.length ?? 0}`)
         }
-        // Gunakan guarded send (dengan per-JID rate limiter internal)
+        
         return await _guardedSend(jid, content, options)
     }
-    // =================================================
-// (blok pairing dipindah ke akhir alyaInd — semua listener harus terpasang dulu sebelum menunggu input)
+    
+
     store.bind(alya.ev)
 
-// ── FIX VIEW-ONCE / REPLY MEDIA: cache pesan bermedia ke disk ──────────────
-// Store Baileys hanya di-memory, jadi kalau bot restart (systemd / watchdog)
-// semua pesan asli hilang. Padahal untuk me-reply media *sekali lihat*,
-// WhatsApp sengaja membuang mediaKey/url dari objek quote — satu-satunya
-// salinan yang bisa didownload adalah pesan aslinya. Cache ini menyimpannya
-// supaya .swgc / .rvo tetap jalan walau bot baru saja restart.
+
+
+
+
+
+
 const MEDIA_CACHE_FILE = path.join(__dirname, 'database', 'media-cache.json')
 try {
     global._mediaCache = JSON.parse(fs.readFileSync(MEDIA_CACHE_FILE, 'utf8'))
 } catch { global._mediaCache = {} }
 
-// ── VIEW-ONCE: simpan BUFFER media saat pesan tiba ─────────────────────────
-// Diambil dari pola vanXone (handleAntiViewOnce): media sekali lihat harus
-// diunduh SEGERA setelah messages.upsert. Kalau ditunda sampai userreply
-// `.rvo`, WhatsApp sudah membuang url/directPath/mediaKey dari quote DAN bisa
-// mencabut media aslinya setelah dilihat — mustahil diunduh lagi.
-// Menyimpan buffer ke disk juga membuatnya selamat dari restart systemd.
+
+
+
+
+
+
 const VO_CACHE_DIR = path.join(__dirname, 'database', 'viewonce-cache')
 try { fs.mkdirSync(VO_CACHE_DIR, { recursive: true }) } catch {}
 const _voSafeId = (id) => String(id || '').replace(/[^a-zA-Z0-9_-]/g, '')
@@ -318,8 +318,8 @@ global._viewonceBuffer = {
             return fs.existsSync(p) ? fs.readFileSync(p) : null
         } catch { return null }
     },
-    // Media sekali lihat terakhir — dipakai kalau user kirim ".rvo" biasa
-    // (tanpa reply) setelah sebelumnya mengirim media sekali lihat.
+    
+    
     latest() {
         try {
             const metas = fs.readdirSync(VO_CACHE_DIR)
@@ -329,10 +329,8 @@ global._viewonceBuffer = {
                     catch { return null }
                 })
                 .filter(Boolean)
-                // Prioritaskan yang benar-benar view-once; media biasa hanya
-                // jadi cadangan terakhir supaya `.rvo` tidak mengirim foto
-                // normal secara tidak sengaja.
-                .sort((a, b) => (Number(!!b.vo) - Number(!!a.vo)) || (b.ts || 0) - (a.ts || 0))
+                .filter(meta => meta.vo === true)
+                .sort((a, b) => (b.ts || 0) - (a.ts || 0))
             for (const meta of metas) {
                 const buf = global._viewonceBuffer.get(meta.id)
                 if (buf?.length) return { id: meta.id, buffer: buf, mime: meta.mime || '', ts: meta.ts, vo: !!meta.vo, type: meta.type || '' }
@@ -347,7 +345,7 @@ global._viewonceBuffer = {
             const p = path.join(VO_CACHE_DIR, safe + '.bin')
             fs.writeFileSync(p, buffer)
             fs.writeFileSync(p + '.json', JSON.stringify({ id, mime, ts: Date.now(), vo: !!extra.vo, type: extra.type || '' }))
-            // batasi disk: simpan 200 media terakhir
+            
             const metas = fs.readdirSync(VO_CACHE_DIR)
                 .filter(f => f.endsWith('.bin.json'))
                 .map(f => {
@@ -362,8 +360,8 @@ global._viewonceBuffer = {
                 } catch {}
             }
             for (const { f } of metas.slice(200)) drop(f)
-            // Batasi juga total ukuran (maks ~300MB) agar media biasa tidak
-            // memenuhi disk saat fitur buffer menyeluruh aktif.
+            
+            
             const MAX_TOTAL = 300 * 1024 * 1024
             let total = 0
             const bins = fs.readdirSync(VO_CACHE_DIR)
@@ -392,18 +390,18 @@ function _scheduleMediaCacheSave() {
         try { fs.writeFileSync(MEDIA_CACHE_FILE, JSON.stringify(global._mediaCache)) } catch {}
     }, 1500)
 }
-// ── RVO: deteksi view-once REKURSIF + cache metadata ──────────────────────
-// Contract dipakai plugin .rvo:
-//   global._rvoCache     : Map id -> { type, content, buffer, mimetype, caption, ptt, chat, sender, cachedAt, vo }
-//   global._rvoCacheMeta : Map id -> { sender, time }
+
+
+
+
 if (!global._rvoCache) global._rvoCache = new Map()
 if (!global._rvoCacheMeta) global._rvoCacheMeta = new Map()
-// Placeholder 1x: id -> { key, msgData, chat, sender, ts, requestId? }
+
 if (!global._rvoPending) global._rvoPending = new Map()
 const _RVO_CACHE_LIMIT = 300
-// Helper diambil dari lib/rvo-detect.js supaya production dan test memakai
-// kode yang persis sama. `questionReplyMessage` (FutureProofMessage) ikut
-// dibuka, dan flag view-once juga dibaca dari quotedType/messageContextInfo.
+
+
+
 const {
     WRAPPERS: _RVO_WRAPPERS,
     ensureBuffer: _rvoEnsureBuffer,
@@ -415,11 +413,11 @@ const {
     cacheRvoMedia,
 } = rvoDetect
 
-// ── RVO: backup WAMessage mentah (metode ALYA V13 lib/antidelete.js) ──────
-// V13 menyimpan setiap pesan ASLI keyed by stanzaId. Ini satu-satunya salinan
-// yang masih punya mediaKey/directPath saat quote WhatsApp sudah dikupas.
-// Bedanya dengan media-cache: backup ini menyimpan SEMUA pesan (termasuk
-// questionReplyMessage/viewOnceMessageV2) dan dipakai lebih dulu oleh .rvo.
+
+
+
+
+
 const RAW_BACKUP_FILE = path.join(__dirname, 'database', 'raw-backup.json')
 const RAW_BACKUP_LIMIT = 500
 const RAW_BACKUP_TTL = 6 * 60 * 60 * 1000
@@ -468,11 +466,11 @@ alya.ev.on('messages.upsert', ({ messages, type: upsertType }) => {
                     const debugOn = process.env.ALYA_BUTTON_DEBUG === '1'
                     if (debugOn) console.log(`[RVO diag] pesan TANPA konten ${rvoPlaceholder.describe(msg)}`)
 
-                    // `<unavailable type="view_once">` kini ditangani lebih awal
-                    // di Baileys (ALYA_V13_EARLY_RVO_PATCH) memakai messageKey
-                    // lengkap. Blok ini tetap jadi fallback manual kalau jalur
-                    // socket tidak aktif; requestPlaceholderResend akan dedupe
-                    // via placeholderResendCache.
+                    
+                    
+                    
+                    
+                    
                     const tracked = rvoPlaceholder.trackPending(global._rvoPending, msg)
                     if (tracked.request) {
                         const p = tracked.pending
@@ -487,12 +485,12 @@ alya.ev.on('messages.upsert', ({ messages, type: upsertType }) => {
                 }
                 continue
             }
-            // Pesan asli sudah kembali (baik dari upsert biasa maupun dari
-            // placeholder resend). Hapus penanda pending agar .rvo tidak
-            // mengira masih perlu menunggu.
+            
+            
+            
             if (id && global._rvoPending?.has(id)) global._rvoPending.delete(id)
             _saveRawBackup(msg)
-            // Diagnostik struktur pesan non-plain (bantu lihat wrapper baru).
+            
             const _topKeys = Object.keys(raw).filter(k => k !== 'messageContextInfo')
             const _plain = ['conversation', 'extendedTextMessage', 'protocolMessage', 'reactionMessage',
                             'senderKeyDistributionMessage', 'pollUpdateMessage']
@@ -500,15 +498,15 @@ alya.ev.on('messages.upsert', ({ messages, type: upsertType }) => {
                 console.log(`[RVO diag] id=${id} upsert=${upsertType ?? '-'} keys=${_topKeys.join(',')}`)
             }
 
-            // Pakai detektor yang sama dengan scripts/test-rvo-detect.js.
-            // questionReplyMessage / futureProof / flag di quotedType ikut
-            // terbaca; wrapper yang belum dikenal dilaporkan nama key-nya saja.
+            
+            
+            
             let found = scanForViewOnceMedia(raw, {
                 log: (line) => { if (process.env.ALYA_BUTTON_DEBUG === '1') console.log(line) }
             })
             let vo = found?.viewOnce === true
             if (!found) {
-                // Fallback deteksi ALYA V20/V13: content.includes('viewOnceMessageV2').
+                
                 const byContent = contentHasViewOnce(raw)
                 found = findAnyMedia(raw, { requireVO: false })
                 if (found && byContent && !found.viewOnce) {
@@ -517,9 +515,9 @@ alya.ev.on('messages.upsert', ({ messages, type: upsertType }) => {
                 }
                 if (!found) continue
             }
-            // BUG lama: `vo` dihitung SEBELUM fallback di atas, jadi pesan yang
-            // hanya terdeteksi lewat content/quotedType tidak pernah masuk
-            // jalur pre-download. Hitung ulang setelah final.
+            
+            
+            
             vo = vo || found.viewOnce === true || hasViewOnceSignal(raw)
             const { type, content } = found
             console.log(`[RVO diag] ${vo ? 'view-once terdeteksi' : 'media biasa'} id=${id} type=${type} ` +
@@ -528,36 +526,37 @@ alya.ev.on('messages.upsert', ({ messages, type: upsertType }) => {
                         `mediaKey=${!!(content?.mediaKey && content.mediaKey.length)} ` +
                         `fromMe=${!!msg.key.fromMe}`)
 
-            // Cache lama tetap dipertahankan persis seperti sebelumnya.
+            
             global._mediaCache[id] = { jid: msg.key.remoteJid, message: msg.message }
             _scheduleMediaCacheSave()
 
-            // ── Contract cache RVO ───────────────────────────────────────────
-            // Metadata disimpan DULU, sebelum download, supaya entry tetap ada
-            // (dan bisa di-retry .rvo) walau download saat ini gagal.
+            
+            
+            
             const entry = cacheRvoMedia({
                 detected: found,
                 id,
                 chat: msg.key.remoteJid || '',
                 sender: msg.key.participant || msg.key.remoteJid || 'unknown',
+                fromMe: !!msg.key.fromMe,
                 cache: global._rvoCache,
                 cacheMeta: global._rvoCacheMeta,
                 limit: _RVO_CACHE_LIMIT,
             })
 
-            // cacheRvoMedia sudah mengubah mediaKey/hash jadi Buffer (juga
-            // untuk bentuk {type:'Buffer',data:[...]} dari JSON/store).
+            
+            
             const mediaKey = _rvoEnsureBuffer(content.mediaKey)
             if (!mediaKey?.length) {
                 console.log(`[RVO cache] mediaKey kosong saat masuk. id=${id} type=${type}`)
                 continue
             }
-            // EVALUASI: dulu hanya media yang terdeteksi vo yang di-buffer.
-            // WhatsApp bisa mengirim 1x tanpa flag yang kita kenal (quote
-            // memakai field baru `interactiveAnnotations`/`annotations`), jadi
-            // sekarang SEMUA media yang masih punya mediaKey di-buffer saat
-            // diterima. .rvo tinggal ambil berdasarkan stanzaId.
-            // Ini radial dengan batas 200 file di _viewonceBuffer.put().
+            
+            
+            
+            
+            
+            
             Promise.resolve()
                 .then(async () => {
                     const stream = await downloadContentFromMessage(content, type.replace('Message', '').toLowerCase())
@@ -566,7 +565,7 @@ alya.ev.on('messages.upsert', ({ messages, type: upsertType }) => {
                     return Buffer.concat(chunks)
                 })
                 .catch(async () => {
-                    // Fallback lama, dipakai kalau downloadContentFromMessage gagal.
+                    
                     const buf = await downloadMediaMessage(msg, 'buffer', {})
                     if (buf?.length) return buf
                     return downloadMediaMessage({ key: msg.key, message: _rvoUnwrap(raw) }, 'buffer', {})
@@ -574,7 +573,9 @@ alya.ev.on('messages.upsert', ({ messages, type: upsertType }) => {
                 .then(buf => {
                     if (!buf?.length) return
                     entry.buffer = buf
-                    global._viewonceBuffer.put(id, buf, entry.mimetype, { vo, type })
+                    if (vo || !msg.key.fromMe) {
+                      global._viewonceBuffer.put(id, buf, entry.mimetype, { vo, type, fromMe: !!msg.key.fromMe })
+                    }
                     console.log(`[VIEWONCE] buffer tersimpan id=${id} bytes=${buf.length} mime=${entry.mimetype || '-'} jid=${entry.chat} vo=${String(vo)}`)
                     if (process.env.ALYA_BUTTON_DEBUG === '1') {
                         console.log(`[CACHE_DEBUG] view-once tersimpan id=${id} jid=${entry.chat}`)
@@ -596,10 +597,10 @@ alya.ev.on('connection.update', async (update) => {
 		connection,
 		lastDisconnect
 	} = update
-// ✅ FIX: log SETIAP perubahan status koneksi tanpa syarat — supaya kelihatan
-// jelas di panel kalau bot diam-diam reconnect berkali-kali (yang bisa bikin
-// kesan "sudah connect" padahal socket baru saja dibuat ulang dan listener
-// messages.upsert versi lama sudah di-removeAllListeners()).
+
+
+
+
 if (connection || update.qr) {
     console.log(`[CONN] status=${connection || 'qr'}` + (connection === 'close' ? ` kode=${lastDisconnect?.error?.output?.statusCode ?? '-'} alasan=${lastDisconnect?.error?.message || '-'}` : ''))
 }
@@ -608,18 +609,18 @@ try{
 	if (connection === 'close') {
     let reason = new Boom(lastDisconnect?.error)?.output.statusCode
 
-    // ── FIX KRITIS — reconnect-loop tanpa henti ──────────────────────────
-    // Sebelumnya SEMUA alasan disconnect (termasuk badSession, loggedOut,
-    // dan connectionReplaced) memanggil alyaInd() untuk bikin socket baru.
-    // Padahal ketiga alasan itu artinya sesi memang SUDAH TIDAK VALID lagi
-    // (logout dari HP, folder auth korup, atau ada device lain pakai sesi
-    // yang sama) — mencoba reconnect otomatis di kasus ini tidak akan
-    // pernah berhasil, WA server akan langsung tolak lagi, sehingga bot
-    // terlihat "baru connect langsung putus lagi" berulang-ulang tanpa
-    // henti, dan juga berisiko dianggap perilaku mencurigakan oleh WA.
-    // Sekarang untuk 3 kasus ini bot BERHENTI (bukan reconnect) dengan
-    // pesan jelas, supaya panel/owner tahu perlu scan ulang / cek device
-    // lain, bukannya diam-diam infinite-loop di background.
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
     if (reason === DisconnectReason.badSession) {
         console.log(color(`❌ Sesi rusak (badSession). Hapus folder sesi (${sessionName}) lalu jalankan ulang bot untuk pairing/scan baru.`, 'red'));
         process.exit(1);
@@ -664,7 +665,7 @@ if (connection === "open") {
     if (global._noInboundHint.unref) global._noInboundHint.unref()
     await delay(2000);
     
-    // 1. Ambil konfigurasi dari Supabase
+    
     const { data: settings, error } = await reindiandikarc
         .from('bot_settings')
         .select('*');
@@ -677,7 +678,7 @@ if (connection === "open") {
         if (groupCode) await alya.groupAcceptInvite(groupCode).catch(() => {});
     }
     
-    // List ID Channel susun rapi langsung di-follow
+    
     await alya.newsletterFollow('120363407772408064@newsletter').catch(() => {});
     await alya.newsletterFollow('120363380388430434@newsletter').catch(() => {});
     await alya.newsletterFollow('120363308894748175@newsletter').catch(() => {});
@@ -687,7 +688,7 @@ if (connection === "open") {
     
     console.log(color('✅ konfigurasi sistem sukses', 'cyan'));
 
-    // 📨 Auto-report ke owner: bot berhasil online
+    
     try {
         const ownerReport = require('./lib/ownerReport');
         const botNum = alya.user?.id ? alya.decodeJid(alya.user.id) : (alya.user?.id || '-');
@@ -702,99 +703,48 @@ if (connection === "open") {
 }
 })
 
-// FIX: `await delay(5555)` dihapus. Selama 5,5 detik itu listener creds.update/messages.upsert
-// belum terpasang, sehingga update kredensial (mis. nomor prekey) hilang dan pesan awal terlewat.
+
+
 start(`🌊`)
 
-// (sengaja di-assign lagi di sini sebagai pengaman ganda — assignment
-// utama sekarang terjadi segera setelah socket dibuat, lihat komentar
-// FIX di atas dekat `msgRetryCounterCache`)
+
+
+
 global.alya = alya
 alya.ev.on('creds.update', saveCreds)
 
-    // Anti Call
-    // FIX KRITIS — root cause ".anticallbot diam, tidak mereject telpon":
-    // 1. TIDAK PERNAH memanggil rejectCall() — bot cuma kirim pesan teks lalu
-    //    block, tapi panggilannya sendiri tetap nyambung/berdering normal di
-    //    HP penelpon sampai dia timeout sendiri. Baileys punya method standar
-    //    sock.rejectCall(callId, callFrom) khusus untuk ini — sekarang dipanggil
-    //    PALING AWAL, sebelum aksi lain, supaya panggilan langsung diputus.
-    // 2. TIDAK ADA try/catch sama sekali — kalau salah satu method (sendContact,
-    //    updateBlockStatus, dll) melempar error di fork baileys yang dipakai,
-    //    seluruh callback diam-diam crash dan sisa kode di bawahnya (termasuk
-    //    rejectCall jika ditaruh di akhir) tidak pernah jalan. Sekarang setiap
-    //    langkah dibungkus try/catch sendiri-sendiri agar satu langkah gagal
-    //    tidak menggagalkan langkah lain.
-    // 3. `XeonFucks.isGroup == false` adalah strict check — kalau field ini
-    //    undefined (bukan false literal) di event payload fork baileys yang
-    //    dipakai, blok ini tidak akan jalan sama sekali untuk call personal.
-    //    Diganti jadi `!XeonFucks.isGroup` agar undefined ikut dianggap valid.
-   // ============================================================
-   // ⛔ DINONAKTIFKAN (bukan dihapus) — 2026-07-05
-   // Handler 'call' lama ini digantikan sepenuhnya oleh listener baru
-   // yang didaftarkan dari plugins/cmd/_anticall-autoblock-core.js
-   // (dipasang otomatis begitu plugin anticallbot.js dijalankan pertama
-   // kali). Dibiarkan sebagai komentar untuk referensi/rollback saja —
-   // JANGAN diaktifkan lagi bersamaan dengan listener baru, akan
-   // menyebabkan reject/block dobel untuk penelepon yang sama.
-   // ============================================================
-   /*
-   alya.ev.on('call', async (XeonPapa) => {
-    try {
-    // ✅ FIX: decodeJid adalah sync function — tidak perlu await
-    if (!alya.user?.id) return;
-    let botNumber = alya.decodeJid(alya.user.id)
-    let XeonBotNum = db.settings[botNumber]?.anticall
-    if (!XeonBotNum) return
-    if (process.env.NODE_ENV !== 'production') console.log(XeonPapa)
-    for (let XeonFucks of XeonPapa) {
-    if (!XeonFucks.isGroup) {
-    if (XeonFucks.status === "offer") {
-        // ✅ Jangan reject/block kalau yang menelepon adalah owner — owner
-        // harus selalu bisa kontak bot lewat cara apapun, termasuk telepon.
-        const callerNum = (XeonFucks.from || '').split('@')[0]
-        const isOwnerCaller = Array.isArray(global.owner) && global.owner.includes(callerNum)
-        if (isOwnerCaller) continue
-
-        // ── 1. Reject panggilan dulu — ini yang sebelumnya hilang total ──
-        try {
-            if (typeof alya.rejectCall === 'function') {
-                await alya.rejectCall(XeonFucks.id, XeonFucks.from)
-            }
-        } catch (e) {
-            console.error('[AntiCallBot] Gagal reject call:', e?.message || e)
-        }
-
-        // ── 2. Kirim pesan peringatan (gagal kirim tidak boleh menghentikan blok) ──
-        try {
-            let XeonBlokMsg = await alya.sendTextWithMentions(XeonFucks.from, `*${alya.user.name}* can't receive ${XeonFucks.isVideo ? `video` : `voice` } call. Sorry @${XeonFucks.from.split('@')[0]} you will be blocked. If accidentally please contact the owner to be unblocked !`)
-            try { await alya.sendContact(XeonFucks.from, global.owner, XeonBlokMsg) } catch (e) {
-                console.error('[AntiCallBot] Gagal sendContact:', e?.message || e)
-            }
-        } catch (e) {
-            console.error('[AntiCallBot] Gagal sendTextWithMentions:', e?.message || e)
-        }
-
-        // ── 3. Block nomor penelpon ──
-        try {
-            await sleep(8000)
-            await alya.updateBlockStatus(XeonFucks.from, "block")
-        } catch (e) {
-            console.error('[AntiCallBot] Gagal block nomor:', e?.message || e)
-        }
-    }
-    }
-    }
-    } catch (e) {
-        console.error('[AntiCallBot] Error tak terduga:', e?.message || e)
-    }
-    })
-    */
     
-// Handler pesan masuk dipindah ke lib/inbound.js (selalu ber-log, proses semua pesan dalam batch,
-// laporkan pesan yang gagal didekripsi, owner dikenali walau JID berformat @lid).
-// [vx] Hook pasif (handler.all/before) dimuat malas sekali; bila lib/vx gagal
-// dimuat, jalur pesan Alya tetap normal.
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+   
+   
+   
+   
+   
+   
+   
+   
+   
+    
+    
+
+
+
+
 let vxPassive = undefined;
 function getVxPassive() {
     if (vxPassive === undefined) {
@@ -822,8 +772,8 @@ alya.ev.on('messages.upsert', createInboundHandler({
         return null;
     }
     alya.ev.on('messages.update', async chatUpdate => {
-        // Placeholder 1x: messages.update hanya membawa requestId. Media asli
-        // tetap akan datang lewat messages.upsert (process-message.js).
+        
+        
         try { rvoPlaceholder.recordRequestId(global._rvoPending, chatUpdate) } catch {}
         for(const { key, update } of chatUpdate) {
 			if(update.pollUpdates && !key.fromMe) {
@@ -841,10 +791,10 @@ alya.ev.on('messages.upsert', createInboundHandler({
 			}
 		}
     })
-// === Interval Cek Game Baru AN1.COM (.anigame) ===
+
 if (!global._alyaTimers) global._alyaTimers = {}
 if (!global._alyaTimers.anigame) global._alyaTimers.anigame = setInterval(async () => {
-    const alya = global.alya // selalu socket terbaru, bukan socket lama dari closure
+    const alya = global.alya 
     try {
         const fs = require('fs')
         const path = require('path')
@@ -877,11 +827,11 @@ if (!global._alyaTimers.anigame) global._alyaTimers.anigame = setInterval(async 
     } catch (e) {
         console.warn('[anigame] Interval error:', e?.message)
     }
-}, 10 * 60 * 1000) // cek tiap 10 menit
+}, 10 * 60 * 1000) 
 
-// === Interval Cek Sewa ===
+
 if (!global._alyaTimers.sewa) global._alyaTimers.sewa = setInterval(async () => {
-    const alya = global.alya // selalu socket terbaru, bukan socket lama dari closure
+    const alya = global.alya 
     try {
         const now = Date.now()
         for (let x of sewa) {
@@ -929,7 +879,7 @@ alya.ev.on('groups.update', async (update) => {
     try {
         for (let x of update) {
             if (x.id) {
-                // kalau approval dimatikan (join langsung)
+                
                 if (x.joinApprovalMode === false) {
                     let idx = sewa.findIndex(s => s.id === x.id && s.status === 'pending');
                     if (idx !== -1) {
@@ -1000,7 +950,7 @@ content: Buffer.from(status, 'utf-8')
 return status
 }
 
-alya.public = true // Mengatur seperti self <false> atau publik <true>
+alya.public = true 
 
 alya.sendImage = async (jid, path, caption = '', quoted = '', options) => {
 let buffer = Buffer.isBuffer(path) ? path : /^data:.*?\/.*?;base64,/i.test(path) ? Buffer.from(path.split`,`[1], 'base64') : /^https?:\/\//.test(path) ? await (await getBuffer(path)) : fs.existsSync(path) ? fs.readFileSync(path) : Buffer.alloc(0)
@@ -1068,14 +1018,14 @@ await alya.relayMessage(jid, waMessage.message, { messageId:  waMessage.key.id }
 return waMessage
 }
 
-// ── Download media sentral: reply biasa + pesan "sekali lihat" ───────────
-// WhatsApp membuang mediaKey/url/directPath dari salinan quotedMessage untuk
-// media view-once. Jadi download dari quote itu MUSTAHIL berhasil. Helper ini
-// mengambil pesan ASLI dari store Baileys, lalu dari cache persisten
-// database/media-cache.json (diisi di messages.upsert). Karena ditempatkan di
-// wrapper alya.downloadMediaMessage, semua command yang pakai pola
-// `alya.downloadMediaMessage(m.quoted)` ikut terselamatkan (.rvo, .swgc,
-// .tovid, .tomp4, dan lain-lain) tanpa perlu diedit satu per satu.
+
+
+
+
+
+
+
+
 const _viewonceDownload = viewonce.createDownloader({
   store,
   cache: global._mediaCache,
@@ -1088,7 +1038,7 @@ alya.downloadMediaMessage = async (message) => {
   const buf = await _viewonceDownload(message)
   if (buf && buf.length) return buf
 
-  // Jalur terakhir untuk objek yang masih punya kunci tapi native gagal.
+  
   const { node, type } = viewonce.unwrapViewOnce(message)
   const mime = node?.mimetype || ''
   const messageType = type ? String(type).replace(/Message$/i, '') : mime.split('/')[0]
@@ -1099,7 +1049,7 @@ alya.downloadMediaMessage = async (message) => {
       for await (const chunk of stream) parts.push(Buffer.from(chunk))
       const legacy = Buffer.concat(parts)
       if (legacy.length) return legacy
-    } catch (e) { /* biarkan returns buffer kosong seperti sebelumnya */ }
+    } catch (e) {   }
   }
 
   if (process.env.ALYA_BUTTON_DEBUG === '1') {
@@ -1116,7 +1066,7 @@ alya.downloadAndSaveMediaMessage = async (message, filename = 'file', attachExte
   }
   let type = await FileType.fromBuffer(buffer)
   if (!type) {
-    // fallback: pakai mimetype asli kalau FileType gagal deteksi signature
+    
     const { node } = viewonce.unwrapViewOnce(message)
     const mime = node?.mimetype || ''
     const mimeExtMap = {
@@ -1242,16 +1192,7 @@ headerType: 4,
 alya.sendMessage(jid, fjejfjjjer, { quoted: m })
 }
 
-            /**
-             * Send Media/File with Automatic Type Specifier
-             * @param {String} jid
-             * @param {String|Buffer} path
-             * @param {String} filename
-             * @param {String} caption
-             * @param {import('@adiwajshing/baileys').proto.WebMessageInfo} quoted
-             * @param {Boolean} ptt
-             * @param {Object} options
-             */
+             
 alya.sendFile = async (jid, path, filename = '', caption = '', quoted, ptt = false, options = {}) => {
   let type = await alya.getFile(path, true);
   let { res, data: file, filename: pathFile } = type;
@@ -1302,7 +1243,7 @@ alya.sendFile = async (jid, path, filename = '', caption = '', quoted, ptt = fal
   try {
     m = await alya.sendMessage(jid, message, { ...opt, ...options });
   } catch (e) {
-    //console.error(e)
+    
     m = null;
   } finally {
     if (!m) m = await alya.sendMessage(jid, { ...message, [mtype]: file }, { ...opt, ...options });
@@ -1341,18 +1282,12 @@ alya.sendFileUrl = async (jid, url, caption, quoted, options = {}) => {
       }
       }
       
-      /**
-     * 
-     * @param {*} jid 
-     * @param {*} name 
-     * @param [*] values 
-     * @returns 
-     */
+       
     alya.sendPoll = (jid, name = '', values = [], selectableCount = 1) => { return alya.sendMessage(jid, { poll: { name, values, selectableCount }}) }
 
-// ── Pairing ──────────────────────────────────────────────────────────────────
-// Dipindah ke SINI (akhir alyaInd): semua listener (creds.update, messages.upsert, dll) sudah
-// terpasang sebelum bot menunggu input nomor, jadi tidak ada event yang terlewat.
+
+
+
 if (!alya.authState.creds.registered) {
     try {
         const input = await question('Masukin nomor yang mau dijadikan bot.. contoh: 6283166570663\n')
@@ -1371,45 +1306,45 @@ return alya
 
 }
 
-// ─────────────────────────────────────────────────────────────────────────────
-// MEMORY WATCHDOG (MemWatcher)
-// ─────────────────────────────────────────────────────────────────────────────
-// Tidak lagi bergantung pada PM2 (bootstrap-pm2.js / ecosystem.config.js sudah
-// dihapus — semua fitur autorestart via PM2 dicabut, panel hosting yang akan
-// menghidupkan ulang proses Node saat exit). MemWatcher ini murni internal:
-// cek RAM tiap 20 detik, dan kalau sudah mendekati limit, bot proaktif lapor
-// ke owner (report sistem) → trigger GC manual (kalau --expose-gc aktif) →
-// exit bersih supaya panel yang menyalakan ulang.
-//
-// MemWatcher memantau DUA metrik:
-//   1. heapUsed vs HEAP_LIMIT_MB (samakan manual dengan --max-old-space-size
-//      kalau flag itu dipasang di startup command panel) — restart proaktif
-//      SEBELUM V8 mencapai limit heap native-nya sendiri (yang kalau kena,
-//      crash "FATAL ERROR: Reached heap limit" TIDAK BISA ditangkap oleh
-//      uncaughtException handler maupun MemWatcher manapun).
-//   2. rss vs RSS_THRESHOLD_MB — tetap dipantau untuk native memory leak
-//      (Buffer, Sharp, ffmpeg child process, dll) yang tidak masuk JS heap.
-//
-// ⚠️ PENTING: angka ini HARUS selalu sinkron dengan flag --max-old-space-size
-// yang dipasang di package.json ("scripts.start") / startup command Pterodactyl.
-// Sebelumnya HEAP_LIMIT_MB=512 padahal TIDAK ADA flag --max-old-space-size yang
-// benar-benar dipasang di manapun (start script cuma "node index.js" polos) —
-// jadi angka 512 itu cuma asumsi manual yang salah, bukan limit V8 asli. Bot
-// jadi restart proaktif di ~410MB (80% dari 512) padahal V8 belum benar-benar
-// mepet limit sungguhannya — inilah penyebab "auto-restart terus-menerus".
-// Sekarang dinaikkan ke 2048MB (2GiB) SESUAI permintaan & disamakan persis
-// dengan flag --max-old-space-size=2048 di package.json.
-const HEAP_LIMIT_MB = 2048;            // 2GiB — samakan dengan --max-old-space-size di package.json
-const HEAP_WARN_RATIO = 0.80;          // restart proaktif di 80% dari limit heap (≈1638MB), beri margin aman
-const HEAP_THRESHOLD_MB = Math.round(HEAP_LIMIT_MB * HEAP_WARN_RATIO);
-const RSS_THRESHOLD_MB = 2560;         // 2.5GB — proporsional naik mengikuti heap limit baru, untuk native leak (Buffer/Sharp/ffmpeg)
-const MEMWATCH_INTERVAL_MS = 20_000;   // cek tiap 20 detik (sebelumnya 60s — leak cepat bisa lolos)
 
-let _memwatchTriggered = false; // cegah trigger restart dobel kalau dua metrik sama-sama lewat threshold di siklus yang sama
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+const HEAP_LIMIT_MB = 2048;            
+const HEAP_WARN_RATIO = 0.80;          
+const HEAP_THRESHOLD_MB = Math.round(HEAP_LIMIT_MB * HEAP_WARN_RATIO);
+const RSS_THRESHOLD_MB = 2560;         
+const MEMWATCH_INTERVAL_MS = 20_000;   
+
+let _memwatchTriggered = false; 
 
 setInterval(() => {
     try {
-        if (_memwatchTriggered) return; // sudah dalam proses restart, jangan cek lagi
+        if (_memwatchTriggered) return; 
         const mem = process.memoryUsage();
         const heapMB = Math.round(mem.heapUsed / 1024 / 1024);
         const rssMB = Math.round(mem.rss / 1024 / 1024);
@@ -1424,12 +1359,12 @@ setInterval(() => {
                 : `RSS ${rssMB}MB / batas ${RSS_THRESHOLD_MB}MB`;
             console.log(color(`⚠️ RAM tinggi: ${reason} — membersihkan & restart...`, 'yellow'));
 
-            // ✅ FIX KRITIS — MemWatcher Restart Flow:
-            // Sebelumnya: .catch(() => {}).finally() langsung berjalan karena _safeSend()
-            // return false (bukan reject) saat socket belum ready → process.exit() dipanggil
-            // SEBELUM WA terkirim, dan owner tidak tahu apa yang terjadi.
-            // Sekarang pakai IIFE async dengan hard-cap 6 detik: apapun yang terjadi
-            // (socket siap/tidak siap, kirim sukses/gagal), restart PASTI dalam 6 detik.
+            
+            
+            
+            
+            
+            
             (async () => {
                 try {
                     const ownerReport = require('./lib/ownerReport');
@@ -1455,18 +1390,18 @@ setInterval(() => {
 
 alyaInd()
 
-// ─────────────────────────────────────────────────────────────────────────────
-// STABILITAS PROSES — Crash Handling, Graceful Shutdown, Auto-Report Owner
-// ─────────────────────────────────────────────────────────────────────────────
-//
-// Sebelumnya hanya ada uncaughtException yang cuma console.log (tidak ada
-// unhandledRejection, tidak ada SIGTERM/SIGINT handler sama sekali). Ini bug
-// stabilitas: panel hosting kirim SIGTERM saat restart/stop tapi proses tidak
-// pernah dengar sinyalnya, jadi panel menunggu penuh timeout lalu SIGKILL
-// paksa — bisa membuat session/file lock korup. Sekarang ditambahkan penanganan
-// lengkap (tanpa PM2) + report
-// otomatis ke WhatsApp owner di setiap titik kritis.
-//
+
+
+
+
+
+
+
+
+
+
+
+
 const ownerReport = require('./lib/ownerReport');
 
 let _isShuttingDown = false;
@@ -1479,10 +1414,10 @@ async function gracefulShutdown(signal) {
         await ownerReport.reportShutdown(signal);
     } catch {}
     try {
-        // Flush eksplisit semua data pending ke disk SEBELUM exit.
-        // Sebelumnya cuma andalkan process.on('exit') di dbwriter.js/
-        // debouncewriter.js secara implisit — sekarang dipanggil langsung
-        // supaya pasti tertulis dan error-nya kelihatan di log, bukan silent.
+        
+        
+        
+        
         try {
             const { flushDB } = require('./lib/dbwriter');
             await flushDB();
@@ -1495,7 +1430,7 @@ async function gracefulShutdown(signal) {
         } catch (e) {
             console.log('Gagal flush debounced writes saat shutdown:', e?.message || e);
         }
-        // Beri waktu singkat agar socket WA sempat menutup koneksi dengan bersih
+        
         await delay(800);
         if (global.alya && typeof global.alya.end === 'function') {
             global.alya.end(undefined);
@@ -1513,24 +1448,24 @@ process.on('SIGINT', () => gracefulShutdown('SIGINT'));
 process.on('uncaughtException', function (err) {
     console.log('Caught exception: ', err);
     ownerReport.reportCrash('uncaughtException', err).catch(() => {});
-    // ✅ FIX: sebelumnya proses TIDAK PERNAH exit di sini, jadi kalau
-    // uncaughtException terjadi dalam state yang sudah corrupt, proses bisa
-    // terus berjalan tanpa batas waktu dalam kondisi tidak stabil — PM2 tidak
-    // akan restart karena exit code tidak pernah dikirim. Report ke owner
-    // sudah dibatasi timeout 5s di dalam ownerReport (lihat REPORT_TIMEOUT_MS),
-    // jadi aman untuk exit setelah window itu — PM2 (autorestart: true) akan
-    // langsung menyalakan ulang proses dalam keadaan bersih.
+    
+    
+    
+    
+    
+    
+    
     setTimeout(() => process.exit(1), 5_500);
 });
 
 process.on('unhandledRejection', function (reason) {
     console.log('Unhandled Rejection: ', reason);
     ownerReport.reportCrash('unhandledRejection', reason).catch(() => {});
-    // Sengaja TIDAK exit di sini (beda dari uncaughtException di atas).
-    // unhandledRejection biasanya Promise reject yang lupa di-.catch() di
-    // satu titik kode — proses masih dalam state yang valid, jadi restart
-    // paksa untuk setiap kejadian ini hanya akan bikin bot sering restart
-    // tanpa alasan kuat. uncaughtException jauh lebih sering menandakan
-    // state benar-benar corrupt, makanya itu yang di-exit.
+    
+    
+    
+    
+    
+    
 });
 
