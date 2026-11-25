@@ -5,6 +5,7 @@ module.exports = {
   tags: ['sticker'],
   run: async (alya, m, ctx) => {
     const { prefix, command, quoted, mime, reply, replyalya } = ctx
+    const { STICKER_AUDIO_LIMITS, extractSoundStickerMedia, sendSoundSticker } = require('../../lib/sticker-audio')
     const biaya = 1
     const limitUser = global.db?.users?.[m.sender]?.limit || 0
 
@@ -22,7 +23,7 @@ module.exports = {
     if (!isVideo) return replyalya('❌ Harus reply video yang ada suaranya ya!')
 
     const seconds = Number(quotedMsg.seconds || 0)
-    if (seconds > 30) return replyalya('❌ Video terlalu panjang. Maksimal 30 detik.')
+    if (seconds > STICKER_AUDIO_LIMITS.rejectSeconds) return replyalya(`❌ Video terlalu panjang. Maksimal ${STICKER_AUDIO_LIMITS.rejectSeconds} detik.`)
 
     try {
       await alya.sendMessage(m.chat, { react: { text: '⏳', key: m.key } })
@@ -32,10 +33,11 @@ module.exports = {
         return replyalya('❌ Gagal mengunduh video (mediaExpired/ukuran 0).')
       }
 
-      const { extractSoundStickerMedia, sendSoundSticker } = require('../../lib/sticker-audio')
       const media = await extractSoundStickerMedia(video, {
         pack: global.packname,
-        author: global.author
+        author: global.author,
+        maxVideoSeconds: STICKER_AUDIO_LIMITS.videoSeconds,
+        maxAudioSeconds: STICKER_AUDIO_LIMITS.audioSeconds
       })
       const result = await sendSoundSticker(alya, m.chat, media, m, {
         stickerOptions: { packname: global.packname, author: global.author }

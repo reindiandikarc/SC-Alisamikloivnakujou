@@ -13,16 +13,24 @@ const registry = require('../plugins/cmd_registry.json')
 const helperPath = require.resolve('../lib/sticker-audio')
 
 function stubHelper (overrides = {}) {
-  const calls = { extract: 0, send: 0, fallback: false }
+  const calls = { extract: 0, extractAnimated: 0, send: 0, fallback: false }
   require.cache[helperPath] = {
     id: helperPath,
     filename: helperPath,
     loaded: true,
     exports: {
-      extractSoundStickerMedia: async (video) => {
+      STICKER_AUDIO_LIMITS: { videoSeconds: 20, audioSeconds: 20, rejectSeconds: 20 },
+      extractSoundStickerMedia: async (video, opts) => {
         calls.extract++
         calls.video = video
+        calls.extractOpts = opts
         return { image: Buffer.from('WEBPIMAGE'), audio: Buffer.from('OGGAUDIO') }
+      },
+      extractAnimatedStickerMedia: async (video, opts) => {
+        calls.extractAnimated++
+        calls.video = video
+        calls.extractAnimatedOpts = opts
+        return { image: Buffer.from('WEBPIMAGE'), width: 512, height: 512 }
       },
       sendSoundSticker: overrides.sendSoundSticker || (async (conn, jid, media, quoted, opts) => {
         calls.send++
@@ -110,6 +118,67 @@ async function main () {
     assert.ok(plugin.command.includes('stcaudio'))
   })
 
+  await test('stcvideo terdaftar di registry dan plugin', async () => {
+    assert.ok(fs.existsSync(path.join(__dirname, '../plugins/cmd/stcvideo.js')), 'plugin stcvideo belum ada')
+    const videoPlugin = require('../plugins/cmd/stcvideo')
+    assert.strictEqual(registry.stcvideo, 'plugins/cmd/stcvideo.js')
+    assert.strictEqual(registry.stcv, 'plugins/cmd/stcvideo.js')
+    assert.ok(videoPlugin.command.includes('stcvideo'))
+  })
+
+  await test('helper menetapkan batas default 20 detik', async () => {
+    delete require.cache[helperPath]
+    const helper = require('../lib/sticker-audio')
+    assert.strictEqual(helper.STICKER_AUDIO_LIMITS.videoSeconds, 20)
+    assert.strictEqual(helper.STICKER_AUDIO_LIMITS.audioSeconds, 20)
+    assert.strictEqual(helper.STICKER_AUDIO_LIMITS.rejectSeconds, 20)
+  })
+
+  await test('stcaudio memakai batas 20 detik saat memanggil extractor', async () => {
+    const calls = stubHelper()
+    const s = setup()
+    await plugin.run(s.alaya, s.m, s.ctx)
+    assert.strictEqual(calls.extractOpts.maxVideoSeconds, 20)
+    assert.strictEqual(calls.extractOpts.maxAudioSeconds, 20)
+  })
+
+  await test('stcvideo tanpa reply -> instruksi, helper tidak dipanggil', async () => {
+    const calls = stubHelper()
+    const videoPlugin = require('../plugins/cmd/stcvideo')
+    const s = setup({ command: 'stcvideo', quoted: null })
+    await videoPlugin.run(s.alaya, s.m, { ...s.ctx, command: 'stcvideo' })
+    assert.ok(s.plain.join('\n').includes('.stcvideo'))
+    assert.strictEqual(calls.extractAnimated, 0)
+    assert.strictEqual(global.db.users[s.m.sender].limit, 5)
+  })
+
+  await test('stcvideo reply video -> stiker animasi tanpa audio, limit dipotong', async () => {
+    const calls = stubHelper()
+    const videoPlugin = require('../plugins/cmd/stcvideo')
+    const s = setup({ command: 'stcvideo' })
+    await videoPlugin.run(s.alaya, s.m, { ...s.ctx, command: 'stcvideo' })
+    assert.strictEqual(calls.extractAnimated, 1)
+    assert.strictEqual(calls.extract, 0)
+    assert.strictEqual(calls.extractAnimatedOpts.maxVideoSeconds, 20)
+    assert.ok(s.sent.some(x => x.content?.sticker?.toString() === 'WEBPIMAGE'))
+    assert.ok(!s.sent.some(x => x.content?.audio), 'stcvideo tidak boleh mengirim audio')
+    assert.ok(s.sent.some(x => x.content?.react?.text === '⏳'))
+    assert.ok(s.sent.some(x => x.content?.react?.text === '✅'))
+    assert.strictEqual(global.db.users[s.m.sender].limit, 4)
+  })
+
+  await test('stcvideo menolak video lebih dari 20 detik', async () => {
+    const calls = stubHelper()
+    const videoPlugin = require('../plugins/cmd/stcvideo')
+    const s = setup({
+      command: 'stcvideo',
+      quoted: { mtype: 'videoMessage', msg: { videoMessage: {}, seconds: 21 }, download: async () => Buffer.from('VIDEO') }
+    })
+    await videoPlugin.run(s.alaya, s.m, { ...s.ctx, command: 'stcvideo' })
+    assert.ok(s.replied.some(t => /Maksimal 20 detik/.test(t)), JSON.stringify(s.replied))
+    assert.strictEqual(calls.extractAnimated, 0)
+  })
+
   await test('tanpa reply -> instruksi, helper tidak dipanggil', async () => {
     const calls = stubHelper()
     const s = setup({ quoted: null })
@@ -127,11 +196,11 @@ async function main () {
     assert.strictEqual(calls.extract, 0)
   })
 
-  await test('video lebih dari 30 detik -> pesan error', async () => {
+  await test('video lebih dari 20 detik -> pesan error', async () => {
     const calls = stubHelper()
-    const s = setup({ quoted: { mtype: 'videoMessage', msg: { videoMessage: {}, seconds: 31 }, download: async () => Buffer.from('VIDEO') } })
+    const s = setup({ quoted: { mtype: 'videoMessage', msg: { videoMessage: {}, seconds: 21 }, download: async () => Buffer.from('VIDEO') } })
     await plugin.run(s.alaya, s.m, s.ctx)
-    assert.ok(s.replied.some(t => /Maksimal 30 detik/.test(t)), JSON.stringify(s.replied))
+    assert.ok(s.replied.some(t => /Maksimal 20 detik/.test(t)), JSON.stringify(s.replied))
     assert.strictEqual(calls.extract, 0)
   })
 
@@ -290,8 +359,17 @@ async function main () {
     assert.ok(Number(rate[1]) <= 40, 'bitrate ' + rate[1] + ' kb/s')
   })
 
+  await test('extractor bisa menghasilkan stiker animasi tanpa audio', async () => {
+    delete require.cache[helperPath]
+    const helper = require('../lib/sticker-audio')
+    const media = await helper.extractAnimatedStickerMedia(makeSampleVideo(), { pack: 'Alya', author: 'Alya' })
+    assert.strictEqual(media.image.toString('ascii', 0, 4), 'RIFF')
+    assert.strictEqual(media.audio, null)
+    assert.strictEqual(media.animated, true)
+  })
+
   await test('plugin dan helper tidak punya komentar kode', async () => {
-    for (const file of ['../plugins/cmd/stcaudio.js', '../lib/sticker-audio.js']) {
+    for (const file of ['../plugins/cmd/stcaudio.js', '../plugins/cmd/stcvideo.js', '../lib/sticker-audio.js']) {
       const source = fs.readFileSync(path.join(__dirname, file), 'utf-8')
       assert.ok(!/^\s*\/\//m.test(source) && !/^\s*\/\*/m.test(source), file + ' tidak boleh punya komentar kode')
     }

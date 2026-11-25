@@ -806,18 +806,11 @@ alya.ev.emit('messages.upsert', msg)
         const mime = (quoted.msg || quoted).mimetype || ''
         const qmsg = (quoted.msg || quoted)
         const isMedia = /image|video|sticker|audio/.test(mime)
-        const isImage = (type == 'imageMessage')
-		const isVideo = (type == 'videoMessage')
-		const isAudio = (type == 'audioMessage')
-		const isSticker = (type == 'stickerMessage')
-		const isQuotedImage = type === 'extendedTextMessage' && content.includes('imageMessage')
-		const isQuotedViewOnce = type === 'extendedTextMessage' && content.includes('viewOnceMessageV2')
-        const isQuotedLocation = type === 'extendedTextMessage' && content.includes('locationMessage')
-        const isQuotedVideo = type === 'extendedTextMessage' && content.includes('videoMessage')
-        const isQuotedSticker = type === 'extendedTextMessage' && content.includes('stickerMessage')
-        const isQuotedAudio = type === 'extendedTextMessage' && content.includes('audioMessage')
-        const isQuotedContact = type === 'extendedTextMessage' && content.includes('contactMessage')
-        const isQuotedDocument = type === 'extendedTextMessage' && content.includes('documentMessage')
+        const {
+          isImage, isVideo, isAudio, isSticker, isQuotedImage, isQuotedVideo,
+          isQuotedSticker, isQuotedAudio, isQuotedLocation, isQuotedContact,
+          isQuotedDocument, isQuotedViewOnce,
+        } = require('./lib/quote-flags').resolve(m)
 
         
         

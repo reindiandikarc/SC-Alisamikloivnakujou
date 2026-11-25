@@ -2916,6 +2916,8 @@
   "qcstc": "plugins/cmd/vx_nimbus_plugins_sticker_qc.js",
   "stcqc": "plugins/cmd/vx_nimbus_plugins_sticker_qc.js",
   "stcaudio": "plugins/cmd/stcaudio.js",
+  "stcvideo": "plugins/cmd/stcvideo.js",
+  "stcv": "plugins/cmd/stcvideo.js",
   "qcstic": "plugins/cmd/vx_nimbus_plugins_sticker_qc.js",
   "qcstick": "plugins/cmd/vx_nimbus_plugins_sticker_qc.js",
   "quotesticker": "plugins/cmd/vx_nimbus_plugins_sticker_qc.js",
