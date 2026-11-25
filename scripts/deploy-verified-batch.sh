@@ -38,6 +38,6 @@ for f in "${FILES[@]}"; do
 done
 
 echo "== Runtime sanity =="
-instabox exec "$MACHINE" -- bash -lc "cd '$REMOTE' && printf 'service=' && systemctl is-active alya-bot && printf 'uimode=' && tr -d '\n' < database/uimode.json && printf '\nearly_rvo_markers=' && grep -c 'ALYA_V13_EARLY_RVO_PATCH' node_modules/@whiskeysockets/baileys/src/Socket/messages-recv.js && printf 'sound_patch=' && grep -c 'ALYA_SOUND_STICKER_V2_PATCH' node_modules/@whiskeysockets/baileys/src/index.bundle.cjs && printf 'field134=' && grep -c 'w.uint32(1074)' node_modules/@whiskeysockets/baileys/src/index.bundle.cjs && printf 'recent_errors=' && (journalctl -u alya-bot --since '5 min ago' --no-pager 2>/dev/null | grep -ciE 'error|uncaught|crash' || true)"
+instabox exec "$MACHINE" -- bash -lc "cd '$REMOTE' && printf 'service=' && systemctl is-active alya-bot && printf 'uimode=' && tr -d '\n' < database/uimode.json && printf '\nearly_rvo_markers=' && (grep -c 'ALYA_V13_EARLY_RVO_PATCH' node_modules/@whiskeysockets/baileys/src/Socket/messages-recv.js || true) && printf 'sound_patch=' && (grep -c 'ALYA_SOUND_STICKER_V2_PATCH' node_modules/@whiskeysockets/baileys/src/index.bundle.cjs || true) && printf 'field134=' && (grep -c 'w.uint32(1074)' node_modules/@whiskeysockets/baileys/src/index.bundle.cjs || true) && printf 'recent_errors=' && (journalctl -u alya-bot --since '5 min ago' --no-pager 2>/dev/null | grep -ciE 'error|uncaught|crash' || true)"
 
 echo "DEPLOY_OK"
