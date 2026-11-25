@@ -3,7 +3,7 @@
 # Backup -> push -> restart -> cek hash -> cek uimode runtime (tetap rich).
 set -euo pipefail
 
-MACHINE="${MACHINE:-m_agralfkf6q2p3lxe7z6jrfosv4}"
+MACHINE="${MACHINE:-m_agra4uecrjtas6lfatvepbdhvm}"
 LOCAL="${LOCAL:-/data/workspace/SC-Alisamikloivnakujou}"
 REMOTE="${REMOTE:-/data/home/SC-Alisamikloivnakujou}"
 MANIFEST="${MANIFEST:-/data/tmp/opencode/deploy-files.txt}"

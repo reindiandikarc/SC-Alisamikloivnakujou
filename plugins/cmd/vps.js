@@ -19,7 +19,7 @@
 const fs = require('fs')
 
 const API_URL = 'https://api.instabox.sh'
-const MACHINE = 'm_agralfkf6q2p3lxe7z6jrfosv4'
+const MACHINE = process.env.INSTABOX_MACHINE_ID || 'm_agra4uecrjtas6lfatvepbdhvm'
 const KEY_FILE = '/data/home/.instabox_key'
 const STATE_FILE = './database/vps_watchdog.json'
 const CMD_FILE = './database/vps_cmd.json'
@@ -251,7 +251,7 @@ module.exports = {
       if (!r.ok) throw new Error(`HTTP ${r.status}: ${r.data?.error?.message || 'gagal'}`)
       machine = r.data
     } catch (e) {
-      return replyalya(`⚠️ Gagal hubungi panel VPS: \`${e.message}\`\n\nCek file kunci /data/home/.instabox_key di mesin bot.`)
+      return replyalya(`⚠️ Gagal hubungi panel VPS: \`${e.message}\`\n\nMesin: \`${MACHINE}\`\nCek file kunci /data/home/.instabox_key di mesin bot.`)
     }
 
     const state = readJson(STATE_FILE, { events: [] })
