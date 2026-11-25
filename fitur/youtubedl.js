@@ -2,6 +2,7 @@ const axios = require("axios")
 const https = require("https")
 const fetch = require("node-fetch")
 const WebSocket = require("ws")
+const { fetchBuffer: browserFetchBuffer, pickIzukaDownloadUrl } = require("../lib/yt-browser")
 
 const BASE_URL = "https://hub.ytconvert.org/api/download"
 const headers = {
@@ -47,7 +48,7 @@ async function requestConvert(payload) {
 }
 
 async function waitUntilReady(statusUrl) {
-  while (true) {
+  for (let i = 0; i < 40; i++) {
     const { data } = await axios.get(statusUrl, {
       headers: { "User-Agent": "Mozilla/5.0" }
     })
@@ -57,6 +58,7 @@ async function waitUntilReady(statusUrl) {
 
     await delay(3000)
   }
+  throw new Error("Convert timeout")
 }
 
 async function primaryMP3(url) {
@@ -212,11 +214,46 @@ async function quaternaryDownload(url, type = "mp3", quality = "720") {
     })
 
     const json = await req.json()
+    const audioUrl = json?.data?.url
+    if (typeof audioUrl !== "string" || !/^https?:\/\//i.test(audioUrl)) {
+      throw new Error("SSYoutube: link audio tidak tersedia")
+    }
 
-    return { title, thumbnail, downloadUrl: json.data.url }
+    return { title, thumbnail, downloadUrl: audioUrl }
   }
 
   throw new Error("SSYoutube MP4 skip (fallback only mp3 safe)")
+}
+
+async function izukaMP3(url) {
+  let lastError
+  for (let attempt = 0; attempt < 3; attempt++) {
+    try {
+      const { data } = await axios.get("https://my.izuka-api.xyz/api/downloader/ytmp3", {
+        params: { url },
+        timeout: 30000,
+        headers: { "User-Agent": "Mozilla/5.0" }
+      })
+      const downloadUrl = pickIzukaDownloadUrl(data)
+      if (!downloadUrl) throw new Error("Izuka: link download tidak tersedia")
+      const { buffer } = await browserFetchBuffer(downloadUrl, { timeout: 60000 })
+      if (!Buffer.isBuffer(buffer) || buffer.length < 1024) throw new Error("Izuka: audio kosong")
+      const apiTitle = data?.result?.title
+      const oembedTitle = await getYoutubeTitle(url)
+      const title = /^YouTube Video/.test(oembedTitle) ? (apiTitle || oembedTitle) : oembedTitle
+      return {
+        title,
+        downloadUrl,
+        thumbnail: buildThumbnail(url),
+        buffer,
+        source: "izuka-browser"
+      }
+    } catch (e) {
+      lastError = e
+      if (attempt < 2) await delay(800)
+    }
+  }
+  throw lastError
 }
 
 /* =========================
@@ -224,19 +261,13 @@ async function quaternaryDownload(url, type = "mp3", quality = "720") {
 ========================= */
 
 async function ytmp3(url) {
-  try {
-    return await primaryMP3(url)
-  } catch {
+  for (const provider of [izukaMP3, primaryMP3, secondaryDownload, tertiaryDownload, quaternaryDownload]) {
     try {
-      return await secondaryDownload(url, "mp3")
-    } catch {
-      try {
-        return await tertiaryDownload(url, "mp3")
-      } catch {
-        return await quaternaryDownload(url, "mp3")
-      }
-    }
+      const result = await provider(url, "mp3")
+      if (result && typeof result === "object" && (result.downloadUrl || result.buffer)) return result
+    } catch {}
   }
+  throw new Error("Semua server audio gagal")
 }
 
 async function ytmp4(url, quality = "720") {

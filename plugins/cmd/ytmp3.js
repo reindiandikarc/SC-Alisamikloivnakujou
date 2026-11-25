@@ -35,16 +35,20 @@ module.exports = {
       const { ytmp3 } = require('../../fitur/youtubedl');
       const res = await ytmp3(text);
 
-      global.db.users[m.sender].limit -= biaya;
-      const sisa = global.db.users[m.sender].limit;
+      if (!res || (!res.buffer && !res.downloadUrl)) {
+        throw new Error('Hasil download kosong');
+      }
 
       // ✅ Kirim audio tanpa link preview
       await alya.sendMessage(m.chat, {
-        audio: { url: res.downloadUrl },
+        audio: res.buffer || { url: res.downloadUrl },
         mimetype: 'audio/mpeg',
         fileName: (res.title || 'audio') + '.mp3',
         ptt: false
       }, { quoted: m });
+
+      global.db.users[m.sender].limit -= biaya;
+      const sisa = global.db.users[m.sender].limit;
 
       // Notif limit dipotong — pakai pesan biasa bukan reply
       await alya.sendMessage(m.chat, {
