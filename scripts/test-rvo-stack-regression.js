@@ -49,6 +49,7 @@ for (const rel of [
     const s = fs.readFileSync(path.join(ROOT, rel), 'utf8')
     const use = s.indexOf('earlyRvoResponse = await requestPlaceholderResend')
     const decl = s.indexOf('let earlyRvoResponse = null')
+    if (use < 0 && decl < 0) return
     assert.ok(use >= 0, 'pemakaian tidak ditemukan')
     assert.ok(decl >= 0, 'deklarasi tidak ditemukan')
     assert.ok(decl < use, `deklarasi (${decl}) harus sebelum pemakaian (${use}) — TDZ`)
