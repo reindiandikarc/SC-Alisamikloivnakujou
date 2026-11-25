@@ -24,6 +24,12 @@ async function main () {
     assert.ok(bundle.includes('case 26:'))
   })
 
+  await test('bundle mendukung audioStickerMessage field 134', async () => {
+    assert.ok(bundle.includes('Message.prototype.audioStickerMessage'))
+    assert.ok(bundle.includes('w.uint32(1074)'))
+    assert.ok(bundle.includes('case 134:'))
+  })
+
   await test('patch script menjaga marker RVO', async () => {
     const patcher = fs.readFileSync(path.join(__dirname, 'patch-baileys-sticker-audio.py'), 'utf-8')
     assert.ok(patcher.includes('marker_counts'))
@@ -43,6 +49,47 @@ async function main () {
     assert.ok(decoded.stickerMessage && decoded.stickerMessage.audioMessage)
     assert.strictEqual(decoded.stickerMessage.audioMessage.mimetype, 'audio/ogg; codecs=opus')
     assert.strictEqual(decoded.stickerMessage._audioMessage, 'audioMessage')
+  })
+
+  await test('getter oneof audio dan mediaKeyDomain saling independen', async () => {
+    const proto = require('@whiskeysockets/baileys').proto
+    const sticker = proto.Message.StickerMessage.create({})
+    sticker.mediaKeyDomain = 1
+    sticker.audioMessage = { mimetype: 'audio/ogg; codecs=opus' }
+    assert.strictEqual(sticker._mediaKeyDomain, 'mediaKeyDomain')
+    assert.strictEqual(sticker._audioMessage, 'audioMessage')
+    assert.strictEqual(sticker.mediaKeyDomain, 1)
+  })
+
+  await test('proto field 134 encode/decode bertahan dengan audio bersarang', async () => {
+    const proto = require('@whiskeysockets/baileys').proto
+    const message = proto.Message.fromObject({
+      audioStickerMessage: {
+        message: {
+          stickerMessage: {
+            mimetype: 'image/webp',
+            isAnimated: true,
+            width: 512,
+            height: 512,
+            audioMessage: {
+              url: 'https://example.invalid/audio',
+              mimetype: 'audio/ogg; codecs=opus',
+              ptt: true,
+              seconds: 4
+            }
+          }
+        }
+      }
+    })
+    const encoded = proto.Message.encode(message).finish()
+    const decoded = proto.Message.decode(encoded)
+    const sticker = decoded.audioStickerMessage?.message?.stickerMessage
+    assert.ok(sticker, 'sticker bersarang hilang')
+    assert.strictEqual(sticker.width, 512)
+    assert.strictEqual(sticker.isAnimated, true)
+    assert.ok(sticker.audioMessage)
+    assert.strictEqual(sticker.audioMessage.mimetype, 'audio/ogg; codecs=opus')
+    assert.strictEqual(sticker.audioMessage.ptt, true)
   })
 
   await test('prepareWAMessageMedia menyisipkan audio ke stickerMessage', async () => {

@@ -33,7 +33,10 @@ module.exports = {
       }
 
       const { extractSoundStickerMedia, sendSoundSticker } = require('../../lib/sticker-audio')
-      const media = await extractSoundStickerMedia(video)
+      const media = await extractSoundStickerMedia(video, {
+        pack: global.packname,
+        author: global.author
+      })
       const result = await sendSoundSticker(alya, m.chat, media, m, {
         stickerOptions: { packname: global.packname, author: global.author }
       })

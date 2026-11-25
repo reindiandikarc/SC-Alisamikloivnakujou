@@ -2,7 +2,11 @@
 
 const assert = require('assert')
 const fs = require('fs')
+const os = require('os')
 const path = require('path')
+const { execFileSync } = require('child_process')
+const { promisify } = require('util')
+const execFile = promisify(require('child_process').execFile)
 
 const plugin = require('../plugins/cmd/stcaudio')
 const registry = require('../plugins/cmd_registry.json')
@@ -66,6 +70,33 @@ function setup (overrides = {}) {
     ...overrides
   }
   return { alaya, m, ctx, sent, replied, plain }
+}
+
+function makeSampleVideo () {
+  const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'stcaudio-fixture-'))
+  const file = path.join(dir, 'source.mp4')
+  const bin = require('ffmpeg-static')
+  execFileSync(bin, [
+    '-y', '-loglevel', 'error',
+    '-f', 'lavfi', '-i', 'testsrc=size=640x360:rate=15',
+    '-f', 'lavfi', '-i', 'sine=frequency=440:duration=2',
+    '-shortest', '-t', '2',
+    '-c:v', 'libx264', '-pix_fmt', 'yuv420p', '-c:a', 'aac',
+    file
+  ])
+  return fs.readFileSync(file)
+}
+
+function webpChunks (buf) {
+  const chunks = []
+  let offset = 12
+  while (offset + 8 <= buf.length) {
+    const fourcc = buf.toString('ascii', offset, offset + 4)
+    const size = buf.readUInt32LE(offset + 4)
+    chunks.push({ fourcc, payload: buf.subarray(offset + 8, offset + 8 + size) })
+    offset += 8 + size + (size % 2)
+  }
+  return chunks
 }
 
 async function test (name, fn) {
@@ -151,41 +182,112 @@ async function main () {
     assert.strictEqual(global.db.users[s.m.sender].limit, 5)
   })
 
-  await test('helper mengirim sticker dengan audio tersemat', async () => {
+  await test('helper relay sound sticker lewat wrapper field 134', async () => {
     delete require.cache[helperPath]
     const helper = require('../lib/sticker-audio')
-    const sent = []
+    const relayed = []
     const conn = {
-      sendMessage: async (jid, content, opts) => {
-        sent.push({ jid, content, opts })
-        return { key: { id: 'SENT' } }
+      user: { id: 'bot@s.whatsapp.net' },
+      userJid: 'bot@s.whatsapp.net',
+      relayMessage: async (jid, message, opts) => {
+        relayed.push({ jid, message, opts })
+        return {}
       }
     }
-    const result = await helper.sendSoundSticker(conn, 'jid', { image: Buffer.from('WEBPIMAGE'), audio: Buffer.from('OGGAUDIO') }, { key: { id: 'Q' } }, { stickerOptions: { packname: 'Alya' } })
+    const prepared = {
+      stickerMessage: { mimetype: 'image/webp', width: 512, height: 512, isAnimated: true },
+      audioMessage: { mimetype: 'audio/ogg; codecs=opus', ptt: true, seconds: 2 }
+    }
+    const result = await helper.sendSoundSticker(conn, 'jid', { image: Buffer.from('WEBPIMAGE'), audio: Buffer.from('OGGAUDIO') }, { key: { id: 'Q', remoteJid: 'jid', fromMe: true }, message: { conversation: 'video' } }, { prepared })
     assert.strictEqual(result.fallback, false)
-    assert.strictEqual(sent.length, 1)
-    assert.strictEqual(sent[0].content.sticker.toString(), 'WEBPIMAGE')
-    assert.strictEqual(sent[0].content.stickerAudio.toString(), 'OGGAUDIO')
-    assert.strictEqual(sent[0].content.packname, 'Alya')
-    assert.strictEqual(sent[0].opts.quoted.key.id, 'Q')
+    assert.strictEqual(relayed.length, 1)
+    assert.ok(relayed[0].message.audioStickerMessage)
+    assert.ok(!relayed[0].message.stickerMessage)
+    const nested = relayed[0].message.audioStickerMessage.message.stickerMessage
+    assert.strictEqual(nested.width, 512)
+    assert.strictEqual(nested.height, 512)
+    assert.strictEqual(nested.isAnimated, true)
+    assert.strictEqual(nested.audioMessage.ptt, true)
   })
 
-  await test('helper fallback ke stiker visual saat sound sticker ditolak', async () => {
+  await test('helper fallback ke stiker visual saat relay ditolak', async () => {
     delete require.cache[helperPath]
     const helper = require('../lib/sticker-audio')
     const sent = []
     const conn = {
+      user: { id: 'bot@s.whatsapp.net' },
+      userJid: 'bot@s.whatsapp.net',
+      relayMessage: async () => { throw new Error('unsupported audioStickerMessage') },
       sendMessage: async (jid, content, opts) => {
         sent.push({ jid, content, opts })
-        if (sent.length === 1) throw new Error('unsupported stickerAudio')
         return { key: { id: 'SENT' } }
       }
     }
-    const result = await helper.sendSoundSticker(conn, 'jid', { image: Buffer.from('WEBPIMAGE'), audio: Buffer.from('OGGAUDIO') }, { key: { id: 'Q' } })
+    const prepared = {
+      stickerMessage: { mimetype: 'image/webp', width: 512, height: 512, isAnimated: true },
+      audioMessage: { mimetype: 'audio/ogg; codecs=opus', ptt: true, seconds: 2 }
+    }
+    const result = await helper.sendSoundSticker(conn, 'jid', { image: Buffer.from('WEBPIMAGE'), audio: Buffer.from('OGGAUDIO') }, { key: { id: 'Q', remoteJid: 'jid', fromMe: true }, message: { conversation: 'video' } }, { prepared })
     assert.strictEqual(result.fallback, true)
-    assert.strictEqual(sent.length, 2)
-    assert.ok(!sent[1].content.stickerAudio)
-    assert.strictEqual(sent[1].content.sticker.toString(), 'WEBPIMAGE')
+    assert.strictEqual(sent.length, 1)
+    assert.strictEqual(sent[0].content.sticker.toString(), 'WEBPIMAGE')
+  })
+
+  await test('buildSoundStickerMessage bertahan encode/decode proto', async () => {
+    delete require.cache[helperPath]
+    const helper = require('../lib/sticker-audio')
+    const proto = require('@whiskeysockets/baileys').proto
+    const conn = {
+      user: { id: 'bot@s.whatsapp.net' },
+      userJid: 'bot@s.whatsapp.net'
+    }
+    const prepared = {
+      stickerMessage: { mimetype: 'image/webp', width: 512, height: 512, isAnimated: true },
+      audioMessage: { mimetype: 'audio/ogg; codecs=opus', ptt: true, seconds: 2 }
+    }
+    const waMsg = helper.buildSoundStickerMessage(conn, prepared, { key: { id: 'Q', remoteJid: 'jid', fromMe: true }, message: { conversation: 'video' } })
+    const decoded = proto.Message.decode(proto.Message.encode(waMsg.message).finish())
+    assert.ok(decoded.audioStickerMessage)
+    assert.ok(decoded.audioStickerMessage.message.stickerMessage.audioMessage)
+    assert.strictEqual(decoded.audioStickerMessage.message.stickerMessage.audioMessage.ptt, true)
+  })
+
+  await test('extractor menghasilkan WebP animasi 512x512 dengan EXIF', async () => {
+    delete require.cache[helperPath]
+    const helper = require('../lib/sticker-audio')
+    const media = await helper.extractSoundStickerMedia(makeSampleVideo(), { pack: 'Alya', author: 'Alya' })
+    assert.strictEqual(media.image.toString('ascii', 0, 4), 'RIFF')
+    assert.strictEqual(media.image.toString('ascii', 8, 12), 'WEBP')
+    const chunks = webpChunks(media.image)
+    const vp8x = chunks.find(c => c.fourcc === 'VP8X')
+    const exif = chunks.find(c => c.fourcc === 'EXIF')
+    assert.ok(vp8x, 'VP8X tidak ada')
+    assert.ok(vp8x.payload[0] & 0x02, 'flag animasi tidak aktif')
+    assert.strictEqual(vp8x.payload.readUIntLE(4, 3) + 1, 512)
+    assert.strictEqual(vp8x.payload.readUIntLE(7, 3) + 1, 512)
+    assert.ok(exif, 'EXIF tidak ada')
+    assert.ok(exif.payload.toString('utf8').includes('sticker-pack-id'))
+    assert.strictEqual(media.width, 512)
+    assert.strictEqual(media.height, 512)
+  })
+
+  await test('extractor menghasilkan Opus mono 32 kbps dua pass', async () => {
+    delete require.cache[helperPath]
+    const helper = require('../lib/sticker-audio')
+    const media = await helper.extractSoundStickerMedia(makeSampleVideo())
+    const headAt = media.audio.indexOf(Buffer.from('OpusHead'))
+    assert.ok(headAt >= 0, 'OpusHead tidak ada')
+    assert.strictEqual(media.audio[headAt + 9], 1)
+    const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'stcaudio-opus-'))
+    const file = path.join(dir, 'audio.ogg')
+    fs.writeFileSync(file, media.audio)
+    const bin = helper.ffmpegPath()
+    const result = await execFile(bin, ['-hide_banner', '-i', file, '-f', 'null', '-'], { maxBuffer: 4 * 1024 * 1024 })
+    const info = result.stderr
+    assert.ok(/mono/.test(info), info)
+    const rate = info.match(/(\d+(?:\.\d+)?) kb\/s/)
+    assert.ok(rate, info)
+    assert.ok(Number(rate[1]) <= 40, 'bitrate ' + rate[1] + ' kb/s')
   })
 
   await test('plugin dan helper tidak punya komentar kode', async () => {
