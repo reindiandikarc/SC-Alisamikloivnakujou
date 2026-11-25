@@ -24,7 +24,7 @@
 
 const { askAI } = require('../lib/scraper-ai');
 
-const TERMAI_KEY = 'Bell409';
+const TERMAI_KEY = process.env.TERMAI_KEY || 'Bell409';
 const TERMAI_URL = 'https://api.termai.cc';
 
 const TERMAI_TIMEOUT_MS   = 12000;
