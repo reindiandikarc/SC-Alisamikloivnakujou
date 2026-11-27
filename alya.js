@@ -802,7 +802,7 @@ alya.ev.emit('messages.upsert', msg)
         
         const cleanArgs = args.map(a => a.replace(/^@/, ''))
         const cleanQ = q.replace(/^@/, '').replace(/@(\d+)/g, '$1')
-        const quoted = m.quoted ? m.quoted : m
+        const quoted = m.quoted ? m.quoted : (require('./lib/rvo-extract').fallbackQuoted?.(m) || m)
         const mime = (quoted.msg || quoted).mimetype || ''
         const qmsg = (quoted.msg || quoted)
         const isMedia = /image|video|sticker|audio/.test(mime)

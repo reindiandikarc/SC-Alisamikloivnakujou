@@ -27,7 +27,6 @@ const {
 } = require('../../lib/rvo-extract')
 const { downloadMediaMessage, downloadContentFromMessage } = require('@whiskeysockets/baileys')
 const { recoverViewOnce } = require('../../lib/rvo-recover')
-const { relayContentFromQuoted } = require('../../lib/rvo-relay')
 
 const numOnly = (jid) => String(jid || '').split('@')[0].split(':')[0].replace(/[^0-9]/g, '')
 const sameJid = (a, b) => !!(a && b && numOnly(a) === numOnly(b))
@@ -114,24 +113,6 @@ module.exports = {
     await react('⏱️')
 
     
-    
-    
-    
-    
-    const relaySource = contextInfo?.quotedMessage || quoted?.fakeObj?.message
-    const relay = relayContentFromQuoted(relaySource)
-    if (relay) {
-      try {
-        const dest = command === 'rvome' ? m.sender : m.chat
-        await alaya.relayMessage(dest, relay.content, {})
-        dbg('relay OK dest=' + dest + ' type=' + relay.mediaType + ' viewOnce=' + relay.hadViewOnce)
-        await react('✅')
-        return sendReply('✅ Media sekali lihat diteruskan dari descriptor aslinya.')
-      } catch (e) {
-        dbg('relay gagal: ' + (e?.message || e))
-      }
-    }
-
     try {
       let lastVo = null
       try { lastVo = await global._viewonceBuffer?.latest?.() } catch (_) {}

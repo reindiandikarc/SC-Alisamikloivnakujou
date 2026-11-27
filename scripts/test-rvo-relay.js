@@ -1,4 +1,3 @@
-// Offline: jalur relay Experimental-Bell. Tidak butuh HP.
 'use strict'
 const assert = require('assert')
 const baileys = require('@whiskeysockets/baileys')
@@ -18,11 +17,11 @@ async function test(name, fn) {
   catch (e) { console.log('  FAIL ' + name + ': ' + (e?.message || e)); process.exitCode = 1 }
 }
 
-function setup(command = 'rvo', quotedMessage = null) {
+function setup(command = 'rvo', quotedMessage = null, cached = null) {
   const relayed = []
   const sent = []
   const replied = []
-  global._rvoCache = new Map()
+  global._rvoCache = new Map(cached ? [[ID, cached]] : [])
   global._rvoCacheMeta = new Map()
   global._mediaCache = {}
   global._rawBackup = new Map()
@@ -66,40 +65,29 @@ const materialQuote = () => ({
   },
 })
 
-async function main() {
-  await test('rvome relay ke pengirim, rvo relay ke chat', async () => {
-    for (const [cmd, expected] of [['rvome', SENDER], ['rvo', CHAT], ['getviewonce', CHAT]]) {
-      downloadCalls = 0
-      const s = setup(cmd, materialQuote())
-      await plugin.run(s.alaya, s.m, s.ctx)
-      assert.strictEqual(s.relayed.length, 1, cmd + ' harus relay sekali: ' + JSON.stringify(s.replied))
-      assert.strictEqual(s.relayed[0].jid, expected)
-      assert.strictEqual(downloadCalls, 0, 'downloader tidak boleh dipanggil')
-    }
-  })
+const cachedMedia = () => ({
+  type: 'imageMessage',
+  content: materialQuote(),
+  buffer: Buffer.from([0xff, 0xd8, 0xff, 0xe0]),
+  mimetype: 'image/jpeg',
+  caption: 'asli',
+  chat: CHAT,
+  sender: SENDER,
+  cachedAt: Date.now(),
+  vo: true,
+  fromMe: false,
+})
 
-  await test('viewOnce dibuang, mediaKey/directPath/url tetap utuh', async () => {
-    const s = setup('rvo', materialQuote())
-    await plugin.run(s.alaya, s.m, s.ctx)
-    const img = s.relayed[0].content.imageMessage
+async function main() {
+  await test('viewOnce dibuang, mediaKey/directPath/url tetap utuh di helper', async () => {
+    const out = relayMod.relayContentFromQuoted(materialQuote())
+    const img = out.content.imageMessage
     assert.ok(img, 'content harus imageMessage')
     assert.strictEqual('viewOnce' in img, false)
     assert.ok(Buffer.isBuffer(img.mediaKey) && img.mediaKey.length === 32)
     assert.strictEqual(img.directPath, '/v/rvo.enc')
     assert.strictEqual(img.url, 'https://example.invalid/rvo.enc')
     assert.strictEqual(img.fileLength, '71246')
-  })
-
-  await test('quote tanpa mediaKey/directPath tetap di-relay (sama seperti Bell)', async () => {
-    const s = setup('rvo', { imageMessage: { viewOnce: true, mimetype: 'image/jpeg', fileSha256: Buffer.alloc(32, 7) } })
-    await plugin.run(s.alaya, s.m, s.ctx)
-    assert.strictEqual(s.relayed.length, 1, 'descriptor metadata harus tetap direlay')
-    assert.strictEqual('viewOnce' in s.relayed[0].content.imageMessage, false)
-    assert.strictEqual(downloadCalls, 0, 'downloader tidak boleh dipanggil')
-  })
-
-  await test('alias getviewonce terdaftar di plugin', async () => {
-    assert.ok(plugin.command.includes('getviewonce'), 'plugin harus menerima getviewonce')
   })
 
   await test('helper tidak mengubah objek asli', async () => {
@@ -109,11 +97,32 @@ async function main() {
     assert.strictEqual('viewOnce' in out.content.imageMessage, false)
   })
 
-  await test('wrapper viewOnceMessageV2 ikut dibuka', async () => {
+  await test('wrapper viewOnceMessageV2 ikut dibuka helper', async () => {
     const raw = { viewOnceMessageV2: { message: materialQuote() } }
     const out = relayMod.relayContentFromQuoted(raw)
     assert.ok(out && out.content.imageMessage)
     assert.strictEqual(out.mediaType, 'image')
+  })
+
+  await test('alias getviewonce terdaftar di plugin', async () => {
+    assert.ok(plugin.command.includes('getviewonce'), 'plugin harus menerima getviewonce')
+  })
+
+  await test('.rvo tidak pernah mengirim teks descriptor relay', async () => {
+    for (const cmd of ['rvo', 'rvome', 'getviewonce']) {
+      const s = setup(cmd, materialQuote())
+      await plugin.run(s.alaya, s.m, s.ctx)
+      assert.strictEqual(s.relayed.length, 0, cmd + ' tidak boleh relay descriptor')
+      assert.ok(!s.replied.some(t => /diteruskan dari descriptor/.test(t)), cmd + ' tidak boleh balas teks descriptor')
+    }
+  })
+
+  await test('.rvo mengirim media asli dari cache, bukan descriptor', async () => {
+    downloadCalls = 0
+    const s = setup('rvo', materialQuote(), cachedMedia())
+    await plugin.run(s.alaya, s.m, s.ctx)
+    assert.ok(s.sent.some(x => x.content?.image), 'harus ada pesan image: ' + JSON.stringify(s.replied))
+    assert.strictEqual(s.relayed.length, 0)
   })
 
   if (!process.exitCode) console.log('RVO_RELAY_TEST_OK')
